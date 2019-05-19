@@ -9,20 +9,20 @@ import Raven from 'raven-js';
 // };
 
 Raven
-    // .config(`https://${KEY}@sentry.io/${PROJECT}`, config)
-    .install();
+  // .config(`https://${KEY}@sentry.io/${PROJECT}`, config)
+  .install();
 
 // @inject('store')
 // @observer
 class ErrorBoundary extends Component {
-    componentDidCatch(error, info) {
-        Raven.captureException(error, { extra: info });
-        console.warn('Error Happend', error);
-    }
+  componentDidCatch(error, info) {
+    Raven.captureException(error, { extra: info });
+    console.warn('Error Happend', error);
+  }
 
-    render() {
-        return this.props.children
-    }
+  render() {
+    return this.props.children
+  }
 }
 
 export default ErrorBoundary;

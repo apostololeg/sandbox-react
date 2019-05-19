@@ -1,106 +1,120 @@
 {
-    "extends": [
-        "airbnb",
-        "prettier",
-        "prettier/react"
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
+  "parser": "babel-eslint",
+  "plugins": ["react"],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    // When importing files you do not need to add file extensions for the following extensions
+    "import/extensions": "off",
+    // For absolute import
+    "import/no-unresolved": "off",
+    "import/no-duplicates": "off",
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+    // Allowing importing from dev deps (for stories and tests)
+    "import/no-extraneous-dependencies": "off",
+    // Allowing ++ on numbers
+    "no-plusplus": "off",
+    // Cannot reassign function parameters but allowing modification
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
     ],
-    "parser": "babel-eslint",
-    "plugins": ["react"],
-    "env": {
-        "es6": true,
-        "browser": true,
-        "node": true
-    },
-    "rules": {
-        // When importing files you do not need to add file extensions for the following extensions
-        "import/extensions": "off",
-        // For absolute import
-        "import/no-unresolved": "off",
-        "import/no-duplicates": "off",
-        "import/no-named-as-default": "off",
-        "import/no-named-as-default-member": "off",
-        // Allowing importing from dev deps (for stories and tests)
-        "import/no-extraneous-dependencies": "off",
-        // Allowing ++ on numbers
-        "no-plusplus": "off",
-        // Cannot reassign function parameters but allowing modification
-        "no-param-reassign": [
-            "error",
-            {
-                "props": false
-            }
-        ],
-        // Allowing jsx in files with any file extension (old components have jsx but not the extension)
-        "react/jsx-filename-extension": "off",
-        // JSX props must be in alphabetical order
-        // Disabled as this is creating too much noise in logs and is not being actively addressed
-        "react/jsx-sort-props": "off",
-        // This was turned off for wc - but should be re-enabled eventually
-        "react/no-unknown-property": ["off"],
-        // Disallow more than 1 empty lines
-        "no-multiple-empty-lines": [
-            "error",
-            {
-                "max": 1
-            }
-        ],
-        // Enforce no padding within blocks
-        "padded-blocks": ["error", "never"],
-        // Adding 'skipShapeProps' as the rule has issues with correctly handling PropTypes.shape
-        "react/no-unused-prop-types": [
-            "error",
-            {
-                "skipShapeProps": true
-            }
-        ],
-        // Opt out of preferring stateless functions
-        // Rationale: https://extranet.atlassian.com/display/AtlasKit/React+component+conventions
-        "react/prefer-stateless-function": "off",
-        // default props not required for optional values
-        "react/require-default-props": "off",
-        // Disallowing the use of variables starting with `_` unless it called on `this`.
-        // Allowed: `this._secret = Symbol()`
-        // Not allowed: `const _secret = Symbol()`
-        "no-underscore-dangle": [
-            "error",
-            {
-                "allowAfterThis": true
-            }
-        ],
-        // Allowing warning and error console logging
-        "no-console": [
-            "error",
-            {
-                "allow": ["warn", "error"]
-            }
-        ],
-        // All blocks must be wrapped in curly braces {}
-        // Preventing if(condition) return;
-        "curly": ["error", "all"],
-        // Allowing Math.pow rather than forcing `**`
-        "no-restricted-properties": [
-            "off",
-            {
-                "object": "Math",
-                "property": "pow"
-            }
-        ],
-        // Opting out of prefer destructuring (nicer with flow in lots of cases)
-        "prefer-destructuring": "off",
-        // Opting out of specific object styles for now
-        "object-curly-newline": "off",
-        // Opting out of specific paren styles for now
-        "function-paren-newline": "off",
-        "jsx-a11y/anchor-is-valid": {
-            "components": ["Link"],
-            "specialLink": ["to"]
-        }
-    },
-    "settings": {
-        "import/resolver": {
-            "webpack": {
-                "config": "config/webpack.config.js"
-            }
-        }
+    // Prevent missing props validation in a React component definition
+    "react/prop-types": ["off"],
+    // Prevent missing React when using JSX
+    "react/react-in-jsx-scope": ["off"],
+    // Enforce ES5 or ES6 class for React Components
+    "react/prefer-es6-class": ["always"],
+    // Enforce consistent usage of destructuring assignment of props, state, and context
+    "react/destructuring-assignment": ["off"],
+    // Allowing jsx in files with any file extension (old components have jsx but not the extension)
+    "react/jsx-filename-extension": "off",
+    // JSX props must be in alphabetical order
+    // Disabled as this is creating too much noise in logs and is not being actively addressed
+    "react/jsx-sort-props": "off",
+    // This was turned off for wc - but should be re-enabled eventually
+    "react/no-unknown-property": ["off"],
+    // Disallow more than 1 empty lines
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1
+      }
+    ],
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowTernary": true
+      }
+    ],
+    // Enforce no padding within blocks
+    "padded-blocks": ["error", "never"],
+    // Adding 'skipShapeProps' as the rule has issues with correctly handling PropTypes.shape
+    "react/no-unused-prop-types": [
+      "error",
+      {
+        "skipShapeProps": true
+      }
+    ],
+    // Opt out of preferring stateless functions
+    // Rationale: https://extranet.atlassian.com/display/AtlasKit/React+component+conventions
+    "react/prefer-stateless-function": "off",
+    // default props not required for optional values
+    "react/require-default-props": "off",
+    // Disallowing the use of variables starting with `_` unless it called on `this`.
+    // Allowed: `this._secret = Symbol()`
+    // Not allowed: `const _secret = Symbol()`
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allowAfterThis": true
+      }
+    ],
+    // Allowing warning and error console logging
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    // All blocks must be wrapped in curly braces {}
+    // Preventing if(condition) return;
+    "curly": ["error", "all"],
+    // Allowing Math.pow rather than forcing `**`
+    "no-restricted-properties": [
+      "off",
+      {
+        "object": "Math",
+        "property": "pow"
+      }
+    ],
+    // Opting out of prefer destructuring (nicer with flow in lots of cases)
+    "prefer-destructuring": "off",
+    // Opting out of specific object styles for now
+    "object-curly-newline": "off",
+    // Opting out of specific paren styles for now
+    "function-paren-newline": "off",
+    "jsx-a11y/anchor-is-valid": {
+      "components": ["Link"],
+      "specialLink": ["to"]
     }
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "config/webpack.config.js"
+      }
+    }
+  }
 }

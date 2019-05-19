@@ -11,9 +11,9 @@ function resolvePath(relativePath) {
 }
 
 module.exports = {
-    root:    APP_PATH,
-    src: resolvePath(SOURCE_PATH),
-    modules: resolvePath('node_modules'),
-    build:   resolvePath(BUILD_PATH),
-    assets:  resolvePath(ASSETS_PATH)
+  root:   APP_PATH,
+  src:    resolvePath(SOURCE_PATH),
+  modules:resolvePath('node_modules'),
+  build:  resolvePath(BUILD_PATH),
+  assets: resolvePath(ASSETS_PATH)
 }

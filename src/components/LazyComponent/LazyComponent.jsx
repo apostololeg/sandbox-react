@@ -4,30 +4,30 @@ import Loadable from 'react-loadable';
 import Spinner from 'components/Spinner';
 
 function LazyComponent({ loader, preload, visible, ...props }) {
-    const LoadableComponent = Loadable({
-        loader,
-        loading: () => <Spinner/>,
-        render: ({ default: Component }) => <Component {...props} />
-    });
+  const LoadableComponent = Loadable({
+    loader,
+    loading: () => <Spinner/>,
+    render: ({ default: Component }) => <Component {...props} />
+  });
 
-    if (preload) {
-        LoadableComponent.preload();
+  if (preload) {
+    LoadableComponent.preload();
 
-        if (!visible) {
-            return null
-        }
+    if (!visible) {
+      return null
     }
+  }
 
-    return <LoadableComponent {...props} />;
+  return <LoadableComponent {...props} />;
 }
 
 LazyComponent.propTypes = {
-    loader: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.node
-    ]),
-    preload: PropTypes.bool,
-    visible: PropTypes.bool
+  loader: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.node
+  ]),
+  preload: PropTypes.bool,
+  visible: PropTypes.bool
 };
 
 export default LazyComponent;

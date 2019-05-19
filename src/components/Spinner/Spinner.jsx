@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Icon from './spinner.svg'
 
 function Spinner() {
-    return <div className="Spinner">
-        <Icon/>
+  return (
+    <div className="Spinner">
+      <Icon/>
     </div>
+  );
 }
 
 export default Spinner
