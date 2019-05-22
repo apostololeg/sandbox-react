@@ -35,7 +35,7 @@
     // Prevent missing React when using JSX
     "react/react-in-jsx-scope": ["off"],
     // Enforce ES5 or ES6 class for React Components
-    "react/prefer-es6-class": ["always"],
+    "react/prefer-es6-class": [1],
     // Enforce consistent usage of destructuring assignment of props, state, and context
     "react/destructuring-assignment": ["off"],
     // Allowing jsx in files with any file extension (old components have jsx but not the extension)

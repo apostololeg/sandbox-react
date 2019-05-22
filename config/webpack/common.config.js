@@ -1,36 +1,35 @@
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ComponentDirectoryPlugin = require('component-directory-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
 // const SentryPlugin = require('@sentry/webpack-plugin');
 const extractStyle = new ExtractTextPlugin("[name].[hash].css");
 
-const aliases = require('./tools/aliases');
-const paths = require('./tools/paths');
-const { PAGE_LANG } = require('./tools/constants');
+const aliases = require('../tools/aliases');
+const paths = require('../tools/paths');
+const { PAGE_LANG } = require('../tools/constants');
 
 module.exports = {
-  entry: {
-    app: [`${paths.src}/index.js`],
-    vendor: [
-      'react',
-      'react-dom',
-      'prop-types',
-      'decko'
-    ]
-  },
+  entry: [
+    'webpack-hot-middleware/client',
+    `${paths.src}/index.js`
+  ],
   output: {
     path: paths.build,
-    filename: 'js/[name].js?v=[hash:5]'
+    filename: 'js/[name].js?v=[hash:5]',
   },
   resolve: {
     modules: [
       'node_modules',
       paths.src
     ],
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+      ...aliases
+    },
     plugins: [
       new ComponentDirectoryPlugin()
     ],
@@ -41,7 +40,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        loader: 'babel-loader',
+        loader: ['babel-loader'],
         exclude: /node_modules/
       },
       {
@@ -108,8 +107,6 @@ module.exports = {
     new CleanWebpackPlugin(['build'], {
       root: paths.root
     }),
-    new FaviconsWebpackPlugin(`${paths.assets}/favicon.svg`),
-    new ErrorOverlayPlugin(),
     new HtmlWebpackPlugin({
       lang: PAGE_LANG,
       filename: 'index.html',
@@ -128,10 +125,12 @@ module.exports = {
         minifyURLs: true
       }
     }),
+    new FaviconsWebpackPlugin(`${paths.assets}/favicon.svg`),
     extractStyle,
+    new webpack.NamedModulesPlugin(),
     // new SentryPlugin({
-    //     include: './dist',
-    //     ignore: ['node_modules', 'webpack.config.js'],
+    //   include: './dist',
+    //   ignore: ['node_modules', 'webpack.config.js'],
     // })
   ]
 };

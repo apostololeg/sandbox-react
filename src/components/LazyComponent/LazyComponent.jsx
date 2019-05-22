@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Loadable from 'react-loadable';
-import Spinner from 'components/Spinner';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Loadable from 'react-loadable'
+import Spinner from 'components/Spinner'
 
 function LazyComponent({ loader, preload, visible, ...props }) {
   const LoadableComponent = Loadable({
@@ -22,10 +22,10 @@ function LazyComponent({ loader, preload, visible, ...props }) {
 }
 
 LazyComponent.propTypes = {
-  loader: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.node
-  ]),
+  // loader: PropTypes.oneOfType([
+  //   PropTypes.element,
+  //   PropTypes.node
+  // ]),
   preload: PropTypes.bool,
   visible: PropTypes.bool
 };
