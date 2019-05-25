@@ -1,14 +1,13 @@
-import 'react-hot-loader'
-import { hot } from 'react-hot-loader/root'
-import React, { Component, Fragment } from 'react'
-// import PropTypes from 'prop-types'
-import { Link } from '@reach/router'
-import { connect } from 'react-redux'
+import 'react-hot-loader';
+import { hot } from 'react-hot-loader/root';
+import React, { Component, Fragment } from 'react';
+import { Link } from '@reach/router';
+import { connect } from 'react-redux';
 
 import { initUser } from 'store/actions/user';
-import Routes from 'components/Routes'
+import Routes from 'components/Routes';
 
-import './App.styl'
+import styles from './App.styl';
 
 const mapStateToProps = ({ user }) => ({ user });
 
@@ -25,7 +24,7 @@ class App extends Component {
     const { name, isLogged } = user;
 
     return (
-      <div className="App">
+      <div className={styles.root}>
         {isLogged && (
           <Fragment>
             <h1>Hi, {name}!</h1>
@@ -33,7 +32,6 @@ class App extends Component {
           </Fragment>
         )}
         <Routes />
-
       </div>
     );
   }

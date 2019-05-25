@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -49,9 +50,11 @@ module.exports = {
             {
               loader: 'css-loader',
               options: {
-                minimize: true,
-                importLoaders: 1,
-                sourceMap: false,
+                modules: true,
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+                // minimize: true,
+                // importLoaders: 1,
+                // sourceMap: false,
               }
             },
             {
@@ -105,6 +108,16 @@ module.exports = {
     new CleanWebpackPlugin(['build'], {
       root: paths.root
     }),
+    new CopyPlugin([
+      {
+        from: `${paths.assets}/common.css`,
+        to: paths.build
+      },
+      {
+        from: `${paths.assets}/fonts`,
+        to: `${paths.build}/fonts`
+      }
+    ]),
     new HtmlWebpackPlugin({
       lang: PAGE_LANG,
       filename: 'index.html',

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Input from 'components/UI/Input';
+import Button from 'components/UI/Button';
 
 class Login extends Component {
   constructor(props) {
@@ -7,15 +9,14 @@ class Login extends Component {
   }
 
   onSubmit() {
-
   }
 
   render() {
     return (
       <form onSubmit={this.onSubmit}>
-        <input type="text" name="username" />
-        <input type="passwort" name="password" />
-        <button type="submit">Log in</button>
+        <Input size="m" type="text" name="username" />
+        <Input size="m" type="password" name="password" />
+        <Button size="m" type="submit">Log in</Button>
       </form>
     );
   }
