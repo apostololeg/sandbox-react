@@ -24,6 +24,7 @@
     "@hot-loader/react-dom": "^16.8.6",
     "@reach/router": "^1.2.1",
     "apollo-server": "^2.5.0",
+    "apollo-server-express": "^2.5.0",
     "babel-preset-es2015": "^6.24.1",
     "bcryptjs": "^2.4.3",
     "classnames": "^2.2.6",

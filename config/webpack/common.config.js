@@ -14,7 +14,6 @@ const { PAGE_LANG } = require('../tools/constants');
 
 module.exports = {
   entry: [
-    'webpack-hot-middleware/client',
     `${paths.src}/index.js`
   ],
   output: {
@@ -35,7 +34,6 @@ module.exports = {
     ],
     extensions: ['.js', '.jsx', '.json', '.styl']
   },
-  devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {

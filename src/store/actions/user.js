@@ -1,3 +1,12 @@
+import store from 'store';
+
+export const initUser = () => async dispatch => {
+  const { isLogged } = !store.getState().user;
+  // const
+
+  // if ()
+}
+
 export const login = () => async dispatch => {
   if (fetching) {
     return;
