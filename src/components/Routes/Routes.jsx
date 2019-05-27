@@ -1,21 +1,24 @@
-import React from 'react'
-import { Router } from '@reach/router'
+import React from 'react';
+import { Router } from '@reach/router';
 
-import LazyComponent from 'components/LazyComponent'
-import Home from 'components/Home'
-import { Login, Logout, Register } from 'components/Auth';
-import NoMatch from './NoMatch'
+import LazyComponent from 'components/LazyComponent';
+import Home from 'components/Home';
+import Auth from 'components/Auth';
+import NoMatch from './NoMatch';
 
 function Routes({ user }) {
   return (
     <Router>
       <Home path="/"/>
-      <LazyComponent
-        path="admin"
-        loader={() => import('components/Admin')}
-      />
-      <Login path="login" />
-      <Logout path="logout" />
+      {user.roles.includes('admin') && (
+        <LazyComponent
+          path="admin"
+          loader={() => import('components/Admin')}
+        />
+      )}
+      <Auth path="login" type="login"/>
+      <Auth path="logout" type="logout"/>
+      <Auth path="register" type="register"/>
       <NoMatch default />
     </Router>
   );
