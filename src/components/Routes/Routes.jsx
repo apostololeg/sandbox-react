@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { Router } from '@reach/router';
 
 import LazyComponent from 'components/LazyComponent';
@@ -24,4 +25,6 @@ function Routes({ user }) {
   );
 }
 
-export default Routes;
+const mapStateToProps = ({ user }) => ({ user });
+
+export default connect(mapStateToProps)(Routes);

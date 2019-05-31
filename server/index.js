@@ -21,15 +21,14 @@ const { schema, context } = new GraphQLModule({
 });
 const server = new ApolloServer({ schema, context });
 
-app.use(historyApiFallback())
+server.applyMiddleware({ app, path: '/graphql' });
+app.use(historyApiFallback());
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath,
   stats: false,
   logLevel: 'trace',
 }));
 app.use(webpackHotMiddleware(compiler));
-
-server.applyMiddleware({ app });
 
 app.listen({ port }, () => {
   console.log(`\n  🚀  App ready on port ${port}\n`); // eslint-disable-line

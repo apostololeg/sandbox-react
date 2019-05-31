@@ -1,25 +1,63 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as Yup from 'yup';
+import Link from 'components/UI/Link';
 
-import Input from 'components/UI/Input';
-import Button from 'components/UI/Button';
+import { login } from 'store/actions/user';
 
+const mapStateToProps = ({ user }) => ({ user });
+
+@connect(mapStateToProps)
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      initialValues: {
+        username: '',
+        password: '',
+      },
+      validationSchemaObj: {
+        username: Yup.string().min(3).required(),
+        password: Yup.string().min(6).required(),
+      },
+    };
   }
 
-  onSubmit() {
+  onSubmit(values) {
+    const { dispatch } = this.props;
+
+    dispatch(login(values));
   }
 
   render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        <Input type="text" name="username" />
-        <Input type="password" name="password" />
-        <Button type="submit">Log in</Button>
-      </form>
-    );
+    const { children } = this.props;
+    const { initialValues, validationSchemaObj } = this.state;
+
+    return children({
+      title: 'Sign in',
+      titleLink: {
+        text: 'Registration',
+        to: '/registration',
+      },
+      initialValues,
+      validationSchemaObj,
+      fields: [
+        {
+          name: 'username',
+          label: 'Username',
+        },
+        {
+          name: 'password',
+          label: 'Password',
+          type: 'password',
+        },
+      ],
+      postFieldsContent: (
+        <Link to="/reset-password" text="Forgot password?"/>
+      ),
+      submitText: 'Sign in',
+      onSubmit: this.onSubmit,
+    });
   }
 }
 

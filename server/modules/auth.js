@@ -14,7 +14,7 @@ const users = [
     email: 'a@a.com',
     username: 'admin',
     password: '123',
-    role: 'admin'
+    roles: ['admin']
   }
 ];
 const getUserBy = (field, val) => {
@@ -29,12 +29,13 @@ export default new GraphQLModule({
       id: ID!
       email: String!
       username: String!
-      role: String!
+      roles: [String!]!
     }
 
     type AuthResponse {
-      token: String!
-      message: String!
+      data: User
+      token: String
+      message: String
     }
 
     type Query {
@@ -51,7 +52,7 @@ export default new GraphQLModule({
       me: (root, args, { currentUser }) => currentUser,
     },
     Mutation: {
-      async register(root, { username, email, password }) {
+      async register(root, { username, email, password }, ctx) {
         const user = await getUserBy('email', email);
 
         if (user) {
@@ -64,37 +65,44 @@ export default new GraphQLModule({
         const id = nanoid();
         const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
 
+        ctx.res.cookie('jwt', token, { httpOnly: true, secure: true });
+
         users.push({
           id,
           username,
           email,
           password,
-          role: 'user'
+          roles: 'user'
         });
 
-        return { token, message: 'Successfully registered' };
+        return { token };
       },
-      async login(root, { email, password }) {
+      async login(root, { email, password }, ctx) {
         const user = await getUserBy('email', email);
 
         if (!user || user.password !== password) {
-          return { token: '', message: 'Invalid credentials' };
+          return { message: 'Invalid credentials' };
         }
 
         const { id } = user;
         const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
 
-        return { token, message: 'Successfully logged in' };
+        ctx.res.cookie('jwt', token, { httpOnly: true, secure: true });
+
+        return { token };
       }
     },
     User: {
       id: user => user.id,
       username: user => user.username,
-      role: user => user.role,
+      roles: user => user.roles,
     },
   },
   async context({ req }) {
-    const authToken = req.headers.authorization;
+    // TODO: How to set authorization header in GraphQL requests ?
+    // const authToken = req.headers.authorization;
+    const { authToken } = req.params;
+    debugger
 
     if (!authToken) {
       return null;

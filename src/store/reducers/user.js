@@ -1,23 +1,23 @@
 const initialState = {
   name: '',
   email: '',
-  role: ['guest'],
+  roles: ['guest'],
   isLogged: false,
+  inProgress: false
 };
 
 export default (state = initialState, { type, ...action }) => {
-  if (type === 'LOGIN') {
-    return { ...state, ...action.data };
+  if (type === 'SET_USER_LOADING') {
+    const { loading } = action;
+
+    return { ...state, loading };
   }
 
-  if (type === 'SET_CATEGORIES') {
-    const { items, count } = data;
-
+  if (type === 'SET_USER') {
     return {
       ...state,
-      count,
-      items: items.filter(cat => cat.children.length > 0),
-      updated: new Date(),
+      ...action.data,
+      inProgress: false
     };
   }
 

@@ -1,13 +1,13 @@
-import 'react-hot-loader/patch'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { AppContainer } from 'react-hot-loader'
+import 'react-hot-loader/patch';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { AppContainer } from 'react-hot-loader';
 
-import store from 'store'
+import store from 'store';
 
-import App from 'components/App'
-import ErrorBoundary from 'components/ErrorBoundary'
+import App from 'components/App';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 const render = Component => {
   ReactDOM.render(

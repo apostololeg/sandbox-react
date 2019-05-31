@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Loadable from 'react-loadable'
-import Spinner from 'components/Spinner'
+import Spinner from 'components/UI/Spinner'
 
 function LazyComponent({ loader, preload, visible, ...props }) {
   const LoadableComponent = Loadable({

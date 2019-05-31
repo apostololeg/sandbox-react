@@ -1,5 +1,5 @@
 export default role => next => (root, args, context, info) => {
-  if (context.currentUser.role !== role) {
+  if (context.currentUser.roles.includes(role)) {
     throw new Error(`Unauthorized!`);
   }
 
