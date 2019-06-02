@@ -11,7 +11,7 @@ const ControlBase = ({ size='s', children: Component, className = '', ...props }
   );
 
   return (
-    <Component {...props} className={classes} />
+    <Component {...props} className={classes} key={props.name} />
   );
 }
 

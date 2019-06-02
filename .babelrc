@@ -1,9 +1,9 @@
 {
   "presets": [
     ["env", { "modules": false }],
-    "es2015",
     "react",
-    "stage-2"
+    "es2015",
+    "stage-2",
   ],
   "plugins": [
     ["transform-runtime", {
@@ -14,7 +14,9 @@
     }],
     "transform-decorators-legacy",
     "transform-export-extensions",
-    "react-hot-loader/babel"
+    "syntax-dynamic-import",
+    "react-hot-loader/babel",
+    ["lodash", { "id": ["recompose"] }]
   ],
   "comments": false
 }

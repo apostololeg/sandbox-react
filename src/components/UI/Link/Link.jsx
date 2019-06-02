@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link as ReachLink } from '@reach/router';
+
 import s from './Link.styl';
 
 const Link = ({ text, ...props }) => (
-  <Link className={s.root} {...props}>
+  <ReachLink className={s.root} {...props}>
     {text}
-  </Link>
+  </ReachLink>
 );
 
 export default Link;

@@ -1,10 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Link } from '@reach/router';
 import { bind } from 'decko';
-import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-import SubmitButtons from 'components/UI/Form/SubmitButtons';
+import Form, { Field, SubmitButtons } from 'components/UI/Form';
 import Input from 'components/UI/Input';
 import Button from 'components/UI/Button';
 
@@ -33,6 +32,8 @@ class Auth extends PureComponent {
     onSubmit,
     ...formProps
   }) {
+    this.formProps = formProps;
+
     return (
       <Fragment>
         <div className={s.header}>
@@ -45,40 +46,29 @@ class Auth extends PureComponent {
           )}
         </div>
         {initialValues && (
-          <Formik
-            enableReinitialize
+          <Form
+            className={s.form}
             initialValues={initialValues}
             validationSchema={Yup.object().shape(validationSchemaObj)}
-            onSubmit={this.onSubmit}
-            render={form => this.renderForm(form, formProps)}
+            onSubmit={onSubmit}
+            render={this.renderForm}
           />
         )}
       </Fragment>
     );
   }
 
-  renderForm(form, { fields, submitText, postFieldsContent }) {
+  @bind
+  renderForm(form) {
     const { isValid } = form;
+    const { fields, submitText, postFieldsContent } = this.formProps;
 
     this.form = form;
 
     return (
-      <Form className={s.form}>
+      <Fragment>
         {fields.map(({ name, label, ...fieldProps }) => (
-          <Field
-            key={name}
-            name={name}
-            render={({ field }) => (
-              <Input
-                {...field}
-                // TODO:↓
-                // autoFocus={i === 0}
-                // label={label}
-                onKeyUp={this.onKeyUp}
-                {...fieldProps}
-              />
-            )}
-          />
+          <Field name={name} key={name} Component={Input} {...fieldProps} />
         ))}
         {postFieldsContent}
         <SubmitButtons
@@ -90,7 +80,7 @@ class Auth extends PureComponent {
             },
           ]}
         />
-      </Form>
+      </Fragment>
     );
   }
   render() {

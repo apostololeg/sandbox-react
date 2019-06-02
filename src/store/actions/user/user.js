@@ -15,22 +15,19 @@ const setUser = data => ({
   data
 });
 
-const loadUser = async dispatch => {
-  try {
-    const res = await client.query({ query: LOAD_QUERY });
-
-    debugger
-    dispatch(setUser(res.me));
-  } catch(error) {
-    throw error;
-  }
-}
-
 export const initUser = () => async dispatch => {
   const { isLogged } = getStore();
 
-  if (!isLogged) {
-    await dispatch(loadUser());
+  if (isLogged) {
+    return
+  }
+
+  try {
+    const { data } = await client.query({ query: LOAD_QUERY });
+
+    dispatch(setUser(data.me));
+  } catch(error) {
+    console.warn(error.message);
   }
 }
 
