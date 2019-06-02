@@ -7,7 +7,7 @@ const ControlBase = ({ size='s', children: Component, className = '', ...props }
   const classes = cn(
     s.root,
     s[`root_size_${size}`],
-    ...className,
+    className,
   );
 
   return (

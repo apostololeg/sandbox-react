@@ -1,25 +1,16 @@
-import React, { Component } from 'react';
-import { bind } from 'decko';
-
+import React from 'react';
 import ControlBase from 'components/UI/ControlBase';
 
-class Input extends Component {
-  componentWillUnmount() {
-    debugger
-  }
+function Control(inputProps) {
+  return <input {...inputProps} />;
+}
 
-  @bind
-  renderControl(inputProps) {
-    return <input {...inputProps} />;
-  }
-
-  render() {
-    return (
-      <ControlBase {...this.props}>
-        {this.renderControl}
-      </ControlBase>
-    );
-  }
+function Input(props) {
+  return (
+    <ControlBase {...props}>
+      {Control}
+    </ControlBase>
+  );
 }
 
 export default Input;

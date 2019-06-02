@@ -1,19 +1,32 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { bind } from 'decko';
 import { Formik, Form as FormikForm } from 'formik';
 
-const Form = ({ className, render, ...props }) => (
-  <Formik
-    enableReinitialize
-    // validateOnChange={false}
-    // validateOnBlur
-    render={form => (
+class Form extends Component {
+  @bind
+  renderForm(form) {
+    const { className, render } = this.props;
+
+    return (
       <FormikForm className={className}>
         {render(form)}
       </FormikForm>
-    )}
-    {...props}
-  />
-);
+    );
+  }
+
+  render() {
+    const { className, render, ...props } = this.props;
+
+    return (
+      <Formik
+        enableReinitialize
+        validateOnChange={false}
+        render={this.renderForm}
+        {...props}
+      />
+    );
+  }
+}
 
 export default Form;
 export Field from './Field';

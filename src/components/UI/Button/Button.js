@@ -1,11 +1,10 @@
 import React from 'react';
-// import cn from 'classnames';
 
 import ControlBase from 'components/UI/ControlBase';
-// import s from './Button.styl';
+import s from './Button.styl';
 
 const Button = ({ children, ...props }) => (
-  <ControlBase {...props}>
+  <ControlBase {...props} className={s.root}>
     {buttonProps => (
       <button {...buttonProps}>
         {children}

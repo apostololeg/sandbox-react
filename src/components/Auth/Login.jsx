@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
-import Link from 'components/UI/Link';
+import { bind } from 'decko';
 
+import Link from 'components/UI/Link';
 import { login } from 'store/actions/user';
 
 const mapStateToProps = ({ user }) => ({ user });
@@ -13,16 +14,17 @@ class Login extends Component {
     super(props);
     this.state = {
       initialValues: {
-        username: '',
+        email: '',
         password: '',
       },
       validationSchemaObj: {
-        username: Yup.string().min(3).required(),
+        email: Yup.string().min(3).required(),
         password: Yup.string().min(6).required(),
       },
     };
   }
 
+  @bind
   onSubmit(values) {
     const { dispatch } = this.props;
 
@@ -44,8 +46,8 @@ class Login extends Component {
       validationSchemaObj,
       fields: [
         {
-          name: 'username',
-          label: 'Username',
+          name: 'email',
+          label: 'Email',
         },
         {
           name: 'password',

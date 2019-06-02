@@ -7,8 +7,6 @@ import { connect } from 'react-redux';
 import { initUser } from 'store/actions/user';
 import Routes from 'components/Routes';
 
-import styles from './App.styl';
-
 const mapStateToProps = ({ user }) => ({ user });
 
 @connect(mapStateToProps)
@@ -24,7 +22,7 @@ class App extends Component {
     const { name, isLogged } = user;
 
     return (
-      <div className={styles.root}>
+      <div>
         {isLogged && (
           <Fragment>
             <h1>Hi, {name}!</h1>

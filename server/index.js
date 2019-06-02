@@ -1,5 +1,6 @@
 import express from 'express';
 import webpack from 'webpack';
+import cookieParser from 'cookie-parser';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import historyApiFallback from 'connect-history-api-fallback';
@@ -21,7 +22,9 @@ const { schema, context } = new GraphQLModule({
 });
 const server = new ApolloServer({ schema, context });
 
+app.use(cookieParser());
 server.applyMiddleware({ app, path: '/graphql' });
+
 app.use(historyApiFallback());
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath,

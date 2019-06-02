@@ -33,6 +33,7 @@
     "body-parser": "^1.19.0",
     "classnames": "^2.2.6",
     "connect-history-api-fallback": "^1.6.0",
+    "cookie-parser": "^1.4.4",
     "copy-webpack-plugin": "^5.0.3",
     "decko": "^1.2.0",
     "dotenv": "^6.2.0",

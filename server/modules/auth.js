@@ -6,14 +6,15 @@ import jwt from 'jsonwebtoken';
 require('dotenv').config();
 
 const { JWT_SECRET } = process.env;
+const COOKIE_TOKEN_NAME = 'x-token';
 
 // TODO: use Prisma for database.
 const users = [
   {
-    id: nanoid(),
+    id: '9B4-pBSWsRuuQPYCfklCe',
     email: 'a@a.com',
     username: 'admin',
-    password: '123',
+    password: '123123',
     roles: ['admin']
   }
 ];
@@ -52,7 +53,7 @@ export default new GraphQLModule({
       me: (root, args, { currentUser }) => currentUser,
     },
     Mutation: {
-      async register(root, { username, email, password }, ctx) {
+      async register(root, { username, email, password }, { res }) {
         const user = await getUserBy('email', email);
 
         if (user) {
@@ -65,7 +66,14 @@ export default new GraphQLModule({
         const id = nanoid();
         const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
 
-        ctx.res.cookie('jwt', token, { httpOnly: true, secure: true });
+        res.cookie(
+          COOKIE_TOKEN_NAME,
+          token,
+          {
+            httpOnly: true,
+            secure: true
+          }
+        );
 
         users.push({
           id,
@@ -77,7 +85,7 @@ export default new GraphQLModule({
 
         return { token };
       },
-      async login(root, { email, password }, ctx) {
+      async login(root, { email, password }, { res }) {
         const user = await getUserBy('email', email);
 
         if (!user || user.password !== password) {
@@ -87,7 +95,14 @@ export default new GraphQLModule({
         const { id } = user;
         const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
 
-        ctx.res.cookie('jwt', token, { httpOnly: true, secure: true });
+        res.cookie(
+          COOKIE_TOKEN_NAME,
+          token,
+          {
+            httpOnly: true,
+            secure: true,
+          }
+        );
 
         return { token };
       }
@@ -98,24 +113,20 @@ export default new GraphQLModule({
       roles: user => user.roles,
     },
   },
-  async context({ req }) {
+  async context({ req, res }) {
     // TODO: How to set authorization header in GraphQL requests ?
     // const authToken = req.headers.authorization;
-    const { authToken } = req.params;
-    debugger
+    const authToken = req.cookies[COOKIE_TOKEN_NAME];
 
     if (!authToken) {
-      return null;
+      return { res };
     }
 
     try {
       const { id } = jwt.verify(authToken, JWT_SECRET);
       const currentUser = await getUserBy('id', id);
 
-      return {
-        authToken,
-        currentUser,
-      };
+      return { currentUser };
     } catch (e) {
       console.warn(`Unable to authenticate using auth token: ${authToken}`);
       return null;

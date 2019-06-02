@@ -46,10 +46,11 @@ export const login = payload => async dispatch => {
   dispatch(setUserLoading(true));
 
   try {
-    const { data, token, message } = await client.mutate({
+    const res = await client.mutate({
       mutation: LOGIN_MUTATION,
       variables: payload
     });
+    const { data, message } = res.data.login;
 
     teardown();
     dispatch(setUser(data));
