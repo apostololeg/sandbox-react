@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ComponentDirectoryPlugin = require('component-directory-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const WebappWebpackPlugin = require('webapp-webpack-plugin');
 
 // const SentryPlugin = require('@sentry/webpack-plugin');
 const extractStyle = new ExtractTextPlugin("[name].[hash].css");
@@ -136,7 +136,16 @@ module.exports = {
         minifyURLs: true
       }
     }),
-    new FaviconsWebpackPlugin(`${paths.assets}/favicon.svg`),
+    new WebappWebpackPlugin({
+      logo: `${paths.assets}/favicon.svg`,
+      favicons: {
+        appName: 'sandbox',
+        appDescription: 'My spaceship',
+        developerName: 'apostol',
+        background: '#fff',
+        theme_color: '#333'
+      }
+    }),
     extractStyle,
     new webpack.NamedModulesPlugin(),
     // new SentryPlugin({

@@ -12,7 +12,10 @@ function Routes({ user }) {
     <Router>
       <Home path="/"/>
       {user.roles.includes('admin') && (
-        123
+        <LazyComponent
+          path="admin"
+          loader={() => import('components/Admin')}
+        />
       )}
       <Auth path="login" type="login"/>
       <Auth path="logout" type="logout"/>

@@ -35,7 +35,6 @@ class Login extends Component {
     const { children } = this.props;
     const { initialValues, validationSchemaObj } = this.state;
 
-    // return children({title: 123});
     return children({
       title: 'Sign in',
       titleLink: {
