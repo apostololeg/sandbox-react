@@ -1,0 +1,18 @@
+# the name for the service
+# (will be part of the service's HTTP endpoint)
+service: sandbox
+
+# the cluster and stage the service is deployed to;
+# you can choose any string for that
+# (will be also part of the service's HTTP endpoint)
+stage: dev
+
+# protects your Prisma API;
+# this is the value for the 'secret' argument when
+# instantiating the 'Prisma' binding instance
+secret: mysecret123
+
+# the file path pointing to your data model
+datamodel: datamodel.graphql
+
+cluster: local
