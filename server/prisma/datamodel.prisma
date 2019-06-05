@@ -1,7 +1,12 @@
 type User {
   id: ID! @id
-  email: String!
+  email: String! @unique
   password: String!
-  name: String!
-  roles: [String!]!
+  name: String
+  roles: [Role!]! @default(value: USER)
+}
+
+enum Role {
+  USER
+  ADMIN
 }

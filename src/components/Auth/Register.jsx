@@ -3,7 +3,6 @@ import { register } from 'store/user';
 
 function Register({ children }) {
   return children({
-    formRef: form => this.form = form,
     title: 'Registration',
     titleLink: {
       text: 'Sign in',
@@ -15,12 +14,14 @@ function Register({ children }) {
       confirmPassword: '',
     },
     validationSchemaObj: {
-      email: Yup.string().min(3).required(),
+      email: Yup.string().email().required(),
       password: Yup.string().min(6).required(),
       confirmPassword: Yup.string().test(
         'match-password',
         'Passwords must match',
-        value => this.form.values.password === value,
+        function(value) {
+          return this.parent.password === value
+        },
       )
     },
     fields: [
@@ -40,7 +41,7 @@ function Register({ children }) {
       },
     ],
     submitText: 'Register',
-    onSubmit: register,
+    onSubmit: ({ email, password }) => register({ email, password }),
   });
 }
 

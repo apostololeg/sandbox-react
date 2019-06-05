@@ -30,6 +30,8 @@ const server = new ApolloServer({
 app.use(cookieParser());
 server.applyMiddleware({ app, path: '/graphql' });
 
+compiler.apply(new webpack.ProgressPlugin());
+
 app.use(historyApiFallback());
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath,

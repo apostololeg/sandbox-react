@@ -1,6 +1,6 @@
 import { store } from 'react-easy-state';
 import client from 'apollo/client';
-import { LOGIN_MUTATION, LOAD_QUERY } from './query';
+import { REGISTER_MUTATION, LOGIN_MUTATION, LOAD_QUERY } from './query';
 
 const User = store({
   name: '',
@@ -11,19 +11,6 @@ const User = store({
 });
 
 export default User;
-
-export const initUser = async () => {
-  User.inProgress = true;
-
-  try {
-    const { data } = await client.query({ query: LOAD_QUERY });
-
-    Object.assign(User, data.me, { inProgress: false });
-  } catch(e) {
-    User.isProgress = false;
-    throw(e);
-  }
-};
 
 export const login = async payload => {
   if (User.inProgress) {
@@ -60,12 +47,12 @@ export const register = async payload => {
 
   try {
     const res = await client.mutate({
-      mutation: LOGIN_MUTATION,
+      mutation: REGISTER_MUTATION,
       variables: payload
     });
-    const { data, message } = res.data.login;
+    const { data, message } = res.data.register;
 
-    Object.assign(User, data.login, {
+    Object.assign(User, data, {
       inProgress: false,
       isLogged: true,
     });
@@ -74,4 +61,17 @@ export const register = async payload => {
     throw error;
   }
 };
+
+// init
+(async () => {
+  User.inProgress = true;
+
+  try {
+    const { data } = await client.query({ query: LOAD_QUERY });
+
+    Object.assign(User, data.me, { inProgress: false });
+  } catch(e) {
+    User.inProgress = false;
+  }
+})();
 

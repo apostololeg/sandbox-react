@@ -13,7 +13,20 @@ export const LOAD_QUERY = gql`
 export const LOGIN_MUTATION = gql`
   mutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      token
+      message
+      data {
+        id
+        email
+        username
+        roles
+      }
+    }
+  }
+`
+
+export const REGISTER_MUTATION = gql`
+  mutation($email: String!, $password: String!) {
+    register(email: $email, password: $password) {
       message
       data {
         id

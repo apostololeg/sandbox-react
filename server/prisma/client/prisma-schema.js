@@ -46,6 +46,11 @@ type Query {
   node(id: ID!): Node
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -54,8 +59,8 @@ type User {
   id: ID!
   email: String!
   password: String!
-  name: String!
-  roles: [String!]!
+  name: String
+  roles: [Role!]!
 }
 
 type UserConnection {
@@ -68,12 +73,12 @@ input UserCreateInput {
   id: ID
   email: String!
   password: String!
-  name: String!
+  name: String
   roles: UserCreaterolesInput
 }
 
 input UserCreaterolesInput {
-  set: [String!]
+  set: [Role!]
 }
 
 type UserEdge {
@@ -96,8 +101,8 @@ type UserPreviousValues {
   id: ID!
   email: String!
   password: String!
-  name: String!
-  roles: [String!]!
+  name: String
+  roles: [Role!]!
 }
 
 type UserSubscriptionPayload {
@@ -131,7 +136,7 @@ input UserUpdateManyMutationInput {
 }
 
 input UserUpdaterolesInput {
-  set: [String!]
+  set: [Role!]
 }
 
 input UserWhereInput {
@@ -196,6 +201,7 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 `
       }

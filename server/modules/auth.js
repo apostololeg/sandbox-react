@@ -1,7 +1,8 @@
 import gql from 'graphql-tag';
 import { GraphQLModule } from '@graphql-modules/core';
-import pick from 'lodash.pick';
 import jwt from 'jsonwebtoken';
+
+const pick = require('lodash.pick');
 
 require('dotenv').config();
 
@@ -22,13 +23,11 @@ export default new GraphQLModule({
     type User {
       id: ID!
       email: String!
-      username: String!
       roles: [String!]!
     }
 
     type AuthResponse {
       data: User
-      token: String
       message: String
     }
 
@@ -37,7 +36,7 @@ export default new GraphQLModule({
     }
 
     type Mutation {
-      register(username: String!, email: String!, password: String!): AuthResponse
+      register(email: String!, password: String!): AuthResponse
       login(email: String!, password: String!): AuthResponse
     }
   `,
@@ -46,24 +45,28 @@ export default new GraphQLModule({
       me: (root, args, { user }) => user,
     },
     Mutation: {
-      async register(root, { username, email, password }, { res, db }) {
+      async register(root, { email, password }, { res, db }) {
+        debugger
         const existedUser = await db.user({ email });
 
+        debugger
         if (existedUser) {
           return { message: 'Email already in use' };
         }
 
         const user = await db.createUser({
-          username,
           email,
           password, // TODO: protect password
-          roles: ['user']
+          roles: {
+            set: ['USER']
+          }
         });
 
+        debugger
         setCookie(res, getToken(user.id));
 
         return {
-          user: pick(user, ['username', 'email', 'roles'])
+          data: pick(user, ['username', 'email', 'roles'])
         };
       },
       async login(root, { email, password }, { db, res }) {
@@ -75,29 +78,33 @@ export default new GraphQLModule({
 
         setCookie(res, getToken(user.id));
 
-        return { user };
+        return { data: user };
       }
     },
+    AuthResponse: {
+      data: ({ data }) => data,
+      message: ({ message }) => message,
+    },
     User: {
-      id: user => user.id,
       username: user => user.username,
       roles: user => user.roles,
     },
   },
   async context({ req, res, db }) {
+    const defaultCtx = { res, db };
     const authToken = req.cookies[COOKIE_TOKEN_NAME];
 
     if (!authToken) {
-      return { res };
+      return defaultCtx;
     }
 
     try {
       const { id } = jwt.verify(authToken, JWT_SECRET);
       const user = await db.user({ id });
 
-      return { user };
+      return { ...defaultCtx, user };
     } catch (e) {
-      return null;
+      return defaultCtx;
     }
   },
 });
