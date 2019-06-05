@@ -1,66 +1,41 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import * as Yup from 'yup';
-import { bind } from 'decko';
 
 import Link from 'components/UI/Link';
-import { login } from 'store/actions/user';
+import { login } from 'store/user';
 
-const mapStateToProps = ({ user }) => ({ user });
-
-@connect(mapStateToProps)
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      initialValues: {
-        email: '',
-        password: '',
+function Login({ children }) {
+  return children({
+    title: 'Sign in',
+    titleLink: {
+      text: 'Registration',
+      to: '/register',
+    },
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchemaObj: {
+      email: Yup.string().min(3).required(),
+      password: Yup.string().min(6).required(),
+    },
+    fields: [
+      {
+        name: 'email',
+        label: 'Email',
       },
-      validationSchemaObj: {
-        email: Yup.string().min(3).required(),
-        password: Yup.string().min(6).required(),
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
       },
-    };
-  }
-
-  @bind
-  onSubmit(values) {
-    const { dispatch } = this.props;
-
-    dispatch(login(values));
-  }
-
-  render() {
-    const { children } = this.props;
-    const { initialValues, validationSchemaObj } = this.state;
-
-    return children({
-      title: 'Sign in',
-      titleLink: {
-        text: 'Registration',
-        to: '/register',
-      },
-      initialValues,
-      validationSchemaObj,
-      fields: [
-        {
-          name: 'email',
-          label: 'Email',
-        },
-        {
-          name: 'password',
-          label: 'Password',
-          type: 'password',
-        },
-      ],
-      postFieldsContent: (
-        <Link to="/reset-password" text="Forgot password?"/>
-      ),
-      submitText: 'Sign in',
-      onSubmit: this.onSubmit,
-    });
-  }
+    ],
+    postFieldsContent: (
+      <Link to="/reset-password" text="Forgot password?"/>
+    ),
+    submitText: 'Sign in',
+    onSubmit: login,
+  });
 }
 
 export default Login;

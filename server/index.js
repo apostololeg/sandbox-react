@@ -11,16 +11,21 @@ import config from '../config/webpack/dev.config.js';
 import modules from './modules';
 import permissions from './permissions';
 
+const { prisma } = require('./prisma/client/');
+
 const port = 3000;
 const app = express();
 const compiler = webpack(config);
 
-const { schema, context } = new GraphQLModule({
+const { schema } = new GraphQLModule({
   name: 'app',
   imports: modules,
   resolversComposition: permissions,
 });
-const server = new ApolloServer({ schema, context });
+const server = new ApolloServer({
+  schema,
+  context: ({ req, res }) => ({ req, res, db: prisma })
+});
 
 app.use(cookieParser());
 server.applyMiddleware({ app, path: '/graphql' });
@@ -28,7 +33,14 @@ server.applyMiddleware({ app, path: '/graphql' });
 app.use(historyApiFallback());
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath,
-  stats: false,
+  stats: {
+    colors: true,
+    errors: true,
+    warnings: true,
+    modules: false,
+    chunks: false,
+    children: false,
+  },
   logLevel: 'trace',
 }));
 app.use(webpackHotMiddleware(compiler));

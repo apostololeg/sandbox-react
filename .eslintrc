@@ -99,6 +99,7 @@
         "property": "pow"
       }
     ],
+    "no-return-assign": "off",
     // Opting out of prefer destructuring (nicer with flow in lots of cases)
     "prefer-destructuring": "off",
     // Opting out of specific object styles for now

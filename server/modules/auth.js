@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { GraphQLModule } from '@graphql-modules/core';
-import nanoid from 'nanoid';
+import pick from 'lodash.pick';
 import jwt from 'jsonwebtoken';
 
 require('dotenv').config();
@@ -8,20 +8,13 @@ require('dotenv').config();
 const { JWT_SECRET } = process.env;
 const COOKIE_TOKEN_NAME = 'x-token';
 
-// TODO: use Prisma for database.
-const users = [
-  {
-    id: '9B4-pBSWsRuuQPYCfklCe',
-    email: 'a@a.com',
-    username: 'admin',
-    password: '123123',
-    roles: ['admin']
-  }
-];
-const getUserBy = (field, val) => {
-  const data = users.find(user => user[field] === val);
-  return Promise.resolve(data);
-};
+const getToken = id => jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
+const setCookie = (res, token) => {
+  res.cookie(COOKIE_TOKEN_NAME, token, {
+    httpOnly: true,
+    secure: true
+  });
+}
 
 export default new GraphQLModule({
   name: 'auth',
@@ -50,61 +43,39 @@ export default new GraphQLModule({
   `,
   resolvers: {
     Query: {
-      me: (root, args, { currentUser }) => currentUser,
+      me: (root, args, { user }) => user,
     },
     Mutation: {
-      async register(root, { username, email, password }, { res }) {
-        const user = await getUserBy('email', email);
+      async register(root, { username, email, password }, { res, db }) {
+        const existedUser = await db.user({ email });
 
-        if (user) {
-          return {
-            token: '',
-            message: 'Username already exist'
-          };
+        if (existedUser) {
+          return { message: 'Email already in use' };
         }
 
-        const id = nanoid();
-        const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
-
-        res.cookie(
-          COOKIE_TOKEN_NAME,
-          token,
-          {
-            httpOnly: true,
-            secure: true
-          }
-        );
-
-        users.push({
-          id,
+        const user = await db.createUser({
           username,
           email,
-          password,
-          roles: 'user'
+          password, // TODO: protect password
+          roles: ['user']
         });
 
-        return { token };
+        setCookie(res, getToken(user.id));
+
+        return {
+          user: pick(user, ['username', 'email', 'roles'])
+        };
       },
-      async login(root, { email, password }, { res }) {
-        const user = await getUserBy('email', email);
+      async login(root, { email, password }, { db, res }) {
+        const user = await db.user({ email, password });
 
         if (!user || user.password !== password) {
           return { message: 'Invalid credentials' };
         }
 
-        const { id } = user;
-        const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
+        setCookie(res, getToken(user.id));
 
-        res.cookie(
-          COOKIE_TOKEN_NAME,
-          token,
-          {
-            httpOnly: true,
-            secure: true,
-          }
-        );
-
-        return { token };
+        return { user };
       }
     },
     User: {
@@ -113,9 +84,7 @@ export default new GraphQLModule({
       roles: user => user.roles,
     },
   },
-  async context({ req, res }) {
-    // TODO: How to set authorization header in GraphQL requests ?
-    // const authToken = req.headers.authorization;
+  async context({ req, res, db }) {
     const authToken = req.cookies[COOKIE_TOKEN_NAME];
 
     if (!authToken) {
@@ -124,11 +93,10 @@ export default new GraphQLModule({
 
     try {
       const { id } = jwt.verify(authToken, JWT_SECRET);
-      const currentUser = await getUserBy('id', id);
+      const user = await db.user({ id });
 
-      return { currentUser };
+      return { user };
     } catch (e) {
-      console.warn(`Unable to authenticate using auth token: ${authToken}`);
       return null;
     }
   },

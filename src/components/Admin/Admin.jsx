@@ -1,22 +1,18 @@
-import React, { Component } from 'react'
-import { Redirect } from '@reach/router'
-import { connect } from 'react-redux'
+import React from 'react';
+import { Redirect } from '@reach/router';
+import { view } from 'react-easy-state';
+import userStore from 'store/user';
 
-const mapStateToProps = ({ user }) => ({ user });
+function Admin() {
+  if (!userStore.isLogged) {
+    return <Redirect to="/login"/>
+  }
 
-@connect(mapStateToProps)
-class Admin extends Component {
-  render() {
-    const { user } = this.props;
-
-    if (!user.isLogged) {
-      return <Redirect to="/login"/>
-    }
-
-    return <div className="Admin">
+  return (
+    <div className="Admin">
       <h1>This is Protected Admin Page!</h1>
     </div>
-  }
+  );
 }
 
-export default Admin
+export default view(Admin);

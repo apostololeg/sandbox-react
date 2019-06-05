@@ -1,5 +1,5 @@
 export default next => (root, args, context, info) => {
-  if (!context.currentUser) {
+  if (!context.user) {
     throw new Error(`Unauthenticated!`);
   }
 

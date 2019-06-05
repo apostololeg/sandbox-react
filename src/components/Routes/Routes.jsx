@@ -1,17 +1,18 @@
 import React from 'react';
-import { connect } from 'react-redux'
 import { Router } from '@reach/router';
+import { view } from 'react-easy-state';
+import userStore from 'store/user';
 
 import LazyComponent from 'components/LazyComponent';
 import Home from 'components/Home';
 import Auth from 'components/Auth';
 import NoMatch from './NoMatch';
 
-function Routes({ user }) {
+function Routes() {
   return (
     <Router>
       <Home path="/"/>
-      {user.roles.includes('admin') && (
+      {userStore.roles.includes('admin') && (
         <LazyComponent
           path="admin"
           loader={() => import('components/Admin')}
@@ -25,6 +26,4 @@ function Routes({ user }) {
   );
 }
 
-const mapStateToProps = ({ user }) => ({ user });
-
-export default connect(mapStateToProps)(Routes);
+export default view(Routes);

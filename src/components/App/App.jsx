@@ -2,31 +2,26 @@ import 'react-hot-loader';
 import { hot } from 'react-hot-loader/root';
 import React, { Component, Fragment } from 'react';
 import { Link } from '@reach/router';
-import { connect } from 'react-redux';
 
-import { initUser } from 'store/actions/user';
+import { initUser } from 'store/user';
 import Routes from 'components/Routes';
 
-const mapStateToProps = ({ user }) => ({ user });
-
-@connect(mapStateToProps)
 class App extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
-
-    dispatch(initUser());
+    initUser();
   }
 
   render() {
     const { user } = this.props;
-    const { name, isLogged } = user;
+    const { name, isLogged, roles } = user;
+    const isAdmin = roles.includes('admin');
 
     return (
       <div>
         {isLogged && (
           <Fragment>
             <h1>Hi, {name}!</h1>
-            {<Link to="admin">Admin Page</Link>}
+            {isAdmin && <Link to="admin">Admin Page</Link>}
           </Fragment>
         )}
         <Routes />
