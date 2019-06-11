@@ -2,15 +2,19 @@ import React, { Component, Fragment } from 'react';
 import { store, view } from 'react-easy-state';
 import { Redirect } from '@reach/router';
 
+import { logout } from 'store/user';
+
 import Spinner from 'components/UI/Spinner';
 
-const state = store({ redirect: false });
-const REDIRECT_TIMEOUT = 1000;
+const REDIRECT_TIMEOUT = 500;
 
 class Logout extends Component {
-  componentDidMount() {
+  state = store({ redirect: false })
+
+  async componentDidMount() {
+    await logout();
     this._timeout = setTimeout(
-      () => state.redirect = true,
+      () => this.state.redirect = true,
       REDIRECT_TIMEOUT
     );
   }
@@ -20,13 +24,13 @@ class Logout extends Component {
   }
 
   render() {
-    if (state.redirect) {
-      return <Redirect to='/' />
+    if (this.state.redirect) {
+      return <Redirect to='/' noThrow />
     }
 
     return (
       <Fragment>
-        logging out ...&nbsp;<Spinner/>
+        logging out...&nbsp;<Spinner/>
       </Fragment>
     );
   }

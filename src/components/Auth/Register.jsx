@@ -19,8 +19,8 @@ function Register({ children }) {
       confirmPassword: Yup.string().test(
         'match-password',
         'Passwords must match',
-        function(value) {
-          return this.parent.password === value
+        function testConfirmPassword(value) {
+          return this.parent.password === value;
         },
       )
     },

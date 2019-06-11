@@ -1,26 +1,21 @@
 import 'react-hot-loader';
 import { hot } from 'react-hot-loader/root';
-import React, { Fragment } from 'react';
-import { Link } from '@reach/router';
 
-import userStore from 'store/user';
+import React from 'react';
+
+import Container from 'components/UI/Container';
 import Routes from 'components/Routes';
+import Header from 'components/Header';
 
-function App() {
-  const { name, isLogged, roles } = userStore;
-  const isAdmin = roles.includes('admin');
+import s from './App.styl';
 
-  return (
-    <div>
-      {isLogged && (
-        <Fragment>
-          <h1>Hi, {name}!</h1>
-          {isAdmin && <Link to="admin">Admin Page</Link>}
-        </Fragment>
-      )}
+const App = () => (
+  <div className={s.root}>
+    <Header className={s.header} />
+    <Container className={s.content}>
       <Routes />
-    </div>
-  );
-}
+    </Container>
+  </div>
+);
 
 export default hot(App);

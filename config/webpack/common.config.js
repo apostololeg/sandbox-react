@@ -116,6 +116,10 @@ module.exports = {
       {
         from: `${paths.assets}/fonts`,
         to: `${paths.build}/fonts`
+      },
+      {
+        from: `${paths.assets}/logo.svg`,
+        to: paths.build
       }
     ]),
     new HtmlWebpackPlugin({
@@ -137,7 +141,7 @@ module.exports = {
       }
     }),
     new WebappWebpackPlugin({
-      logo: `${paths.assets}/favicon.svg`,
+      logo: `${paths.assets}/logo.svg`,
       favicons: {
         appName: 'sandbox',
         appDescription: 'My spaceship',

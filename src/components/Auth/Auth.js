@@ -1,7 +1,10 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Link } from '@reach/router';
+import { store, view } from 'react-easy-state';
+import { Link, Redirect } from '@reach/router';
 import { bind } from 'decko';
 import * as Yup from 'yup';
+
+import User from 'store/user';
 
 import Form, { Field, SubmitButtons } from 'components/UI/Form';
 import Input from 'components/UI/Input';
@@ -22,6 +25,15 @@ const Forms = {
 const capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`;
 
 class Auth extends PureComponent {
+  state = store({ needRedirect: false });
+
+  @bind
+  async onSubmit(payload) {
+    const { onSubmit } = this.formProps;
+    await onSubmit(payload);
+    this.state.needRedirect = true;
+  }
+
   @bind
   renderAuthForm({
     title,
@@ -29,7 +41,6 @@ class Auth extends PureComponent {
     titleLink,
     initialValues,
     validationSchemaObj,
-    onSubmit,
     ...formProps
   }) {
     this.formProps = formProps;
@@ -50,7 +61,7 @@ class Auth extends PureComponent {
             className={s.form}
             initialValues={initialValues}
             validationSchema={Yup.object().shape(validationSchemaObj)}
-            onSubmit={onSubmit}
+            onSubmit={this.onSubmit}
             render={this.renderForm}
           />
         )}
@@ -83,14 +94,19 @@ class Auth extends PureComponent {
       </Fragment>
     );
   }
+
   render() {
     const { type } = this.props;
+    const { needRedirect } = this.state;
     const AuthForm = Forms[capitalize(type)];
 
-    return (
-      <AuthForm>{this.renderAuthForm}</AuthForm>
-    );
+    if (needRedirect) {
+    // if (User.isLogged) {
+      return <Redirect to="/" noThrow />;
+    }
+
+    return <AuthForm>{this.renderAuthForm}</AuthForm>;
   }
 }
 
-export default Auth;
+export default view(Auth);

@@ -8,20 +8,23 @@ require('dotenv').config();
 
 const { JWT_SECRET } = process.env;
 const COOKIE_TOKEN_NAME = 'x-token';
+const COOKIE_OPTS = {
+  httpOnly: true,
+  // secure: true // NOTE: enable only when run on https (has ssl sertificate)
+};
 
 const getToken = id => jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
 const setCookie = (res, token) => {
-  res.cookie(COOKIE_TOKEN_NAME, token, {
-    httpOnly: true,
-    secure: true
-  });
+  res.cookie(COOKIE_TOKEN_NAME, token, COOKIE_OPTS);
+}
+const clearCookie = res => {
+  res.clearCookie(COOKIE_TOKEN_NAME, COOKIE_OPTS);
 }
 
 export default new GraphQLModule({
   name: 'auth',
   typeDefs: gql`
     type User {
-      id: ID!
       email: String!
       roles: [String!]!
     }
@@ -29,6 +32,7 @@ export default new GraphQLModule({
     type AuthResponse {
       data: User
       message: String
+      errors: [String!]
     }
 
     type Query {
@@ -38,6 +42,7 @@ export default new GraphQLModule({
     type Mutation {
       register(email: String!, password: String!): AuthResponse
       login(email: String!, password: String!): AuthResponse
+      logout: AuthResponse
     }
   `,
   resolvers: {
@@ -45,13 +50,11 @@ export default new GraphQLModule({
       me: (root, args, { user }) => user,
     },
     Mutation: {
-      async register(root, { email, password }, { res, db }) {
-        debugger
+      async register(_, { email, password }, { res, db }) {
         const existedUser = await db.user({ email });
 
-        debugger
         if (existedUser) {
-          return { message: 'Email already in use' };
+          throw new Error('Email already in use');
         }
 
         const user = await db.createUser({
@@ -62,31 +65,35 @@ export default new GraphQLModule({
           }
         });
 
-        debugger
         setCookie(res, getToken(user.id));
 
         return {
-          data: pick(user, ['username', 'email', 'roles'])
+          data: pick(user, ['email', 'roles'])
         };
       },
-      async login(root, { email, password }, { db, res }) {
-        const user = await db.user({ email, password });
+      async login(_, { email, password }, { db, res }) {
+        const user = await db.user({ email });
 
         if (!user || user.password !== password) {
-          return { message: 'Invalid credentials' };
+          return { errors: ['Invalid credentials'] };
         }
 
         setCookie(res, getToken(user.id));
 
         return { data: user };
+      },
+      logout(_, params, { res }) {
+        clearCookie(res);
+        return { message: 'Bye!' };
       }
     },
     AuthResponse: {
       data: ({ data }) => data,
+      errors: ({ errors }) => errors,
       message: ({ message }) => message,
     },
     User: {
-      username: user => user.username,
+      email: user => user.email,
       roles: user => user.roles,
     },
   },

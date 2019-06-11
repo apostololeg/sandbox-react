@@ -1,6 +1,14 @@
 import { store } from 'react-easy-state';
-import client from 'apollo/client';
-import { REGISTER_MUTATION, LOGIN_MUTATION, LOAD_QUERY } from './query';
+
+import { mutate, query } from 'tools/request';
+import { notify } from 'store/notifications';
+
+import {
+  LOAD_QUERY,
+  REGISTER_MUTATION,
+  LOGIN_MUTATION,
+  LOGOUT_MUTATION
+} from './query';
 
 const User = store({
   name: '',
@@ -12,66 +20,51 @@ const User = store({
 
 export default User;
 
+const progressInterface = {
+  getProgress: () => User.inProgress,
+  setProgress: val => User.inProgress = val,
+};
+
+const setUser = data => Object.assign(
+  User,
+  data,
+  {
+    inProgress: false,
+    isLogged: Boolean(data.email),
+    isAdmin: data.roles.includes('ADMIN')
+  }
+);
+
 export const login = async payload => {
-  if (User.inProgress) {
-    console.warn('✋ Request in progress');
-    return;
-  }
-
-  User.inProgress = true;
-
-  try {
-    const res = await client.mutate({
-      mutation: LOGIN_MUTATION,
-      variables: payload
-    });
-    const { data, message } = res.data.login;
-
-    Object.assign(User, data.login, {
-      inProgress: false,
-      isLogged: true,
-    });
-  } catch (error) {
-    User.inProgress = false;
-    throw error;
-  }
+  mutate(LOGIN_MUTATION, {
+    ...progressInterface,
+    variables: payload,
+    dataAccessor: 'login',
+    onSuccess: data => setUser(data),
+    onError: text => notify({ type: 'error', text })
+  });
 };
 
 export const register = async payload => {
-  if (User.inProgress) {
-    console.warn('✋ Request in progress');
-    return;
-  }
-
-  User.inProgress = true;
-
-  try {
-    const res = await client.mutate({
-      mutation: REGISTER_MUTATION,
-      variables: payload
-    });
-    const { data, message } = res.data.register;
-
-    Object.assign(User, data, {
-      inProgress: false,
-      isLogged: true,
-    });
-  } catch (error) {
-    User.inProgress = false;
-    throw error;
-  }
+  mutate(REGISTER_MUTATION, {
+    ...progressInterface,
+    variables: payload,
+    dataAccessor: 'register',
+    onSuccess: data => setUser(data),
+    onError: text => notify({ type: 'error', text })
+  });
 };
 
+export const logout = async () => {
+  mutate(LOGOUT_MUTATION, {
+    onSuccess: () => setUser({ name: '', email: '', roles: ['guest'] }),
+    onError: err => throw err
+  });
+}
+
 // init
-(async () => {
-  User.inProgress = true;
-
-  try {
-    const { data } = await client.query({ query: LOAD_QUERY });
-
-    Object.assign(User, data.me, { inProgress: false });
-  } catch(e) {
-    User.inProgress = false;
-  }
-})();
+query(LOAD_QUERY, {
+  dataAccessor: 'me',
+  onSuccess: data => setUser(data),
+});
 
