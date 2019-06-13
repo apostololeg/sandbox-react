@@ -31,7 +31,7 @@ function Login({ children }) {
       },
     ],
     postFieldsContent: (
-      <Link to="/reset-password" text="Forgot password?"/>
+      <Link to="/reset-password">Forgot password?</Link>
     ),
     submitText: 'Sign in',
     onSubmit: login,

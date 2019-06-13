@@ -10,9 +10,9 @@ function LoggedContent() {
 
   return (
     <Fragment>
-      <Link to="/profile" text={email || name} />
+      <Link to="/profile">{email || name}</Link>
       &nbsp;
-      <Link to="/logout" text="Logout" />
+      <Link to="/logout">Logout</Link>
     </Fragment>
   );
 }
@@ -23,8 +23,8 @@ function User() {
   return (
     <div className={s.root}>
       {isLogged
-        ? LoggedContent()
-        : <Link to="/login" text="Sign in" />}
+        ? view(LoggedContent())
+        : <Link to="/login">Sign in</Link>}
     </div>
   );
 }

@@ -1,12 +1,11 @@
 import React, { PureComponent, Fragment } from 'react';
 import { store, view } from 'react-easy-state';
-import { Link, Redirect } from '@reach/router';
+import { Redirect } from '@reach/router';
 import { bind } from 'decko';
 import * as Yup from 'yup';
 
-import User from 'store/user';
-
 import Form, { Field, SubmitButtons } from 'components/UI/Form';
+import Link from 'components/UI/Link';
 import Input from 'components/UI/Input';
 import Button from 'components/UI/Button';
 
@@ -30,8 +29,11 @@ class Auth extends PureComponent {
   @bind
   async onSubmit(payload) {
     const { onSubmit } = this.formProps;
-    await onSubmit(payload);
-    this.state.needRedirect = true;
+    const ok = await onSubmit(payload);
+
+    if (ok) {
+      this.state.needRedirect = true;
+    }
   }
 
   @bind
@@ -101,7 +103,6 @@ class Auth extends PureComponent {
     const AuthForm = Forms[capitalize(type)];
 
     if (needRedirect) {
-    // if (User.isLogged) {
       return <Redirect to="/" noThrow />;
     }
 

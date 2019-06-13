@@ -3,9 +3,9 @@ import { Link as ReachLink } from '@reach/router';
 
 import s from './Link.styl';
 
-const Link = ({ text, ...props }) => (
+const Link = ({ children, ...props }) => (
   <ReachLink className={s.root} {...props}>
-    {text}
+    {children}
   </ReachLink>
 );
 

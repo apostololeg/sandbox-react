@@ -2,8 +2,6 @@ import gql from 'graphql-tag';
 import { GraphQLModule } from '@graphql-modules/core';
 import jwt from 'jsonwebtoken';
 
-const pick = require('lodash.pick');
-
 require('dotenv').config();
 
 const { JWT_SECRET } = process.env;
@@ -36,7 +34,7 @@ export default new GraphQLModule({
     }
 
     type Query {
-      me: User
+      me: AuthResponse
     }
 
     type Mutation {
@@ -47,7 +45,7 @@ export default new GraphQLModule({
   `,
   resolvers: {
     Query: {
-      me: (root, args, { user }) => user,
+      me: (root, args, { user }) => ({ data: user }),
     },
     Mutation: {
       async register(_, { email, password }, { res, db }) {
@@ -67,9 +65,7 @@ export default new GraphQLModule({
 
         setCookie(res, getToken(user.id));
 
-        return {
-          data: pick(user, ['email', 'roles'])
-        };
+        return { data: user };
       },
       async login(_, { email, password }, { db, res }) {
         const user = await db.user({ email });
@@ -93,8 +89,8 @@ export default new GraphQLModule({
       message: ({ message }) => message,
     },
     User: {
-      email: user => user.email,
-      roles: user => user.roles,
+      email: ({ email }) => email,
+      roles: ({ roles }) => roles,
     },
   },
   async context({ req, res, db }) {

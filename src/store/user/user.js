@@ -35,32 +35,34 @@ const setUser = data => Object.assign(
   }
 );
 
-export const login = async payload => {
-  mutate(LOGIN_MUTATION, {
-    ...progressInterface,
-    variables: payload,
-    dataAccessor: 'login',
-    onSuccess: data => setUser(data),
-    onError: text => notify({ type: 'error', text })
-  });
-};
+export const login = payload => mutate(LOGIN_MUTATION, {
+  ...progressInterface,
+  variables: payload,
+  dataAccessor: 'login',
+  onSuccess: data => setUser(data),
+  onError: text => notify({
+    type: 'error',
+    title: 'Login',
+    content: text
+  })
+});
 
-export const register = async payload => {
-  mutate(REGISTER_MUTATION, {
-    ...progressInterface,
-    variables: payload,
-    dataAccessor: 'register',
-    onSuccess: data => setUser(data),
-    onError: text => notify({ type: 'error', text })
-  });
-};
+export const register = payload => mutate(REGISTER_MUTATION, {
+  ...progressInterface,
+  variables: payload,
+  dataAccessor: 'register',
+  onSuccess: data => setUser(data),
+  onError: text => notify({
+    type: 'error',
+    title: 'Register',
+    content: text
+  })
+});
 
-export const logout = async () => {
-  mutate(LOGOUT_MUTATION, {
-    onSuccess: () => setUser({ name: '', email: '', roles: ['guest'] }),
-    onError: err => throw err
-  });
-}
+export const logout = () => mutate(LOGOUT_MUTATION, {
+  onSuccess: () => setUser({ name: '', email: '', roles: ['guest'] }),
+  onError: err => throw err
+});
 
 // init
 query(LOAD_QUERY, {

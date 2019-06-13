@@ -4,6 +4,8 @@ import { hot } from 'react-hot-loader/root';
 import React from 'react';
 
 import Container from 'components/UI/Container';
+import Notifications from 'components/UI/Notifications';
+
 import Routes from 'components/Routes';
 import Header from 'components/Header';
 
@@ -15,6 +17,7 @@ const App = () => (
     <Container className={s.content}>
       <Routes />
     </Container>
+    <Notifications />
   </div>
 );
 

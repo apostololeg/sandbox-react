@@ -3,8 +3,10 @@ import gql from 'graphql-tag';
 export const LOAD_QUERY = gql`
   query {
     me {
-      email
-      roles
+      data {
+        email
+        roles
+      }
     }
   }
 `;
