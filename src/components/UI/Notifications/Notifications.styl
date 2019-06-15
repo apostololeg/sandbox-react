@@ -1,6 +1,7 @@
+@import '~theme/theme.styl';
+
 $width = 300px
 $height = 80px
-$indent = 10px
 $duration = 200ms
 
 gradient(color)
@@ -8,21 +9,21 @@ gradient(color)
 
 .root
   position absolute
-  top $indent
+  top $indent_s
   left 100%
-  bottom $indent
+  bottom $indent_s
   max-width 100%
 
 .icon
   height 50px
   width 50px
   background no-repeat center
-  margin-right $indent
+  margin-right $indent_s
   fill #d5d5d5
 
 .item
   position relative
-  right $indent
+  right $indent_s
   height 0
   width $width
   margin-left -($width)
@@ -31,7 +32,7 @@ gradient(color)
   transition all $duration ease-out
 
   & + &
-    margin-top $indent
+    margin-top $indent_s
 
   &_type
     &_error .itemInner
@@ -44,16 +45,21 @@ gradient(color)
   &_visible
     height $height
     transform translateX(0)
+    box-shadow 0 10px 20px rgba(0,0,0,.3)
+
+  &:hover .itemInner
+    transform scale(1.01);
 
 .itemInner
   display flex
   align-items center
   height $height
-  padding $indent
+  padding $indent_s
   box-sizing border-box
   border-radius 5px
   background-color rgba(0,0,0,.95)
   color #d5d5d5
+  transition transform $duration ease-out
 
 .text
   display flex

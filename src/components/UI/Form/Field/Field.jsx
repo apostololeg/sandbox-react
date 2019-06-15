@@ -1,9 +1,11 @@
 import React from 'react';
 import { Field as FormikField } from 'formik';
 
+import Input from 'components/UI/Input';
+
 import s from './Field.styl';
 
-function Field({ name, Component, ...props }) {
+function Field({ name, component: Component = Input, ...props }) {
   return (
     <FormikField name={name} {...props}>
       {({ field, form: { touched, errors } }) => {

@@ -9,6 +9,7 @@ const Notifications = store({
   items: [],
   autohide: [],
   data: {},
+  paused: false,
 });
 
 export default Notifications;
@@ -52,16 +53,33 @@ export const notify = data => {
   }
 };
 
-function tick() {
-  const { data, autohide } = Notifications;
+export const pause = () => {
+  Notifications.paused = true;
+  Notifications.pausedAt = Date.now();
+};
+export const unpause = () => {
+  const { data, pausedAt, autohide } = Notifications;
+  const pauseTime = Date.now() - pausedAt;
 
-  if (autohide.length === 0) {
+  autohide.forEach(id => {
+    data[id].createdAt += pauseTime;
+  });
+
+  Notifications.paused = false;
+};
+
+function tick() {
+  const { paused, autohide, data } = Notifications;
+
+  if (paused || autohide.length === 0) {
     return;
   }
 
+  // TODO: move trough all autohide until some will !readyToHide
   const item = data[autohide[0]];
+  const readyToHide = Date.now() - item.createdAt > HIDE_TIMEOUT;
 
-  if (item.visible && Date.now() - item.createdAt > HIDE_TIMEOUT) {
+  if (item.visible && readyToHide) {
     item.visible = false;
     time.after(ANIMATION_DURATION, () => autohide.shift());
   }

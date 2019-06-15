@@ -2,7 +2,7 @@ import React from 'react';
 import { view } from 'react-easy-state';
 import cn from 'classnames';
 
-import NotificationsStore, { close } from 'store/notifications';
+import NStore, { pause, unpause, close } from 'store/notifications';
 
 import icons from './icons/';
 import s from './Notifications.styl';
@@ -18,7 +18,15 @@ const Item = ({ id, type = 'info', title, content, visible }) => {
   const Close = icons.close;
 
   return (
-    <div className={classes}>
+    <div
+      className={classes}
+      onMouseOver={pause}
+      onFocus={pause}
+      onTouchStart={pause}
+      onMouseOut={unpause}
+      onBlur={unpause}
+      onTouchEnd={unpause}
+    >
       <div className={s.itemInner}>
         <Icon className={s.icon} />
         {(title || content) && (
@@ -42,7 +50,7 @@ const Item = ({ id, type = 'info', title, content, visible }) => {
 };
 
 const Notifications = () => {
-  const { autohide, data } = NotificationsStore;
+  const { autohide, data } = NStore;
 
   return (
     <div className={s.root}>

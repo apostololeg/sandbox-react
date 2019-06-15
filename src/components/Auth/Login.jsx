@@ -1,8 +1,9 @@
 import React from 'react';
 import * as Yup from 'yup';
 
-import Link from 'components/UI/Link';
 import { login } from 'store/user';
+
+import Link from 'components/UI/Link';
 
 function Login({ children }) {
   return children({
@@ -30,7 +31,7 @@ function Login({ children }) {
         type: 'password',
       },
     ],
-    postFieldsContent: (
+    footerContent: (
       <Link to="/reset-password">Forgot password?</Link>
     ),
     submitText: 'Sign in',
