@@ -8,14 +8,17 @@ import { ApolloServer } from 'apollo-server-express';
 import { GraphQLModule } from '@graphql-modules/core';
 
 import config from '../config/webpack/dev.config.js';
+import paths from '../config/tools/paths';
 import modules from './modules';
 import permissions from './permissions';
 
+require('dotenv').config();
+
+const isDev = process.env.NODE_ENV === 'development';
 const { prisma } = require('./prisma/client/');
 
-const port = 3000;
+const port = isDev ? 3000 : 80;
 const app = express();
-const compiler = webpack(config);
 
 const { schema } = new GraphQLModule({
   name: 'app',
@@ -28,24 +31,28 @@ const server = new ApolloServer({
 });
 
 app.use(cookieParser());
+app.use(historyApiFallback());
 server.applyMiddleware({ app, path: '/graphql' });
 
-compiler.apply(new webpack.ProgressPlugin());
+if (isDev) {
+  const compiler = webpack(config);
 
-app.use(historyApiFallback());
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: config.output.publicPath,
-  stats: {
-    colors: true,
-    errors: true,
-    warnings: true,
-    modules: false,
-    chunks: false,
-    children: false,
-  },
-  logLevel: 'trace',
-}));
-app.use(webpackHotMiddleware(compiler));
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+    stats: {
+      colors: true,
+      errors: true,
+      warnings: true,
+      modules: false,
+      chunks: false,
+      children: false,
+    },
+    logLevel: 'trace',
+  }));
+  app.use(webpackHotMiddleware(compiler));
+} else {
+  app.use(express.static(paths.build));
+}
 
 app.listen({ port }, () => {
   console.log(`\n  🚀  App ready on port ${port}\n`); // eslint-disable-line

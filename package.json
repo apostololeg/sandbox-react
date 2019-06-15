@@ -4,10 +4,11 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "babel-node server",
-    "dev-server": "nodemon --exec babel-node server --inspect --source-maps",
-    "dev": "babel-node server --inspect --source-maps",
+    "start": "NODE_ENV=production babel-node server",
+    "dev-server": "nodemon --exec npm run dev",
+    "dev": "NODE_ENV=development babel-node server --inspect --source-maps --progress",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production --config ./config/webpack/common.config.js --progress",
     "release": "standard-version"
   },
   "standard-version": {
