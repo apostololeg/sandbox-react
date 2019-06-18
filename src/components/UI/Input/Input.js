@@ -1,8 +1,10 @@
 import React from 'react';
 import ControlBase from 'components/UI/ControlBase';
 
-function Control(inputProps) {
-  return <input {...inputProps} />;
+import s from './Input.styl';
+
+function Control({ className, ...inputProps }) {
+  return <input className={`${s.root} ${className}`} {...inputProps} />;
 }
 
 function Input(props) {

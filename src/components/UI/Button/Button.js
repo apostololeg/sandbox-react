@@ -3,12 +3,10 @@ import React from 'react';
 import ControlBase from 'components/UI/ControlBase';
 import s from './Button.styl';
 
-const Button = ({ children, ...props }) => (
+const Button = ({ children, As = 'button', ...props }) => (
   <ControlBase {...props} className={s.root}>
     {buttonProps => (
-      <button {...buttonProps}>
-        {children}
-      </button>
+      <As {...buttonProps}>{children}</As>
     )}
   </ControlBase>
 );

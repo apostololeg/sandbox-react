@@ -1,0 +1,12 @@
+@import '~theme/theme.styl'
+
+.root
+  &:-webkit-autofill
+    animation-name autofill
+    animation-fill-mode both
+
+@-webkit-keyframes autofill {
+  to {
+    background transparent
+  }
+}

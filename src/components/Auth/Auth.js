@@ -50,9 +50,9 @@ class Auth extends Component {
           <h1>{title}</h1>
           {titleContent}
           {titleLink && (
-            <Link to={titleLink.to} className={s.link}>
-              <Button>{titleLink.text}</Button>
-            </Link>
+            <Button As={Link} to={titleLink.to} className={s.link}>
+              {titleLink.text}
+            </Button>
           )}
         </div>
         {initialValues && (

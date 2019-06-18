@@ -28,7 +28,6 @@ module.exports = {
     ],
     alias: {
       'react-dom': '@hot-loader/react-dom',
-      ...aliases
     },
     plugins: [
       new ComponentDirectoryPlugin()

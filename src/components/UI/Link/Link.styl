@@ -1,11 +1,29 @@
-@import '~theme/theme.styl';
+@import '~theme/theme.styl'
 
 .root
-  color: #304FFE;
-  text-decoration: none;
-  display inline-block;
-  padding 5px;
+  position relative
+  color #304FFE
+  text-decoration none
+  display inline-block
+  padding 5px
+  outline none
+  transition color .2s ease-out
 
+  &:after
+    content ''
+    position absolute
+    bottom 0
+    left 5px
+    right 5px
+    height 2px
+    background-color $activeColor
+    transform scale(0)
+    transition transform .2s ease-out
+
+  &:hover
   &:active
   &:focus
-    color: $activeColor;
+    color $activeColor
+
+    &:after
+      transform scale(1)
