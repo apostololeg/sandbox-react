@@ -9,7 +9,7 @@ import Spinner from 'components/UI/Spinner';
 const REDIRECT_TIMEOUT = 500;
 
 class Logout extends Component {
-  state = store({ redirect: false })
+  state = store({ redirect: false });
 
   async componentDidMount() {
     await logout();

@@ -3,11 +3,11 @@ import { view } from 'react-easy-state';
 import Link from 'components/UI/Link';
 
 import UserStore from 'store/user';
+import PageStore from 'store/page';
+
 import s from './User.styl';
 
-function LoggedContent() {
-  const { name, email } = UserStore;
-
+function LoggedContent({ name, email }) {
   return (
     <Fragment>
       <Link to="/profile">{email || name}</Link>
@@ -18,13 +18,15 @@ function LoggedContent() {
 }
 
 function User() {
-  const { isLogged } = UserStore;
+  const { isLogged, name, email } = UserStore;
+  const { isAuth } = PageStore;
 
   return (
     <div className={s.root}>
       {isLogged
-        ? view(LoggedContent())
-        : <Link to="/login">Sign in</Link>}
+        ? view(LoggedContent({ name, email }))
+        : (!isAuth && <Link to="/login">Sign in</Link>)
+      }
     </div>
   );
 }

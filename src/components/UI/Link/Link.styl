@@ -2,7 +2,7 @@
 
 .root
   position relative
-  color #304FFE
+  color #3089fe
   text-decoration none
   display inline-block
   padding 5px
@@ -24,6 +24,9 @@
   &:active
   &:focus
     color $activeColor
+
+    &::selection
+      color $accentColor
 
     &:after
       transform scale(1)

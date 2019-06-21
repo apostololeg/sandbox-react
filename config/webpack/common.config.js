@@ -9,7 +9,6 @@ const WebappWebpackPlugin = require('webapp-webpack-plugin');
 // const SentryPlugin = require('@sentry/webpack-plugin');
 const extractStyle = new ExtractTextPlugin("[name].[hash].css");
 
-const aliases = require('../tools/aliases');
 const paths = require('../tools/paths');
 const { PAGE_LANG } = require('../tools/constants');
 

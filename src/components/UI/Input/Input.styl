@@ -1,11 +1,18 @@
 @import '~theme/theme.styl'
 
+// fight with autofill user-agent styles
 .root
+  filter none
+
+  &:-internal-autofill-selected
   &:-webkit-autofill
-    animation-name autofill
+    animation-name clearBg
     animation-fill-mode both
 
-@-webkit-keyframes autofill {
+    &::selection
+      background $activeColor !important
+
+@-webkit-keyframes clearBg {
   to {
     background transparent
   }
