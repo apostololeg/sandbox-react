@@ -1,14 +1,37 @@
-import React from 'react';
+import React from 'react'
+import cn from 'classnames'
 
-import ControlBase from 'components/UI/ControlBase';
-import s from './Button.styl';
+import ControlBase from 'components/UI/ControlBase'
+import Spinner from 'components/UI/Spinner'
 
-const Button = ({ children, As = 'button', ...props }) => (
-  <ControlBase {...props} className={s.root}>
-    {buttonProps => (
-      <As {...buttonProps}>{children}</As>
-    )}
-  </ControlBase>
+import s from './Button.styl'
+
+function Control({
+  baseStyles,
+  className,
+  loading,
+  children,
+  As = 'button',
+  ...props
+}) {
+  const classes = cn(
+    baseStyles.control,
+    baseStyles.decor,
+    s.root,
+    loading && s.loading,
+    className,
+  );
+
+  return (
+    <As className={classes} {...props}>
+      {children}
+      {loading && <Spinner className={s.spinner} size='s' />}
+    </As>
+  );
+}
+
+const Button = props => (
+  <ControlBase {...props} Component={Control} />
 );
 
 export default Button;

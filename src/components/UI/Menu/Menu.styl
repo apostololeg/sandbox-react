@@ -1,0 +1,44 @@
+@import '~theme/theme.styl'
+
+accent(color = $accentColor)
+  box-shadow inset 6px 0 0 -3px color
+
+  .right &
+    box-shadow inset -6px 0 0 -3px color
+
+.root:not(.horizontal)
+  display flex
+  flex-direction column
+
+.item
+  position relative
+  display inline-flex
+  align-items center
+  user-select none
+  transition .1s ease-out
+  transition-property box-shadow, background-color
+  background-size 20px
+  background-position-y center
+  background-repeat no-repeat
+
+  &.clickable
+    cursor pointer
+
+.padded .item
+  padding 5px $indent_s
+
+.paddedX .item
+  padding 0 $indent_s
+
+.highlighted .item
+
+  &:hover
+    accent(activeColorLight)
+    background-color $activeColorLight
+
+  &.selected
+    accent()
+
+.right .item
+  justify-content flex-end
+

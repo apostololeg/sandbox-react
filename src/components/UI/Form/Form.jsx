@@ -17,6 +17,7 @@ class Form extends Component {
         {fields.map(props => <Field key={props.name} {...props} />)}
         <div className={s.footer}>
           {footerContent}
+          <div className={s.gap} />
           <SubmitButtons
             buttons={[
               {

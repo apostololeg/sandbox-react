@@ -8,6 +8,7 @@ gradient(color)
   background-image linear-gradient(to right, color 0%, transparent 40%)
 
 .root
+  z-index 10
   position absolute
   top $indent_s
   left 100%
@@ -37,7 +38,7 @@ gradient(color)
   &_type
     &_error .itemInner
       gradient(rgba(255, 0, 0, .44))
-    &_done .itemInner
+    &_success .itemInner
       gradient(rgba(0, 255, 0, .44))
     &_info .itemInner
       gradient(rgba(0, 0, 255, .44))
@@ -57,7 +58,7 @@ gradient(color)
   padding $indent_s
   box-sizing border-box
   border-radius 5px
-  background-color rgba(0,0,0,.95)
+  background-color rgba(6,6,6,.95)
   color #d5d5d5
   transition transform $duration ease-out
 

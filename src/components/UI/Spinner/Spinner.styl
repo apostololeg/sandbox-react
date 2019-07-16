@@ -1,11 +1,12 @@
 .root
-  animation: .5s spin linear infinite;
+  display inline-block
+  animation .5s 'spin' linear infinite
 
-@keyframes spin
+@keyframes :global(spin) {
   0% {
-    tranform: rotateZ(0deg);
+    transform: rotateZ(0deg);
   }
   100% {
-    tranform: rotateZ(360deg);
+    transform: rotateZ(360deg);
   }
-
+}

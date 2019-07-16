@@ -50,11 +50,11 @@ const Item = ({ id, type = 'info', title, content, visible }) => {
 };
 
 const Notifications = () => {
-  const { autohide, data } = NStore;
+  const { items, data } = NStore;
 
   return (
     <div className={s.root}>
-      {autohide.map(id => <Item {...data[id]} id={id} key={id} />)}
+      {items.map(id => <Item {...data[id]} id={id} key={id} />)}
     </div>
   );
 }

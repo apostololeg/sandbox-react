@@ -1,9 +1,12 @@
 @import '~theme/theme.styl'
 
-// fight with autofill user-agent styles
-.root
-  filter none
+// A: fight with autofill user-agent styles
 
+.control
+  width 100%
+  filter none // A
+
+  // A
   &:-internal-autofill-selected
   &:-webkit-autofill
     animation-name clearBg
@@ -11,6 +14,47 @@
 
     &::selection
       background $activeColor !important
+
+.loading .control
+  opacity .5
+  pointer-events none
+
+.type
+
+  &_file
+    position relative
+    cursor pointer
+    overflow hidden
+
+    & .control
+      transform translateX(-100%)
+      opacity 0
+      pointer-events none
+
+.filePLaceholder
+  position absolute
+  top 0
+  left 0
+
+  display flex
+  align-items center
+  height 100%
+  width 100%
+
+  opacity .5
+  pointer-events none
+
+.filePLaceholderInner
+  padding 0 $indent_s
+  box-sizing border-box
+
+  font-size 80%
+  white-space nowrap
+  text-overflow ellipsis
+  overflow hidden
+
+.filePLaceholderFilled
+  opacity 1
 
 @-webkit-keyframes clearBg {
   to {

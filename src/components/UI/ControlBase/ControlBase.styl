@@ -1,39 +1,65 @@
 @import '~theme/theme.styl'
 
-.root
+.control
   appearance none
-  border-radius 3px
   outline none
-  transition all .1s ease-out
-  controlBorder()
-
-  &:hover
-  &[disabled]
-    controlBorder(rgba(0,0,0,.5))
+  background-color $decentColor
+  box-sizing border-box
+  border-radius 4px
 
   &[disabled]
     color #808080
     cursor not-allowed
 
-  &_size
+.decor
+  position relative
 
-    &_s
-      height 30px
-      max-height 30px
-      padding 0 10px
-      font-size 80% !important
+  &::before
+    z-index 1
+    content ''
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    left 0
+    controlBorder()
+    border-radius 4px
+    pointer-events none
+    transition all .1s ease-out
 
-    &_m
-      height 40px
-      max-height 40px
-      padding 0 12px
-      font-size 100% !important
+  &:hover::before
+    background-color $activeColorLight
 
-    &_l
-      height 50px
-      max-height 50px
-      padding 0 14px
-      font-size 120% !important
+  &.disabled::before
+    opacity .5
+    background-color $accentColorLight
 
-  &:focus
-    box-shadow inset 0 0 0 2px $activeColor
+  &.focused
+    &::before
+      controlBorder($activeColor)
+
+.size
+
+  &_s
+    height 30px
+    min-height 30px
+    max-height 30px
+    padding 0 10px
+    font-size 80% !important
+
+  &_m
+    height 40px
+    min-height 40px
+    max-height 40px
+    padding 0 12px
+    font-size 100% !important
+
+  &_l
+    height 50px
+    min-height 50px
+    max-height 50px
+    padding 0 14px
+    font-size 120% !important
+
+.fullWidth
+  width 100%
