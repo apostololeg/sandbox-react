@@ -13,3 +13,15 @@ type User {
   password: String!
   roles: [Role!]! @default(value: USER)
 }
+
+type Post {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  author: User @relation(link: INLINE)
+  title: String
+  slug: String
+  content: String
+  tags: [String]
+  published: Boolean
+}

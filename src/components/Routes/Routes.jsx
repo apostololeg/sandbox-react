@@ -18,9 +18,27 @@ function Routes() {
     <Router style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
       <Home path="/"/>
       {isLogged && <Profile path="profile" />}
-      {isAdmin && (
-        <LazyComponent path="admin" loader={() => import('components/Admin')} />
-      )}
+      {isAdmin && [
+        [
+          'admin',
+          () => import('components/Admin')
+        ],
+        [
+          'admin/posts',
+          () => import('components/Admin/Posts')
+        ],
+        [
+          'admin/posts/new',
+          () => import('components/Admin/PostEditor')
+        ],
+        [
+          'admin/posts/edit/:postId',
+          () => import('components/Admin/PostEditor')
+        ]
+      ].map(([path, loader]) => {
+        const props = { path, loader, key: path };
+        return <LazyComponent {...props} />;
+      })}
       <Auth path="register" type="register"/>
       <Auth path="login" type="login"/>
       <Auth path="logout" type="logout" />
