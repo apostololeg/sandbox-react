@@ -72,6 +72,15 @@
     "react/prefer-stateless-function": "off",
     // default props not required for optional values
     "react/require-default-props": "off",
+    "react/sort-comp": [1, {
+      "order": [
+        "instance-variables",
+        "constructor",
+        "lifecycle",
+        "everything-else",
+        "render"
+      ]
+    }],
     // Disallowing the use of variables starting with `_` unless it called on `this`.
     // Allowed: `this._secret = Symbol()`
     // Not allowed: `const _secret = Symbol()`
