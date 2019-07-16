@@ -1,0 +1,22 @@
+@import '~theme/theme.styl';
+
+.root
+  position relative
+  margin 20px 0
+  border 1px solid $accentColorLight
+  border-radius 6px
+
+.editor
+  overflow-y auto
+  padding 10px
+
+  & div:nth-child(1) // .ql-editor
+    min-height 200px
+    flex-grow 1
+
+  & div:nth-child(2) // .ql-clipboard
+    display none
+
+  & img
+    max-width 100%
+    max-height 50vh
