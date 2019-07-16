@@ -1,4 +1,4 @@
-const { NODE_ENV } = require('./tools/constants');
+const { NODE_ENV } = require('./const');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 

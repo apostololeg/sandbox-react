@@ -2,5 +2,7 @@ endpoint: http://localhost:4466
 datamodel: datamodel.prisma
 databaseType: document
 generate:
+  - generator: graphql-schema
+    output: ./schema.graphql
   - generator: javascript-client
     output: ./client/

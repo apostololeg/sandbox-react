@@ -1,7 +1,6 @@
 import { store } from 'react-easy-state';
 
 import { mutate, query } from 'tools/request';
-import { notify } from 'store/notifications';
 
 import {
   LOAD_QUERY,
@@ -35,38 +34,38 @@ const setUser = data => Object.assign(
   }
 );
 
-export const login = payload => mutate(LOGIN_MUTATION, {
-  ...progressInterface,
-  variables: payload,
-  dataAccessor: 'login',
-  onSuccess: data => setUser(data),
-  onError: text => notify({
-    type: 'error',
-    title: 'Login',
-    content: text
-  })
-});
+export const login = async payload => {
+  const data = await mutate(LOGIN_MUTATION, {
+    ...progressInterface,
+    variables: payload,
+    dataAccessor: 'login'
+  });
 
-export const register = payload => mutate(REGISTER_MUTATION, {
-  ...progressInterface,
-  variables: payload,
-  dataAccessor: 'register',
-  onSuccess: data => setUser(data),
-  onError: text => notify({
-    type: 'error',
-    title: 'Register',
-    content: text
-  })
-});
+  setUser(data);
+};
 
-export const logout = () => mutate(LOGOUT_MUTATION, {
-  onSuccess: () => setUser({ name: '', email: '', roles: ['guest'] }),
-  onError: err => throw err
-});
+export const register = async payload => {
+  const data = await mutate(REGISTER_MUTATION, {
+    ...progressInterface,
+    variables: payload,
+    dataAccessor: 'register'
+  });
 
-// init
-query(LOAD_QUERY, {
-  dataAccessor: 'me',
-  onSuccess: data => setUser(data),
-});
+  setUser(data);
+};
+
+export const logout = async () => {
+  await mutate(LOGOUT_MUTATION);
+
+  setUser({ name: '', email: '', roles: ['guest'] });
+};
+
+(async function init() {
+  try {
+    const data = await query(LOAD_QUERY, { dataAccessor: 'me' });
+    setUser(data);
+  } catch(e) {
+    console.warn(e.message);
+  }
+})();
 

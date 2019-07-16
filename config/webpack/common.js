@@ -1,20 +1,21 @@
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ComponentDirectoryPlugin = require('component-directory-webpack-plugin');
 const WebappWebpackPlugin = require('webapp-webpack-plugin');
 
 // const SentryPlugin = require('@sentry/webpack-plugin');
-const extractStyle = new ExtractTextPlugin("[name].[hash].css");
 
-const paths = require('../tools/paths');
-const { PAGE_LANG } = require('../tools/constants');
+const paths = require('../paths');
+const { PAGE_LANG, NODE_ENV } = require('../const');
+
+const devMode = NODE_ENV === 'development';
 
 module.exports = {
   entry: [
-    `${paths.src}/index.js`
+    `${paths.client}/index.js`
   ],
   output: {
     path: paths.build,
@@ -23,86 +24,102 @@ module.exports = {
   resolve: {
     modules: [
       'node_modules',
-      paths.src
+      paths.client
     ],
     alias: {
+      config: paths.config,
       'react-dom': '@hot-loader/react-dom',
+      quill: `${paths.modules}/quill`
     },
     plugins: [
       new ComponentDirectoryPlugin()
     ],
-    extensions: ['.js', '.jsx', '.json', '.styl']
+    extensions: ['.js', '.jsx']
   },
   module: {
+    noParse: /node_modules\/quill\/dist/,
     rules: [
       {
         test: /\.(js|jsx)$/,
-        loader: ['babel-loader'],
-        exclude: /node_modules/
+        loader: 'babel-loader',
+        exclude: {
+          exclude: [
+            paths.modules
+          ],
+          test: [
+            /\.quill\.js$/,
+          ]
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader"
+        ]
       },
       {
         test: /\.styl$/,
-        use: extractStyle.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                localIdentName: '[name]__[local]___[hash:base64:5]',
-                // minimize: true,
-                // importLoaders: 1,
-                // sourceMap: false,
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                config: {
-                  path: './config/postcss.config.js'
-                }
-              }
-            },
-            {
-              loader: 'stylus-loader',
-              options: {
-                sourceMap: false
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]__[local]___[hash:base64:5]'
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: './config/postcss.config.js'
               }
             }
-          ]
-        })
+          },
+          'stylus-loader'
+        ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf)$/,
-        loader: 'url-loader?limit=100000'
-      },
-      {
-        test: /\.(png|jpg|jpeg|gif)$/,
-        use: [
+        test: /\.svg$/,
+        exclude: paths.modules,
+        oneOf: [
+          {
+            issuer: /\.jsx?$/,
+            use: [
+              {
+                loader: 'babel-loader'
+              },
+              {
+                loader: 'svg-react-loader',
+              }
+            ]
+          },
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[ext]',
+              name: 'static/[name].[ext]',
               outputPath: 'images/'
             }
           }
         ]
       },
       {
-        test: /\.svg$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader'
-          },
-          {
-            loader: 'react-svg-loader'
+        test: /\.(woff|woff2|eot|ttf)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'static/[name].[ext]',
+            outputPath: 'images/'
           }
-        ]
+        }
       }
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      STORAGE_URL: JSON.stringify(process.env.STORAGE_URL)
+    }),
     new CleanWebpackPlugin(['build'], {
       root: paths.root
     }),
@@ -148,7 +165,10 @@ module.exports = {
         theme_color: '#333'
       }
     }),
-    extractStyle,
+    new MiniCssExtractPlugin({
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+    }),
     new webpack.NamedModulesPlugin(),
     // new SentryPlugin({
     //   include: './dist',

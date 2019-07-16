@@ -1,10 +1,9 @@
-import gql from 'graphql-tag';
-import { GraphQLModule } from '@graphql-modules/core';
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
+import gql from 'graphql-tag'
+import { GraphQLModule } from '@graphql-modules/core'
+import { JWT_SECRET } from '../../config/const'
+import schema from '../prisma/schema'
 
-require('dotenv').config();
-
-const { JWT_SECRET } = process.env;
 const COOKIE_TOKEN_NAME = 'x-token';
 const COOKIE_OPTS = {
   httpOnly: true,
@@ -22,30 +21,21 @@ const clearCookie = res => {
 export default new GraphQLModule({
   name: 'auth',
   typeDefs: gql`
-    type User {
-      email: String!
-      roles: [String!]!
-    }
-
-    type AuthResponse {
-      data: User
-      message: String
-      errors: [String!]
-    }
+    ${schema}
 
     type Query {
-      me: AuthResponse
+      me: User
     }
 
     type Mutation {
-      register(email: String!, password: String!): AuthResponse
-      login(email: String!, password: String!): AuthResponse
-      logout: AuthResponse
+      register(email: String!, password: String!): User
+      login(email: String!, password: String!): User
+      logout: String
     }
   `,
   resolvers: {
     Query: {
-      me: (root, args, { user }) => ({ data: user }),
+      me: (root, args, { user }) => user,
     },
     Mutation: {
       async register(_, { email, password }, { res, db }) {
@@ -64,50 +54,29 @@ export default new GraphQLModule({
         });
 
         setCookie(res, getToken(user.id));
-
-        return { data: user };
+        return user;
       },
+
       async login(_, { email, password }, { db, res }) {
         const user = await db.user({ email });
 
-        if (!user || user.password !== password) {
-          return { errors: ['Invalid credentials'] };
+        if (Object(user).password !== password) {
+          throw new Error('Invalid credentials');
         }
 
         setCookie(res, getToken(user.id));
-
-        return { data: user };
+        return user;
       },
+
       logout(_, params, { res }) {
         clearCookie(res);
-        return { message: 'Bye!' };
+        return 'Bye!';
       }
-    },
-    AuthResponse: {
-      data: ({ data }) => data,
-      errors: ({ errors }) => errors,
-      message: ({ message }) => message,
     },
     User: {
       email: ({ email }) => email,
       roles: ({ roles }) => roles,
     },
   },
-  async context({ req, res, db }) {
-    const defaultCtx = { res, db };
-    const authToken = req.cookies[COOKIE_TOKEN_NAME];
-
-    if (!authToken) {
-      return defaultCtx;
-    }
-
-    try {
-      const { id } = jwt.verify(authToken, JWT_SECRET);
-      const user = await db.user({ id });
-
-      return { ...defaultCtx, user };
-    } catch (e) {
-      return defaultCtx;
-    }
-  },
+  context: ({ res, user, db }) => ({ res, user, db }),
 });

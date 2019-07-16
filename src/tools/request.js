@@ -1,15 +1,14 @@
 import client from 'apollo/client';
 
-const gag = () => {};
-const request = async ({
-  getProgress = () => false,
+const gag = () => false;
+
+async function request({
+  getProgress = gag,
   setProgress = gag,
   method,
   dataAccessor,
-  onSuccess,
-  onError = gag,
   ...params
-}) => {
+}) {
   if (getProgress()) {
     console.warn('✋ Request in progress');
     return;
@@ -19,19 +18,13 @@ const request = async ({
 
   try {
     const res = await client[method](params);
-    const { data, errors } = dataAccessor ? res.data[dataAccessor] : res.data;
+    const data = dataAccessor ? res.data[dataAccessor] : res.data;
 
-    if (errors) {
-      setProgress(false);
-      errors.forEach(onError);
-      return;
-    }
-
-    onSuccess(data);
-    return true; // eslint-disable-line
+    setProgress(false);
+    return data; // eslint-disable-line
   } catch (error) {
     setProgress(false);
-    onError(error.message);
+    throw error;
   }
 };
 
