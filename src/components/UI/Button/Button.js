@@ -25,7 +25,7 @@ function Control({
   return (
     <As className={classes} {...props}>
       {children}
-      {loading && <Spinner className={s.spinner} size='s' />}
+      {loading && <Spinner size='s' paddedX />}
     </As>
   );
 }

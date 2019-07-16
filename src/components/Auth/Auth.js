@@ -1,20 +1,23 @@
-import React, { Component } from 'react';
-import { store, view } from 'react-easy-state';
-import { Redirect } from '@reach/router';
-import { bind } from 'decko';
-import * as Yup from 'yup';
+import React, { Component } from 'react'
+import { store, view } from 'react-easy-state'
+import { Redirect } from '@reach/router'
+import { bind } from 'decko'
+import * as Yup from 'yup'
 
-import PageStore, { setTitle } from 'store/page';
+import { capitalize } from 'tools/string'
 
-import Form from 'components/UI/Form';
-import Link from 'components/UI/Link';
-import Button from 'components/UI/Button';
+import { notify } from 'store/notifications'
+import PageStore, { setTitle } from 'store/page'
 
-import Login from './Login';
-import Logout from './Logout';
-import Register from './Register';
+import FullPage from 'components/UI/FullPage'
+import Form from 'components/UI/Form'
+import Link from 'components/UI/Link'
 
-import s from './Auth.styl';
+import Login from './Login'
+import Logout from './Logout'
+import Register from './Register'
+
+import s from './Auth.styl'
 
 const Forms = {
   Login,
@@ -22,32 +25,29 @@ const Forms = {
   Register
 };
 
-const capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`;
-
 class Auth extends Component {
-  state = store({ needRedirect: false });
+  store = store({ needRedirect: false });
 
   componentDidMount() {
     setTitle('Auth');
-    Object.assign(PageStore, {
-      centeredContent: true,
-      isAuth: true,
-    });
+    PageStore.isAuth = true;
   }
 
   componentWillUnmount() {
-    Object.assign(PageStore, {
-      centeredContent: false,
-      isAuth: false,
-    });
+    PageStore.isAuth = false;
   }
 
   @bind
   async onSubmit(onSubmit, payload) {
-    const ok = await onSubmit(payload);
-
-    if (ok) {
-      this.state.needRedirect = true;
+    try {
+      await onSubmit(payload);
+      this.store.needRedirect = true;
+    } catch(err) {
+      notify({
+        type: 'error',
+        title: 'Login',
+        content: err.message
+      });
     }
   }
 
@@ -67,9 +67,9 @@ class Auth extends Component {
           <h2>{title}</h2>
           {titleContent}
           {titleLink && (
-            <Button As={Link} to={titleLink.to} className={s.link}>
+            <Link to={titleLink.to} className={s.link}>
               {titleLink.text}
-            </Button>
+            </Link>
           )}
         </div>
         {initialValues && (
@@ -87,14 +87,18 @@ class Auth extends Component {
 
   render() {
     const { type } = this.props;
-    const { needRedirect } = this.state;
+    const { needRedirect } = this.store;
     const AuthForm = Forms[capitalize(type)];
 
     if (needRedirect) {
       return <Redirect to="/" noThrow />;
     }
 
-    return <AuthForm>{this.renderAuthForm}</AuthForm>;
+    return (
+      <FullPage centered scroll>
+        <AuthForm>{this.renderAuthForm}</AuthForm>
+      </FullPage>
+    );
   }
 }
 

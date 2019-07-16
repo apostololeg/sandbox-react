@@ -1,10 +1,12 @@
-import React, { Component, Fragment } from 'react';
-import { store, view } from 'react-easy-state';
-import { Redirect } from '@reach/router';
+import React, { Component } from 'react'
+import { store, view } from 'react-easy-state'
+import { Redirect } from '@reach/router'
 
-import { logout } from 'store/user';
+import { logout } from 'store/user'
 
-import Spinner from 'components/UI/Spinner';
+import Spinner from 'components/UI/Spinner'
+
+import s from './Auth.styl'
 
 const REDIRECT_TIMEOUT = 500;
 
@@ -29,9 +31,9 @@ class Logout extends Component {
     }
 
     return (
-      <Fragment>
-        logging out...&nbsp;<Spinner/>
-      </Fragment>
+      <div className={s.wrap}>
+        logging out<Spinner paddedX />
+      </div>
     );
   }
 }

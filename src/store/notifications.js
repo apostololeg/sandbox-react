@@ -1,8 +1,10 @@
 import { store } from 'react-easy-state';
 import nanoid from 'nanoid';
-import time from 'tools/time';
 
-const HIDE_TIMEOUT = 5000;
+import time from 'tools/time';
+import { sliceWhere } from 'tools/array';
+
+const SHOW_TIME = 5000;
 const ANIMATION_DURATION = 200;
 
 const Notifications = store({
@@ -15,19 +17,13 @@ const Notifications = store({
 export default Notifications;
 
 const removeById = (arrName, id) => {
-  const arr = Notifications[arrName];
-  const index = arr.indexOf(id);
-
-  Notifications[arrName] = [
-    ...arr.slice(0, index),
-    ...arr.slice(index + 1)
-  ];
+  Notifications[arrName] = sliceWhere(Notifications[arrName], id);
 };
 
 export const remove = id => {
   removeById('items', id);
   removeById('autohide', id);
-  delete Notifications.data[id];
+  Notifications.data[id] = null;
 };
 
 export const show = id => Notifications.data[id].visible = true;
@@ -76,12 +72,13 @@ function tick() {
   }
 
   // TODO: move trough all autohide until some will !readyToHide
-  const item = data[autohide[0]];
-  const readyToHide = Date.now() - item.createdAt > HIDE_TIMEOUT;
+  const id = autohide[0]
+  const item = data[id];
+  const readyToHide = Date.now() - item.createdAt > SHOW_TIME;
 
   if (item.visible && readyToHide) {
     item.visible = false;
-    time.after(ANIMATION_DURATION, () => autohide.shift());
+    time.after(ANIMATION_DURATION, () => remove(id));
   }
 }
 
