@@ -9,7 +9,12 @@ const WebappWebpackPlugin = require('webapp-webpack-plugin');
 // const SentryPlugin = require('@sentry/webpack-plugin');
 
 const paths = require('../paths');
-const { PAGE_LANG, NODE_ENV } = require('../const');
+const {
+  PAGE_LANG,
+  NODE_ENV,
+  DO_SPACE_NS,
+  DO_SPACE_NAME
+} = require('../const');
 
 const devMode = NODE_ENV === 'development';
 
@@ -118,7 +123,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      STORAGE_URL: JSON.stringify(process.env.STORAGE_URL)
+      DO_SPACE_NS: JSON.stringify(DO_SPACE_NS),
+      DO_SPACE_NAME: JSON.stringify(DO_SPACE_NAME)
     }),
     new CleanWebpackPlugin(['build'], {
       root: paths.root

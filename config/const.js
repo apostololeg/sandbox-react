@@ -7,7 +7,8 @@ const {
     AWS_SECRET,
     AWS_KEY_ID,
     COOKIE_TOKEN_NAME,
-    STORAGE_URL
+    DO_SPACE_NS,
+    DO_SPACE_NAME
   }
 } = require('dotenv').config();
 
@@ -22,5 +23,6 @@ module.exports = {
   AWS_SECRET,
   AWS_KEY_ID,
   COOKIE_TOKEN_NAME,
-  STORAGE_URL
+  DO_SPACE_NS,
+  DO_SPACE_NAME
 };

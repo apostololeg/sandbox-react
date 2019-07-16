@@ -4,6 +4,17 @@ const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const config = require('./common.js');
 const paths = require('../paths');
 
+const proxyConfig = {
+  secure: false,
+  changeOrigin: true,
+  logLevel: 'debug',
+  target: {
+    host: "localhost",
+    protocol: 'http:',
+    port: 3000
+  },
+};
+
 module.exports = {
   ...config,
   mode: 'development',
@@ -36,16 +47,8 @@ module.exports = {
     historyApiFallback: true,
     port: 9000,
     proxy: {
-      '/graphql': {
-        secure: false,
-        changeOrigin: true,
-        logLevel: 'debug',
-        target: {
-          host: "localhost",
-          protocol: 'http:',
-          port: 3000
-        },
-      }
+      '/graphql': proxyConfig,
+      '/upload': proxyConfig
     }
   }
 };
