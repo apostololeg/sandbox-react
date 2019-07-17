@@ -1,13 +1,14 @@
-const { NODE_ENV } = require('./const');
+const { PRODUCTION } = require('./const');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 
 module.exports = {
   exec: true,
-  sourceMap: (NODE_ENV === 'production' ? false : 'inline'),
+  sourceMap: (PRODUCTION ? false : 'inline'),
+  minimize: PRODUCTION,
   plugins: [
     autoprefixer,
-    (NODE_ENV === 'production') && cssnano({
+    PRODUCTION && cssnano({
       autoprefixer: true,
       preset: ['default', {
         discardComments: {

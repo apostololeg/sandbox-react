@@ -1,8 +1,9 @@
 const webpack = require('webpack');
-const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
-
-const config = require('./common.js');
+const merge = require('webpack-merge');
+const common = require('./common.js');
 const paths = require('../paths');
+
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
 const proxyConfig = {
   secure: false,
@@ -15,19 +16,15 @@ const proxyConfig = {
   },
 };
 
-module.exports = {
-  ...config,
+module.exports = merge(common, {
   mode: 'development',
   entry: [
-    ...config.entry,
     'webpack-hot-middleware/client'
   ],
   output: {
-    ...config.output,
     publicPath: '/',
   },
   plugins: [
-    ...config.plugins,
     new ErrorOverlayPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
@@ -51,4 +48,4 @@ module.exports = {
       '/upload': proxyConfig
     }
   }
-};
+});

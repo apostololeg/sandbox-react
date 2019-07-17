@@ -11,6 +11,14 @@
     "browser": true,
     "node": true
   },
+  "globals": {
+    "PEM_DIR": true,
+    "PROTOCOL": true,
+    "HOST": true,
+    "PORT": true,
+    "DO_SPACE_NS": true,
+    "DO_SPACE_NAME": true,
+  },
   "rules": {
     // When importing files you do not need to add file extensions for the following extensions
     "import/extensions": "off",

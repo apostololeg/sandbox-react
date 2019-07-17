@@ -6,17 +6,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ComponentDirectoryPlugin = require('component-directory-webpack-plugin');
 const WebappWebpackPlugin = require('webapp-webpack-plugin');
 
-// const SentryPlugin = require('@sentry/webpack-plugin');
-
 const paths = require('../paths');
 const {
+  PRODUCTION,
   PAGE_LANG,
-  NODE_ENV,
+  PROTOCOL,
+  HOST,
+  PORT,
   DO_SPACE_NS,
   DO_SPACE_NAME
 } = require('../const');
-
-const devMode = NODE_ENV === 'development';
 
 module.exports = {
   entry: [
@@ -123,6 +122,9 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
+      PROTOCOL: JSON.stringify(PROTOCOL),
+      HOST: JSON.stringify(HOST),
+      PORT: JSON.stringify(PORT),
       DO_SPACE_NS: JSON.stringify(DO_SPACE_NS),
       DO_SPACE_NAME: JSON.stringify(DO_SPACE_NAME)
     }),
@@ -133,10 +135,6 @@ module.exports = {
       {
         from: `${paths.assets}/common.css`,
         to: paths.build
-      },
-      {
-        from: `${paths.assets}/fonts`,
-        to: `${paths.build}/fonts`
       },
       {
         from: `${paths.assets}/logo.svg`,
@@ -172,13 +170,9 @@ module.exports = {
       }
     }),
     new MiniCssExtractPlugin({
-      filename: devMode ? '[name].css' : '[name].[hash].css',
-      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+      filename: PRODUCTION ? '[name].[hash].css' : '[name].css',
+      chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css',
     }),
-    new webpack.NamedModulesPlugin(),
-    // new SentryPlugin({
-    //   include: './dist',
-    //   ignore: ['node_modules', 'webpack.config.js'],
-    // })
+    new webpack.NamedModulesPlugin()
   ]
 };
