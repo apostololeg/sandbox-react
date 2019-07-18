@@ -18,9 +18,6 @@ const proxyConfig = {
 
 module.exports = merge(common, {
   mode: 'development',
-  entry: [
-    'webpack-hot-middleware/client'
-  ],
   output: {
     publicPath: '/',
   },
@@ -31,7 +28,7 @@ module.exports = merge(common, {
   ],
   devtool: 'eval-source-map',
   devServer: {
-    hot: true,
+    // hot: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true,

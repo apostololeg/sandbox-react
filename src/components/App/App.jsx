@@ -1,6 +1,3 @@
-import 'react-hot-loader'
-import { hot } from 'react-hot-loader/root'
-
 import React from 'react'
 import { view } from 'react-easy-state'
 
@@ -23,4 +20,4 @@ const App = () => (
   </FullPage>
 );
 
-export default hot(view(App));
+export default view(App);

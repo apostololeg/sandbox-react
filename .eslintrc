@@ -29,6 +29,7 @@
     "import/no-named-as-default-member": "off",
     // Allowing importing from dev deps (for stories and tests)
     "import/no-extraneous-dependencies": "off",
+    "no-console": "off",
     // Allowing ++ on numbers
     "no-plusplus": "off",
     // Cannot reassign function parameters but allowing modification
@@ -96,13 +97,6 @@
       "error",
       {
         "allowAfterThis": true
-      }
-    ],
-    // Allowing warning and error console logging
-    "no-console": [
-      "error",
-      {
-        "allow": ["warn", "error"]
       }
     ],
     // All blocks must be wrapped in curly braces {}

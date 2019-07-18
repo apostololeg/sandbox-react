@@ -21,15 +21,6 @@
     "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-export-namespace-from",
     "@babel/plugin-syntax-dynamic-import",
-    "react-hot-loader/babel",
-    [
-      "lodash",
-      {
-        "id": [
-          "recompose"
-        ]
-      }
-    ],
     "@babel/plugin-syntax-import-meta",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-json-strings",

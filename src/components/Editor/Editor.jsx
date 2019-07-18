@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import debounce from 'lodash.debounce'
-import { bind } from 'decko'
+import { bind, debounce } from 'decko'
 
 import FullPage from 'components/UI/FullPage'
 

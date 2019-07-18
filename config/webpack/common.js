@@ -32,7 +32,6 @@ module.exports = {
     ],
     alias: {
       config: paths.config,
-      'react-dom': '@hot-loader/react-dom',
       quill: `${paths.modules}/quill`
     },
     plugins: [
