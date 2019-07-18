@@ -76,6 +76,7 @@ class Control extends Component {
         className={classesWrap}
         data-placeholder={props.placeholder}
         onClick={this.onClick}
+        alt={fileName}
       >
         <input
           {...props}

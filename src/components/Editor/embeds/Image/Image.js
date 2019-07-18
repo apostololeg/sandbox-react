@@ -24,8 +24,8 @@ class Image extends Component {
 
   @bind
   @debounce(500)
-  onAltChange(e) {
-    this.store.alt = e.target.value;
+  onAltChange(val) {
+    this.store.alt = val;
   }
 
   @bind
@@ -60,7 +60,7 @@ class Image extends Component {
     const { uploaded } = this.store;
 
     return (
-      <Popup {...props} horizontal="left" onClose={this.onPopupClose}>
+      <Popup {...props} outlined horizontal="left" onClose={this.onPopupClose}>
         <Button {...props}>
           Image
         </Button>
@@ -73,7 +73,7 @@ class Image extends Component {
           />
           <Input
             className={s.item}
-            onInput={this.onAltChange}
+            onInput={e => this.onAltChange(e.target.value)}
             placeholder="alt"
           />
           <Button

@@ -1,7 +1,8 @@
 @import '~theme/theme.styl'
 
-accent(color = $accentColor)
+accent(color = $accentColor, bgColor = $accentColorLight)
   box-shadow inset 6px 0 0 -3px color
+  background-color bgColor
 
   .right &
     box-shadow inset -6px 0 0 -3px color
@@ -15,14 +16,19 @@ accent(color = $accentColor)
   display inline-flex
   align-items center
   user-select none
-  transition .1s ease-out
-  transition-property box-shadow, background-color
   background-size 20px
+  transition .1s ease-out
+  transition-property box-shadow, transform
+  transform-origin 0 center
   background-position-y center
   background-repeat no-repeat
 
   &.clickable
     cursor pointer
+
+    &:active
+    &.selected:hover
+      transform scale(0.98)
 
 .padded .item
   padding 5px $indent_s
@@ -33,8 +39,7 @@ accent(color = $accentColor)
 .highlighted .item
 
   &:hover
-    accent(activeColorLight)
-    background-color $activeColorLight
+    accent($activeColor, $activeColorLight)
 
   &.selected
     accent()

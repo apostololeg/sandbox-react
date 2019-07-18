@@ -5,6 +5,7 @@ const Post = `
   id
   createdAt
   updatedAt
+  published
   title
   slug
   content

@@ -127,9 +127,9 @@ class Popup extends Component {
       className,
       children,
       disabled,
+      outlined,
       vertical='bottom',
       horizontal='right',
-      shadow,
     } = this.props;
     const { open } = this.store;
 
@@ -144,7 +144,7 @@ class Popup extends Component {
     const classesTrigger = cn(s.trigger, disableTrigger && s.disabled);
     const classesContent = cn(
       s.content,
-      shadow && s.shadow,
+      outlined && s.outlined,
       s[vertical],
       s[horizontal]
     );

@@ -5,7 +5,7 @@ import { bind } from 'decko'
 import LS from 'tools/localStorage'
 
 import UserStore from 'store/user'
-import { notify } from 'store/notifications';
+import { notify } from 'store/notifications'
 import { getPost, createPost, updatePost } from 'store/post'
 
 import FullPage from 'components/UI/FullPage'
@@ -42,23 +42,26 @@ class PostEditor extends Component {
       tags: [],
       published: false,
     },
-    saving: false
+    saving: false,
+    saved: false,
   });
 
   async componentDidMount() {
     const { postId } = this.props;
+    const { localVersion } = this.store;
 
     if (postId) {
-      this.loadPost({ id: postId });
+      if (Object(localVersion).id === postId) {
+        this.setPostData(localVersion);
+        return
+      }
+
+      this.store.remotePost = await getPost({ id: postId });
+      this.setPostData(this.store.remotePost);
+      this.store.saved = true;
     } else {
       await this.createNewPost();
     }
-  }
-
-  async loadPost(where) {
-    const data = await getPost(where);
-
-    this.setPostData(data);
   }
 
   setPostData(data) {
@@ -99,14 +102,19 @@ class PostEditor extends Component {
 
   @bind
   onEditorChange(value) {
-    const title = Object(value.match('<h1.*>(.*)</h1>'))[1];
+    const title = Object(value.match('<h1.*?>(.*?)</h1>'))[1];
     const { post } = this.store;
 
+    if (post.content === value) {
+      return
+    }
+
+    this.store.saved = false;
     Object.assign(post, {
       title,
       slug: titleToSlug(title),
       content: value,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     });
 
     LS.set('editor-post', post);
@@ -115,6 +123,7 @@ class PostEditor extends Component {
   @bind
   onSlugChange(e) {
     this.store.post.slug = titleToSlug(e.target.value);
+    this.store.saved = false;
   }
 
   @bind
@@ -127,19 +136,19 @@ class PostEditor extends Component {
 
     this.store.saving = true;
     const post = await updatePost({ id, data });
-
     this.store.saving = false;
+    this.store.saved = true;
+    LS.set('editor-post', null);
     this.setPostData(post);
 
     notify({
       type: 'success',
       title: 'Post updated',
-      // modal: true
     });
   }
 
   render() {
-    const { post, saving } = this.store;
+    const { post, saving, saved } = this.store;
     const { slug } = post;
 
     return (
@@ -149,7 +158,13 @@ class PostEditor extends Component {
           onChange={this.onEditorChange}
           onApi={this.onEditorApi}
         />
-        <Button onClick={this.onSave} loading={saving}>Save</Button>
+        <Button
+          onClick={this.onSave}
+          loading={saving}
+          disabled={saved}
+        >
+          Save
+        </Button>
       </FullPage>
     );
   }
