@@ -10,9 +10,18 @@
   color inherit
   user-select none
 
-  &.loading
-    pointer-events none
+.control
+  width 30px
+  transition .1s ease-out
+  transition-property background-color, color
 
   &.checked
     background-color $accentColor
     color $decentColor
+
+.label
+  display flex
+  height 100%
+  align-items center
+  margin-left $indent_s
+  cursor pointer

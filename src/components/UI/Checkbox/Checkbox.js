@@ -2,33 +2,29 @@ import React from 'react'
 import cn from 'classnames'
 
 import ControlBase from 'components/UI/ControlBase'
-import Spinner from 'components/UI/Spinner'
 
-import s from './Button.styl'
+import s from './Checkbox.styl'
 
 function Control({
   baseStyles,
   className,
-  loading,
-  checked,
   children,
-  As = 'button',
+  label,
   ...props
 }) {
-  const classes = cn(
+  const classes = cn(s.root, className);
+  const classesControl = cn(
     baseStyles.control,
     baseStyles.decor,
-    s.root,
-    loading && s.loading,
-    checked && s.checked,
-    className,
+    s.control,
+    props.value && s.checked,
   );
 
   return (
-    <As className={classes} {...props}>
-      {children}
-      {loading && <Spinner size='s' paddedX />}
-    </As>
+    <div className={classes}>
+      <checkbox className={classesControl} {...props} />
+      {label && <label className={s.label} htmlFor={props.id}>{label}</label>}
+    </div>
   );
 }
 
