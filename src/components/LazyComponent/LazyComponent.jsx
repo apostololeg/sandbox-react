@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Loadable from 'react-loadable'
 
-import FullPage from 'components/UI/FullPage'
+import Flex from 'components/UI/Flex'
 import Spinner from 'components/UI/Spinner'
 
 function LazyComponent({ loader, preload, visible, ...props }) {
   const LoadableComponent = Loadable({
     loader,
-    loading: () => <FullPage centered><Spinner size="l" /></FullPage>,
+    loading: () => <Flex centered><Spinner size="l" /></Flex>,
     render: ({ default: Component }) => <Component {...props} />
   });
 

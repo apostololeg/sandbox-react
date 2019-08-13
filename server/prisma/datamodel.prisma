@@ -21,6 +21,7 @@ type Post {
   author: User @relation(link: INLINE)
   title: String
   slug: String
+  slugLock: Boolean! @default(value: false)
   content: String
   tags: [String]
   published: Boolean

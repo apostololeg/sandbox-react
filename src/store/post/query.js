@@ -8,6 +8,7 @@ const Post = `
   published
   title
   slug
+  slugLock
   content
   tags
   author { ${Author} }

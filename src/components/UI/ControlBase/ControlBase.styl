@@ -27,16 +27,16 @@
     pointer-events none
     transition all .1s ease-out
 
+  &.focused::before
+    controlBorder($activeColor)
+
   &:hover::before
     background-color $activeColorLight
 
   &.disabled::before
+    controlBorder()
     opacity .5
     background-color $accentColorLight
-
-  &.focused
-    &::before
-      controlBorder($activeColor)
 
 .size
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { view } from 'react-easy-state'
 
-import FullPage from 'components/UI/FullPage'
+import Flex from 'components/UI/Flex'
 import Container from 'components/UI/Container'
 import Notifications from 'components/UI/Notifications'
 
@@ -11,13 +11,13 @@ import Header from 'components/Header'
 import s from './App.styl'
 
 const App = () => (
-  <FullPage className={s.root}>
+  <Flex className={s.root}>
     <Header className={s.header} />
     <Container className={s.content} vertical>
       <Routes />
     </Container>
     <Notifications />
-  </FullPage>
+  </Flex>
 );
 
 export default view(App);

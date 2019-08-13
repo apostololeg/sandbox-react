@@ -1,5 +1,4 @@
 import React from 'react';
-import * as Yup from 'yup';
 
 import { login } from 'store/user';
 
@@ -16,9 +15,9 @@ function Login({ children }) {
       email: '',
       password: '',
     },
-    validationSchemaObj: {
-      email: Yup.string().email().required(),
-      password: Yup.string().min(6).required(),
+    validationSchema: {
+      email: { type: 'email' },
+      password: { type: 'string', min: 6 },
     },
     fields: [
       {

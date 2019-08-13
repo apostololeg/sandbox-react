@@ -12,6 +12,7 @@ function Control({
   loading,
   checked,
   children,
+  type = 'button',
   As = 'button',
   ...props
 }) {
@@ -25,7 +26,7 @@ function Control({
   );
 
   return (
-    <As className={classes} {...props}>
+    <As className={classes} {...props} type={type}>
       {children}
       {loading && <Spinner size='s' paddedX />}
     </As>

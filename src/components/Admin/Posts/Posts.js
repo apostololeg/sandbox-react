@@ -7,7 +7,7 @@ import { sliceWhere } from 'tools/array'
 import { notify } from 'store/notifications'
 import { getPosts, deletePost } from 'store/post'
 
-import FullPage from 'components/UI/FullPage'
+import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Spinner from 'components/UI/Spinner'
 import Button from 'components/UI/Button'
@@ -87,9 +87,9 @@ class Posts extends Component {
           <div className={s.gap} />
           <Link to="new">Create New</Link>
         </div>
-        <FullPage scroll centered={loading}>
+        <Flex scrolled centered={loading}>
           {loading ? <Spinner size="l"/> : this.renderList()}
-        </FullPage>
+        </Flex>
       </Fragment>
     );
   }

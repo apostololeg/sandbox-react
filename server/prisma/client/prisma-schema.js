@@ -58,6 +58,7 @@ type Post {
   author: User
   title: String
   slug: String
+  slugLock: Boolean!
   content: String
   tags: [String!]!
   published: Boolean
@@ -74,6 +75,7 @@ input PostCreateInput {
   author: UserCreateOneInput
   title: String
   slug: String
+  slugLock: Boolean
   content: String
   tags: PostCreatetagsInput
   published: Boolean
@@ -99,6 +101,8 @@ enum PostOrderByInput {
   title_DESC
   slug_ASC
   slug_DESC
+  slugLock_ASC
+  slugLock_DESC
   content_ASC
   content_DESC
   published_ASC
@@ -111,6 +115,7 @@ type PostPreviousValues {
   updatedAt: DateTime!
   title: String
   slug: String
+  slugLock: Boolean!
   content: String
   tags: [String!]!
   published: Boolean
@@ -136,6 +141,7 @@ input PostUpdateInput {
   author: UserUpdateOneInput
   title: String
   slug: String
+  slugLock: Boolean
   content: String
   tags: PostUpdatetagsInput
   published: Boolean
@@ -144,6 +150,7 @@ input PostUpdateInput {
 input PostUpdateManyMutationInput {
   title: String
   slug: String
+  slugLock: Boolean
   content: String
   tags: PostUpdatetagsInput
   published: Boolean
@@ -213,6 +220,8 @@ input PostWhereInput {
   slug_not_starts_with: String
   slug_ends_with: String
   slug_not_ends_with: String
+  slugLock: Boolean
+  slugLock_not: Boolean
   content: String
   content_not: String
   content_in: [String!]

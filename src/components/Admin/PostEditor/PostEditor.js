@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Fragment, Component } from 'react'
 import { store, view } from 'react-easy-state'
-import { bind } from 'decko'
+import { bind, debounce } from 'decko'
+import pick from 'lodash/pick'
 
 import LS from 'tools/localStorage'
 
@@ -8,11 +9,14 @@ import UserStore from 'store/user'
 import { notify } from 'store/notifications'
 import { getPost, createPost, updatePost } from 'store/post'
 
-import FullPage from 'components/UI/FullPage'
+import Form from 'components/UI/Form'
+import { mix as flex } from 'components/UI/Flex'
+import Checkbox from 'components/UI/Checkbox'
 import Button from 'components/UI/Button'
-import Input from 'components/UI/Input'
 
 import Editor from 'components/Editor'
+
+import s from './PostEditor.styl';
 
 function connectAuthor(email) {
   return { connect: { email } };
@@ -31,34 +35,46 @@ function titleToSlug(str) {
     .toLowerCase();
 }
 
+function pickFormVals(vals) {
+  return pick(vals, ['slug', 'slugLock', 'content', 'published'])
+}
+
 class PostEditor extends Component {
   store = store({
     localVersion: LS.get('editor-post'),
     post: {
       author: null,
       slug: '',
+      slugLock: false,
       title: '',
       content: '',
       tags: [],
       published: false,
+      updatedAt: ''
     },
+    loading: false,
     saving: false,
-    saved: false,
   });
 
   async componentDidMount() {
     const { postId } = this.props;
     const { localVersion } = this.store;
 
-    if (postId) {
-      if (Object(localVersion).id === postId) {
-        this.setPostData(localVersion);
-        return
-      }
+    this.validationSchema = {
+      slug: { type: 'string' },
+      content: { type: 'string' }
+    };
 
-      this.store.remotePost = await getPost({ id: postId });
-      this.setPostData(this.store.remotePost);
-      this.store.saved = true;
+    if (postId) {
+      this.store.loading = true;
+      const post = await getPost({ id: postId });
+      this.store.loading = false;
+
+      this.setPostData(post);
+
+      if (postId === Object(localVersion).id) {
+        setTimeout(this.toggleLocalVersion, 0);
+      }
     } else {
       await this.createNewPost();
     }
@@ -66,7 +82,6 @@ class PostEditor extends Component {
 
   setPostData(data) {
     this.store.post = data;
-    this.editor.setValue(data.content);
   }
 
   @bind
@@ -95,40 +110,48 @@ class PostEditor extends Component {
     }
   }
 
-  @bind
-  onEditorApi(api) {
-    this.editor = api;
+  updatedLocalVersion(patch) {
+    const { post, localVersion } = this.store;
+
+    if (!localVersion) {
+      this.store.localVersion = { ...post, ...patch };
+    } else {
+      Object.assign(localVersion, patch);
+    }
   }
 
   @bind
-  onEditorChange(value) {
-    const title = Object(value.match('<h1.*?>(.*?)</h1>'))[1];
-    const { post } = this.store;
+  @debounce(600)
+  onChange(values) { // eslint-disable-line
+    const { localVersion } = this.store;
 
-    if (post.content === value) {
-      return
+    this.updatedLocalVersion(values);
+    this.store.showLocalVersion = true;
+    LS.set('editor-post', localVersion);
+  }
+
+  @bind
+  onEditorChange(content) {
+    const title = Object(content.match('<h1.*?>(.*?)</h1>'))[1];
+
+    if (!this.form.values.slugLock) {
+      this.form.setValue('slug', titleToSlug(title));
     }
 
-    this.store.saved = false;
-    Object.assign(post, {
+    this.updatedLocalVersion({
       title,
-      slug: titleToSlug(title),
-      content: value,
-      lastUpdated: Date.now(),
+      content,
+      updatedAt: Date.now()
     });
 
-    LS.set('editor-post', post);
+    this.form.setValues({ title });
+    this.onChange(this.form.values);
   }
 
   @bind
-  onSlugChange(e) {
-    this.store.post.slug = titleToSlug(e.target.value);
-    this.store.saved = false;
-  }
-
-  @bind
-  async onSave() {
-    const { id, author, ...data } = this.store.post;
+  async onSave(values) {
+    const { id, author, createdAt, ...rest } = this.store.localVersion;
+    const data = { ...values, ...rest };
 
     if (author) {
       data.author = connectAuthor(author);
@@ -137,9 +160,11 @@ class PostEditor extends Component {
     this.store.saving = true;
     const post = await updatePost({ id, data });
     this.store.saving = false;
-    this.store.saved = true;
-    LS.set('editor-post', null);
     this.setPostData(post);
+
+    this.store.localVersion = null;
+    this.store.showLocalVersion = false;
+    LS.set('editor-post', null);
 
     notify({
       type: 'success',
@@ -147,27 +172,76 @@ class PostEditor extends Component {
     });
   }
 
-  render() {
-    const { post, saving, saved } = this.store;
-    const { slug } = post;
+  @bind
+  toggleLocalVersion() {
+    const { showLocalVersion, post, localVersion } = this.store;
+    const showLocal = !showLocalVersion;
+    const formVals = pickFormVals(showLocal ? localVersion : post);
+
+    this.store.showLocalVersion = showLocal;
+    this.form.setValues(formVals);
+  }
+
+  @bind
+  renderForm({ isDirty, isValid, Field, form }) {
+    const { saving, localVersion, showLocalVersion } = this.store;
+
+    this.form = form;
 
     return (
-      <FullPage>
-        <Input placeholder="slug" value={slug} onChange={this.onSlugChange} />
-        <Editor
+      <Fragment key="post-editor-form">
+        <div className={s.slugWrap}>
+          <Field name="slug" className={s.slug} />
+          <Field name="slugLock" component={Checkbox} type="checkbox" label="lock" />
+        </div>
+        <Field
+          className={flex({ scrolled: true })}
+          name="content"
+          component={Editor}
           onChange={this.onEditorChange}
-          onApi={this.onEditorApi}
         />
-        <Button
-          onClick={this.onSave}
-          loading={saving}
-          disabled={saved}
-        >
-          Save
-        </Button>
-      </FullPage>
+        <div className={s.footer}>
+          <Field name="published" component={Checkbox} type="checkbox" label="Published" />
+
+          <div className={s.gap} />
+
+          <Button
+            className={s.localVersion}
+            checked={showLocalVersion}
+            disabled={!localVersion}
+            onClick={this.toggleLocalVersion}
+          >
+            Local version
+          </Button>
+          <Button
+            type="submit"
+            loading={saving}
+            disabled={!isDirty || !isValid}
+          >
+            Save
+          </Button>
+        </div>
+      </Fragment>
+    );
+  }
+
+  render() {
+    const { post, loading } = this.store;
+    const initialValues = pickFormVals(post);
+
+    return (
+      <Form
+        className={flex()}
+        loading={loading}
+        initialValues={initialValues}
+        validationSchema={this.validationSchema}
+        onChange={this.onChange}
+        onSubmit={this.onSave}
+      >
+        {this.renderForm}
+      </Form>
     );
   }
 }
 
-export default view(PostEditor);
+export default React.memo(view(PostEditor));

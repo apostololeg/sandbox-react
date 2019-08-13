@@ -8,6 +8,12 @@ import ControlBase from 'components/UI/ControlBase'
 import s from './Input.styl'
 
 class Control extends Component {
+  controlEl = createRef();
+
+  static defaultProps = {
+    type: 'text'
+  };
+
   constructor(props) {
     super(props);
     this.store = store({
@@ -42,8 +48,6 @@ class Control extends Component {
     }
     onChange && onChange(e); // eslint-disable-line
   }
-
-  controlEl = createRef();
 
   render() {
     const {

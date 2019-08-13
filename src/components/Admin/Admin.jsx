@@ -4,7 +4,7 @@ import { view } from 'react-easy-state'
 
 import userStore from 'store/user'
 
-import FullPage from 'components/UI/FullPage'
+import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Link from 'components/UI/Link'
 
@@ -14,13 +14,13 @@ function Admin() {
   }
 
   return (
-    <FullPage className="Admin">
+    <Flex className="Admin">
       <Menu>
         <MenuItem>
           <Link to="posts">Posts</Link>
         </MenuItem>
       </Menu>
-    </FullPage>
+    </Flex>
   );
 }
 

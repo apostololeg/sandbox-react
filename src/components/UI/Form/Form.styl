@@ -1,10 +1,27 @@
 @import '~theme/theme.styl';
 
-.footer
-  display flex
-  justify-content space-between
-  align-items center
-  margin-top $indent_s
+.loading
+  opacity .8
+  pointer-events none
+  transition opacity .2s ease-out
 
-.gap
-  flex-grow 1
+.field
+  display flex
+  flex-direction column
+
+  &.changed::after
+    contnet ''
+    position absolute
+    height 5px
+    width 5px
+    border-radius 50%
+    background-color $activeColor
+    box-shadow 0 1px 1px $decentColor
+
+.hidden
+  display none
+
+.error
+  margin 5px
+  color #e91b20
+  font-size 80%

@@ -12,12 +12,10 @@ Raven
   // .config(`https://${KEY}@sentry.io/${PROJECT}`, config)
   .install();
 
-// @inject('store')
-// @observer
 class ErrorBoundary extends Component {
   componentDidCatch(error, info) {
-    Raven.captureException(error, { extra: info });
-    console.warn('Error Happend', error);
+    // Raven.captureException(error, { extra: info });
+    // console.warn('Error Happend', error);
   }
 
   render() {

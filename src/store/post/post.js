@@ -12,6 +12,7 @@ import {
 const WRITABLE_FIELDS = [
   'author',
   'slug',
+  'slugLock',
   'title',
   'content',
   'tags',

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { bind, debounce } from 'decko'
 
-import FullPage from 'components/UI/FullPage'
+import Flex from 'components/UI/Flex'
 
 import Quill from './Quill'
 import Toolbar from './Toolbar'
@@ -15,7 +15,7 @@ class Editor extends Component {
   state = { showToolbar: false };
 
   componentDidMount() {
-    const { onChangeDelay, onApi } = this.props;
+    const { onChangeDelay } = this.props;
 
     this.editor = new Quill('#editor');
     this.tools = tools(this.editor, Quill);
@@ -25,13 +25,14 @@ class Editor extends Component {
     );
 
     this.setState({ showToolbar: true }); // eslint-disable-line
+  }
 
-    if (onApi) {
-      onApi({
-        getValue: this.getValue,
-        setValue: this.setValue
-      });
+  shouldComponentUpdate({ value }, { showToolbar }) {
+    if (this.getValue() !== value) {
+      this.setValue(value);
     }
+
+    return this.state.showToolbar !== showToolbar;
   }
 
   @bind
@@ -46,19 +47,24 @@ class Editor extends Component {
 
   @bind
   onChange() {
-    const { onChange } = this.props;
+    const { value, onChange } = this.props;
+    const newVal = this.getValue();
 
-    onChange(this.getValue());
+    if (value === newVal) {
+      return;
+    }
+
+    onChange(newVal);
   }
 
   render() {
     const { showToolbar } = this.state;
 
     return (
-      <FullPage className={s.root}>
+      <Flex className={s.root}>
         {showToolbar && <Toolbar editor={this.editor} tools={this.tools} />}
-        <FullPage scroll id="editor" className={s.editor} />
-      </FullPage>
+        <Flex scrolled id="editor" className={s.editor} />
+      </Flex>
     );
   }
 }

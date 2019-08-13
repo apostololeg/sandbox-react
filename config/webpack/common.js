@@ -45,6 +45,9 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
+        // options: {
+        //   presets: ['@babel/preset-env'],
+        // },
         exclude: {
           exclude: [
             paths.modules

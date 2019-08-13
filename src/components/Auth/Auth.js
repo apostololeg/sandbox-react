@@ -1,17 +1,16 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { store, view } from 'react-easy-state'
 import { Redirect } from '@reach/router'
 import { bind } from 'decko'
-import * as Yup from 'yup'
 
 import { capitalize } from 'tools/string'
 
 import { notify } from 'store/notifications'
 import PageStore, { setTitle } from 'store/page'
 
-import FullPage from 'components/UI/FullPage'
-import Form from 'components/UI/Form'
+import Flex from 'components/UI/Flex'
 import Link from 'components/UI/Link'
+import Form, { SubmitButtons } from 'components/UI/Form'
 
 import Login from './Login'
 import Logout from './Logout'
@@ -56,8 +55,9 @@ class Auth extends Component {
     title,
     titleContent,
     titleLink,
-    initialValues,
-    validationSchemaObj,
+    fields,
+    footerContent,
+    submitText,
     onSubmit,
     ...formProps
   }) {
@@ -72,15 +72,30 @@ class Auth extends Component {
             </Link>
           )}
         </div>
-        {initialValues && (
-          <Form
-            className={s.form}
-            initialValues={initialValues}
-            validationSchema={Yup.object().shape(validationSchemaObj)}
-            onSubmit={payload => this.onSubmit(onSubmit, payload)}
-            {...formProps}
-          />
-        )}
+        <Form
+          className={s.form}
+          onSubmit={payload => this.onSubmit(onSubmit, payload)}
+          {...formProps}
+        >
+          {({ Field, isValid, isDirty }) => (
+            <Fragment>
+              {fields.map(props => <Field {...props} key={props.name} />)}
+              <div className={s.footer}>
+                {footerContent}
+                <div className={s.gap} />
+                <SubmitButtons
+                  buttons={[
+                    {
+                      text: submitText,
+                      type: 'submit',
+                      disabled: !isDirty || !isValid
+                    },
+                  ]}
+                />
+              </div>
+            </Fragment>
+          )}
+        </Form>
       </div>
     );
   }
@@ -95,9 +110,9 @@ class Auth extends Component {
     }
 
     return (
-      <FullPage centered scroll>
+      <Flex centered scrolled>
         <AuthForm>{this.renderAuthForm}</AuthForm>
-      </FullPage>
+      </Flex>
     );
   }
 }

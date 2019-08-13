@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { register } from 'store/user';
 
 function Register({ children }) {
@@ -13,16 +12,20 @@ function Register({ children }) {
       password: '',
       confirmPassword: '',
     },
-    validationSchemaObj: {
-      email: Yup.string().email().required(),
-      password: Yup.string().min(6).required(),
-      confirmPassword: Yup.string().test(
-        'match-password',
-        'Passwords must match',
-        function testConfirmPassword(value) {
-          return this.parent.password === value;
+    validationSchema: {
+      email: { type: 'email' },
+      password: { type: 'string', min: 6 },
+      confirmPassword: {
+        type: 'custom',
+        messages: {
+          mustMatch: 'Passwords must match'
         },
-      )
+        check(value, schema, { password }) {
+          return value !== password
+            ? this.makeError('mustMatch', password, value)
+            : true;
+        }
+      }
     },
     fields: [
       {
