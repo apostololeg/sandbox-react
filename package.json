@@ -69,6 +69,7 @@
     "react-dom": "^16.8.6",
     "react-easy-state": "^6.1.3",
     "react-loadable": "^5.5.0",
+    "replace": "^1.1.1",
     "standard-version": "^6.0.1",
     "svg-react-loader": "^0.4.6",
     "webapp-webpack-plugin": "^2.7.0"

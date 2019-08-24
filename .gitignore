@@ -3,3 +3,4 @@ build/
 node_modules/
 .gitsecret/keys/random_seed
 .env
+package-lock.json
