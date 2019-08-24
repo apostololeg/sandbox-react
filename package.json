@@ -39,7 +39,7 @@
     "body-parser": "^1.19.0",
     "brotli-webpack-plugin": "^1.1.0",
     "classnames": "^2.2.6",
-    "compareq": "^1.0.0",
+    "compareq": "1.0.1",
     "compression-webpack-plugin": "^3.0.0",
     "connect-history-api-fallback": "^1.6.0",
     "cookie-parser": "^1.4.4",
