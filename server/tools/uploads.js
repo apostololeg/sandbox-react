@@ -6,7 +6,7 @@ import {
   AWS_KEY_ID,
   DO_SPACE_NS,
   DO_SPACE_NAME
-} from '../config/const';
+} from '../../config/const';
 
 aws.config.update({
   secretAccessKey: AWS_SECRET,
@@ -30,7 +30,7 @@ const upload = multer({
 }).single('file', 1);
 
 export default function(app) {
-  app.post('/upload', (req, res, next) => {
+  app.post('/upload', (req, res) => {
     upload(req, res, (error) => {
       if (error) {
         return res.status(400).send(error);

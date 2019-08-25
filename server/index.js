@@ -11,8 +11,10 @@ import expressStaticGzip from 'express-static-gzip'
 import paths from '../config/paths'
 import { PRODUCTION, PORT, PEM_DIR } from '../config/const'
 
+import uploads from './tools/uploads'
 import apollo from './apollo'
-import uploads from './uploads'
+
+const redirectToHTTPS = require('express-http-to-https').redirectToHTTPS;
 
 const app = express();
 
@@ -22,6 +24,8 @@ if (!PRODUCTION) {
     credentials: true,
   }));
 }
+
+app.use(redirectToHTTPS([/localhost:(\d{4})/], [], 301));
 
 app.use(compression());
 app.use(cookieParser());
