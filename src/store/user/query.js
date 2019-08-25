@@ -9,6 +9,14 @@ export const LOAD_QUERY = gql`
   }
 `;
 
+export const INIT_MUTATION = gql`
+  mutation($key: String!) {
+    init(key: $key) {
+      roles
+    }
+  }
+`;
+
 export const REGISTER_MUTATION = gql`
   mutation($email: String!, $password: String!) {
     register(email: $email, password: $password) {

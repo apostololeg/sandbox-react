@@ -4,6 +4,7 @@ import { mutate, query } from 'tools/request';
 
 import {
   LOAD_QUERY,
+  INIT_MUTATION,
   REGISTER_MUTATION,
   LOGIN_MUTATION,
   LOGOUT_MUTATION
@@ -24,17 +25,36 @@ const progressInterface = {
   setProgress: val => User.inProgress = val,
 };
 
-const setUser = data => Object.assign(
-  User,
-  data,
-  {
-    inProgress: false,
-    isLogged: Boolean(data.email),
-    isAdmin: data.roles.includes('ADMIN')
-  }
-);
+function initAdmin() {
+  if (!User.roles.includes('ADMIN')) {
+    window.makeAdmin = async key => {
+      const res = await mutate(INIT_MUTATION, { variables: { key } });
+      const { roles } = res.init;
 
-export const login = async payload => {
+      if (roles.includes('ADMIN')) {
+        setUser({ ...User, roles }); // eslint-disable-line
+        console.log('Welcome, admin!');
+        delete window.makeAdmin;
+      }
+    };
+  }
+}
+
+function setUser(data) {
+  Object.assign(
+    User,
+    data,
+    {
+      inProgress: false,
+      isLogged: Boolean(data.email),
+      isAdmin: data.roles.includes('ADMIN')
+    }
+  );
+
+  initAdmin();
+}
+
+export async function login(payload) {
   const data = await mutate(LOGIN_MUTATION, {
     ...progressInterface,
     variables: payload,
@@ -44,7 +64,7 @@ export const login = async payload => {
   setUser(data);
 };
 
-export const register = async payload => {
+export async function register(payload) {
   const data = await mutate(REGISTER_MUTATION, {
     ...progressInterface,
     variables: payload,
@@ -54,7 +74,7 @@ export const register = async payload => {
   setUser(data);
 };
 
-export const logout = async () => {
+export async function logout() {
   await mutate(LOGOUT_MUTATION);
 
   setUser({ name: '', email: '', roles: ['guest'] });

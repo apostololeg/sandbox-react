@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import gql from 'graphql-tag'
 import { GraphQLModule } from '@graphql-modules/core'
-import { JWT_SECRET } from '../../config/const'
+import { JWT_SECRET, ADMIN_SECRET } from '../../config/const'
 import schema from '../prisma/schema'
 
 const COOKIE_TOKEN_NAME = 'x-token';
@@ -28,6 +28,7 @@ export default new GraphQLModule({
     }
 
     type Mutation {
+      init(key: String!): User
       register(email: String!, password: String!): User
       login(email: String!, password: String!): User
       logout: String
@@ -38,6 +39,23 @@ export default new GraphQLModule({
       me: (root, args, { user }) => user,
     },
     Mutation: {
+      async init(_, { key }, { db, user }) {
+        if (!user || key !== ADMIN_SECRET || user.roles.includes('ADMIN')) {
+          return user;
+        }
+
+        const data = await db.updateUser({
+          data: {
+            roles: {
+              set: [...user.roles, 'ADMIN']
+            }
+          },
+          where: { id: user.id }
+        });
+
+        return data;
+      },
+
       async register(_, { email, password }, { res, db }) {
         const existedUser = await db.user({ email });
 
