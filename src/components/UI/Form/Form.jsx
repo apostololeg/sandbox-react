@@ -65,17 +65,31 @@ class Form extends Component {
     this.formId = nanoid();
     this.store = FORM_STORES[this.formId] = store({}); // eslint-disable-line
 
-    this.setValidation(validationSchema);
     this.setInitialVals(initialValues);
+    this.setValidation(validationSchema);
+
+    this.calcChangedAll(initialValues);
+    this.validate();
   }
 
   shouldComponentUpdate({ initialValues, validationSchema }) {
-    if (!compare(validationSchema, this.props.validationSchema)) {
+    const validationChanged = !compare(validationSchema, this.props.validationSchema);
+    const initialValsChanged = !compare(initialValues, this.props.initialValues);
+
+    if (initialValsChanged) {
+      this.setInitialVals(initialValues);
+    }
+
+    if (validationChanged) {
       this.setValidation(validationSchema);
     }
 
-    if (!compare(initialValues, this.props.initialValues)) {
-      this.setInitialVals(initialValues);
+    if (initialValsChanged) {
+      this.calcChangedAll(initialValues);
+    }
+
+    if (initialValsChanged || validationChanged) {
+      this.validate();
     }
 
     return true
@@ -84,8 +98,6 @@ class Form extends Component {
   setInitialVals(initialValues) {
     this.field = Field(this.formId, this.onChange);
     this.store.values = { ...initialValues };
-    this.calcChangedAll(initialValues);
-    this.validate();
   }
 
   setValidation(validationSchema) {
