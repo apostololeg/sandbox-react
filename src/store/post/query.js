@@ -16,13 +16,13 @@ const Post = `
 
 export const GET_POST = gql`
   query($where: PostWhereUniqueInput!) {
-    getPostById(where: $where) { ${Post} }
+    getPost(where: $where) { ${Post} }
   }
 `;
 
 export const GET_POSTS = gql`
   query($where: PostWhereInput!) {
-    posts(where: $where) { ${Post} }
+    getPosts(where: $where) { ${Post} }
   }
 `;
 

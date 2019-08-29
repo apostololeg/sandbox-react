@@ -8,8 +8,8 @@ export default new GraphQLModule({
     ${schema}
 
     type Query {
-      getPostById(where: PostWhereUniqueInput!): Post
-      posts: [Post]!
+      getPost(where: PostWhereUniqueInput!): Post
+      getPosts(where: PostWhereInput!): [Post]!
     }
 
     type Mutation {
@@ -20,8 +20,8 @@ export default new GraphQLModule({
   `,
   resolvers: {
     Query: {
-      getPostById: (root, { where }, { db }) => db.post(where),
-      posts: (root, { where }, { db }) => db.posts({ where })
+      getPost: (root, { where }, { db }) => db.post(where),
+      getPosts: (root, { where }, { db }) => db.posts({ where })
     },
     Mutation: {
       createPost: (_, { data }, { db }) => db.createPost(data),

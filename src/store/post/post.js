@@ -21,12 +21,12 @@ const WRITABLE_FIELDS = [
 
 export const getPost = where => query(GET_POST, {
   variables: { where },
-  dataAccessor: 'getPostById'
+  dataAccessor: 'getPost'
 });
 
 export const getPosts = (where = {}) => query(GET_POSTS, {
   variables: { where },
-  dataAccessor: 'posts'
+  dataAccessor: 'getPosts'
 });
 
 export const createPost = data => mutate(CREATE_POST, {

@@ -8,6 +8,7 @@ import LazyComponent from 'components/LazyComponent'
 import Home from 'components/Home'
 import Profile from 'components/Profile'
 import Auth from 'components/Auth'
+import Post from 'components/Post'
 
 import NoMatch from './NoMatch'
 
@@ -39,6 +40,7 @@ function Routes() {
         const props = { path, loader, key: path };
         return <LazyComponent {...props} />;
       })}
+      <Post path="post/:slug" />
       <Auth path="register" type="register"/>
       <Auth path="login" type="login"/>
       <Auth path="logout" type="logout" />
