@@ -4,6 +4,7 @@ import { bind, debounce } from 'decko'
 import pick from 'lodash/pick'
 
 import LS from 'tools/localStorage'
+import time from 'tools/time'
 
 import UserStore from 'store/user'
 import { notify } from 'store/notifications'
@@ -40,25 +41,31 @@ function pickFormVals(vals) {
 }
 
 class PostEditor extends Component {
-  store = store({
-    localVersion: LS.get('editor-post'),
-    post: {
-      author: null,
-      slug: '',
-      slugLock: false,
-      title: '',
-      content: '',
-      tags: [],
-      published: false,
-      updatedAt: ''
-    },
-    loading: false,
-    saving: false,
-  });
+  constructor(props) {
+    super(props);
+
+    const localVersion = this.loadLocal();
+
+    this.store = store({
+      localVersion,
+      showLocalVersion: Boolean(localVersion),
+      post: {
+        author: null,
+        slug: '',
+        slugLock: false,
+        title: '',
+        content: '',
+        tags: [],
+        published: false,
+        updatedAt: ''
+      },
+      loading: false,
+      saving: false,
+    });
+  }
 
   async componentDidMount() {
     const { postId } = this.props;
-    const { localVersion } = this.store;
 
     this.validationSchema = {
       slug: { type: 'string' },
@@ -69,15 +76,39 @@ class PostEditor extends Component {
       this.store.loading = true;
       const post = await getPost({ id: postId });
       this.store.loading = false;
-
       this.setPostData(post);
 
-      if (postId === Object(localVersion).id) {
-        setTimeout(this.toggleLocalVersion, 0);
+      if (this.isLocal()) {
+        time.nextTick(() => this.toggleLocalVersion(true));
       }
     } else {
       await this.createNewPost();
     }
+  }
+
+  isLocal() {
+    const { postId } = this.props;
+    const { localVersion } = this.store;
+
+    return Object(localVersion).id === postId;
+  }
+
+  getLocalNamespace() {
+    const { postId } = this.props;
+
+    return `editor-post-${postId}`;
+  }
+
+  loadLocal() {
+    return LS.get(this.getLocalNamespace());
+  }
+
+  saveLocal(postData) {
+    if (postData !== undefined) {
+      this.store.localVersion = postData;
+    }
+
+    LS.set(this.getLocalNamespace(), this.store.localVersion);
   }
 
   setPostData(data) {
@@ -110,61 +141,67 @@ class PostEditor extends Component {
     }
   }
 
-  updatedLocalVersion(patch) {
+  updateLocalVersion(patch) {
     const { post, localVersion } = this.store;
 
     if (!localVersion) {
-      this.store.localVersion = { ...post, ...patch };
+      this.saveLocal({ ...post, ...patch });
     } else {
       Object.assign(localVersion, patch);
+      this.saveLocal();
     }
   }
 
   @bind
   @debounce(600)
-  onChange(values) { // eslint-disable-line
-    const { localVersion } = this.store;
-
-    this.updatedLocalVersion(values);
+  onChange(values) {
+    this.updateLocalVersion(values);
     this.store.showLocalVersion = true;
-    LS.set('editor-post', localVersion);
   }
 
   @bind
   onEditorChange(content) {
     const title = Object(content.match('<h1.*?>(.*?)</h1>'))[1];
+    const { values } = this.form;
 
-    if (!this.form.values.slugLock) {
+    if (values.content === content) {
+      return
+    }
+
+    if (!values.slugLock) {
       this.form.setValue('slug', titleToSlug(title));
     }
 
-    this.updatedLocalVersion({
+    this.updateLocalVersion({
       title,
       content,
       updatedAt: Date.now()
     });
 
-    this.form.setValues({ title });
-    this.onChange(this.form.values);
+    this.form.setValue('title', title);
+    this.onChange(values);
   }
 
   @bind
   async onSave(values) {
-    const { id, author, createdAt, ...rest } = this.store.localVersion;
-    const data = { ...values, ...rest };
+    const { localVersion, post } = this.store;
 
-    if (author) {
+    const isLocal = this.isLocal();
+    const sourcePost = isLocal ? localVersion : post
+    const { id, author, createdAt, ...rest } = sourcePost;
+    const data = { ...rest, ...values };
+
+    if (isLocal && author) {
       data.author = connectAuthor(author);
     }
 
     this.store.saving = true;
-    const post = await updatePost({ id, data });
+    const postData = await updatePost({ id, data });
     this.store.saving = false;
-    this.setPostData(post);
+    this.setPostData(postData);
 
-    this.store.localVersion = null;
     this.store.showLocalVersion = false;
-    LS.set('editor-post', null);
+    this.saveLocal(null);
 
     notify({
       type: 'success',
@@ -173,9 +210,9 @@ class PostEditor extends Component {
   }
 
   @bind
-  toggleLocalVersion() {
-    const { showLocalVersion, post, localVersion } = this.store;
-    const showLocal = !showLocalVersion;
+  toggleLocalVersion(show) {
+    const { post, localVersion, showLocalVersion } = this.store;
+    const showLocal = typeof show === 'boolean' ? show : !showLocalVersion;
     const formVals = pickFormVals(showLocal ? localVersion : post);
 
     this.store.showLocalVersion = showLocal;
