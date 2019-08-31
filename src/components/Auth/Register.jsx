@@ -1,4 +1,4 @@
-import { register } from 'store/user';
+import { register } from 'store/user'
 
 function Register({ children }) {
   return children({

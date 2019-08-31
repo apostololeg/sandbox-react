@@ -6,6 +6,7 @@ import pick from 'lodash/pick'
 import LS from 'tools/localStorage'
 import time from 'tools/time'
 
+import { setTitle } from 'store/page'
 import UserStore from 'store/user'
 import { notify } from 'store/notifications'
 import { getPost, createPost, updatePost } from 'store/post'
@@ -73,10 +74,7 @@ class PostEditor extends Component {
     };
 
     if (postId) {
-      this.store.loading = true;
-      const post = await getPost({ id: postId });
-      this.store.loading = false;
-      this.setPostData(post);
+      await this.loadRemote(postId);
 
       if (this.isLocal()) {
         time.nextTick(() => this.toggleLocalVersion(true));
@@ -97,6 +95,14 @@ class PostEditor extends Component {
     const { postId } = this.props;
 
     return `editor-post-${postId}`;
+  }
+
+  async loadRemote(postId) {
+    this.store.loading = true;
+    const post = await getPost({ id: postId });
+    this.store.loading = false;
+    this.setPostData(post);
+    setTitle(post.title);
   }
 
   loadLocal() {
@@ -180,6 +186,7 @@ class PostEditor extends Component {
 
     this.form.setValue('title', title);
     this.onChange(values);
+    setTitle(title);
   }
 
   @bind
@@ -213,10 +220,11 @@ class PostEditor extends Component {
   toggleLocalVersion(show) {
     const { post, localVersion, showLocalVersion } = this.store;
     const showLocal = typeof show === 'boolean' ? show : !showLocalVersion;
-    const formVals = pickFormVals(showLocal ? localVersion : post);
+    const postData = showLocal ? localVersion : post;
 
     this.store.showLocalVersion = showLocal;
-    this.form.setValues(formVals);
+    this.form.setValues(pickFormVals(postData));
+    setTitle(postData.title);
   }
 
   @bind
@@ -232,7 +240,7 @@ class PostEditor extends Component {
           <Field name="slugLock" component={Checkbox} type="checkbox" label="lock" />
         </div>
         <Field
-          className={flex({ scrolled: true })}
+          className={flex('scrolled')}
           name="content"
           component={Editor}
           onChange={this.onEditorChange}

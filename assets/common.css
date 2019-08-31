@@ -12,25 +12,25 @@ body {
 
 h1 {
   font-size: 160%;
-  margin: 12px 0;
+  padding: 12px 0;
 }
 h2 {
   font-size: 140%;
-  margin: 10px 0;
+  padding: 10px 0;
 }
 h3 {
   font-size: 120%;
-  margin: 8px 0;
+  padding: 8px 0;
 }
 h4 {
   font-size: 115%;
-  margin: 6px 0;
+  padding: 6px 0;
 }
 h5 {
   font-size: 110%;
-  margin: 4px 0;
+  padding: 4px 0;
 }
 h6 {
   font-size: 105%;
-  margin: 2px 0;
+  padding: 2px 0;
 }

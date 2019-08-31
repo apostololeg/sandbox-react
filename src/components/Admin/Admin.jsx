@@ -4,6 +4,7 @@ import { view } from 'react-easy-state'
 
 import userStore from 'store/user'
 
+import withTitle from 'components/HOC/withTitle'
 import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Link from 'components/UI/Link'
@@ -24,4 +25,4 @@ function Admin() {
   );
 }
 
-export default view(Admin);
+export default withTitle('Admin')(view(Admin));

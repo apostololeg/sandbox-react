@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import withTitle from 'components/HOC/withTitle'
 
 function Profile() {
   return (
@@ -7,4 +8,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default withTitle('Profile')(Profile);

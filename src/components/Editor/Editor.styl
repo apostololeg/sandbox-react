@@ -14,16 +14,13 @@
     min-height 200px
     flex-grow 1
 
+    &:after
+      content ''
+      display block
+      height 50px
+
   & div:nth-child(2) // .ql-clipboard
     display none
 
   & img
-    position relative
-    display inline-block
-    min-height 100px
-    min-width 200px
-    max-width 100%
-    max-height 50vh
-    border-radius 6px
-    background-color $accentColorLight
-    overflow hidden
+    imgBox()

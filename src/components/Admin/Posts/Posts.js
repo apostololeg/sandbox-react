@@ -7,6 +7,7 @@ import { sliceWhere } from 'tools/array'
 import { notify } from 'store/notifications'
 import { getPosts, deletePost } from 'store/post'
 
+import withTitle from 'components/HOC/withTitle'
 import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Spinner from 'components/UI/Spinner'
@@ -15,6 +16,8 @@ import Link from 'components/UI/Link'
 
 import s from './Posts.styl'
 
+@withTitle('Posts')
+@view
 class Posts extends Component {
   store = store({
     items: [],
@@ -95,4 +98,4 @@ class Posts extends Component {
   }
 }
 
-export default view(Posts);
+export default Posts;

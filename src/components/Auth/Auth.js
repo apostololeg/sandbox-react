@@ -6,8 +6,9 @@ import { bind } from 'decko'
 import { capitalize } from 'tools/string'
 
 import { notify } from 'store/notifications'
-import PageStore, { setTitle } from 'store/page'
+import PageStore from 'store/page'
 
+import withTitle from 'components/HOC/withTitle'
 import Flex from 'components/UI/Flex'
 import Link from 'components/UI/Link'
 import Form, { SubmitButtons } from 'components/UI/Form'
@@ -24,11 +25,12 @@ const Forms = {
   Register
 };
 
+@withTitle('Auth')
+@view
 class Auth extends Component {
   store = store({ needRedirect: false });
 
   componentDidMount() {
-    setTitle('Auth');
     PageStore.isAuth = true;
   }
 
@@ -117,4 +119,4 @@ class Auth extends Component {
   }
 }
 
-export default view(Auth);
+export default Auth;

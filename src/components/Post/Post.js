@@ -1,7 +1,13 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { store, view } from 'react-easy-state'
 
+import { setTitle } from 'store/page'
 import { getPosts } from 'store/post'
+
+import Flex, { mix as flex } from 'components/UI/Flex'
+import Spinner from 'components/UI/Spinner'
+
+import s from './Post.styl';
 
 class Post extends Component {
   store = store({
@@ -19,16 +25,35 @@ class Post extends Component {
     this.store.loading = true;
     this.store.data = (await getPosts({ slug })).pop();
     this.store.loading = false;
+    setTitle(this.store.data.title);
   }
 
-  render() {
-    const { data } = this.store;
+  renderContent() {
+    const { data, loading } = this.store;
+
+    if (loading) {
+      return <Flex><Spinner /></Flex>;
+    }
+
     const { author, content } = data;
 
     return (
-      <div>
+      <Fragment>
         {author && (author.name || author.email)}
         <div dangerouslySetInnerHTML={{ __html: content }} />
+      </Fragment>
+    );
+  }
+
+  render() {
+    const { className } = this.store;
+
+    return (
+      <div
+        className={flex('scrolled', className, s.root)}
+        onScroll={this.onScroll}
+      >
+        {this.renderContent()}
       </div>
     );
   }

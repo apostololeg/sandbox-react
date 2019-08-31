@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
-import { setTitle } from 'store/page'
+import React from 'react'
+
+import withTitle from 'components/HOC/withTitle'
 
 function Home() {
-  useEffect(() => setTitle(''));
-
   return (
     <h1>Home!</h1>
   );
 }
 
-export default Home;
+export default withTitle('~/apostol')(Home);

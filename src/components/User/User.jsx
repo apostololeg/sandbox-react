@@ -51,7 +51,9 @@ function User() {
   return (
     <Popup autoClose>
       <div className={s.user}>
-        {email || name || 'Guest'}
+        <div className={s.userName}>
+          {email || name || 'Guest'}
+        </div>
         <Userpic url={avatar} />
       </div>
       {items.length > 0 && (
