@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import { store, view } from 'react-easy-state'
+import { h, Component, Fragment } from 'preact'
+import { store, view } from 'preact-easy-state'
 
 import { setTitle } from 'store/page'
 import { getPosts } from 'store/post'

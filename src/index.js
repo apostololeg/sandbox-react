@@ -1,11 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import compare from 'compareq';
+import { h, render } from 'preact'
+import compare from 'compareq'
 
-import App from 'components/App';
-import ErrorBoundary from 'components/ErrorBoundary';
+import App from 'components/App'
+import ErrorBoundary from 'components/ErrorBoundary'
 
-ReactDOM.render(
-  <ErrorBoundary><App/></ErrorBoundary>,
-  document.querySelector('#root')
-);
+let root;
+
+function init() {
+  root = render(
+    <ErrorBoundary><App/></ErrorBoundary>,
+    document.body,
+    root
+  );
+}
+
+init();
+
+if (module.hot) {
+  module.hot.accept('./components/App', () => requestAnimationFrame(init));
+}

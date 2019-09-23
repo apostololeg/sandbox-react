@@ -1,35 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Loadable from 'react-loadable'
+import { h } from 'preact'
+import Loadable from 'preact-loadable'
 
 import Flex from 'components/UI/Flex'
 import Spinner from 'components/UI/Spinner'
 
-function LazyComponent({ loader, preload, visible, ...props }) {
-  const LoadableComponent = Loadable({
-    loader,
-    loading: () => <Flex centered><Spinner size="l" /></Flex>,
-    render: ({ default: Component }) => <Component {...props} />
-  });
-
-  if (preload) {
-    LoadableComponent.preload();
-
-    if (!visible) {
-      return null
-    }
-  }
-
-  return <LoadableComponent {...props} />;
+function Loading() {
+  return <Flex centered><Spinner size="l" /></Flex>;
 }
 
-LazyComponent.propTypes = {
-  // loader: PropTypes.oneOfType([
-  //   PropTypes.element,
-  //   PropTypes.node
-  // ]),
-  preload: PropTypes.bool,
-  visible: PropTypes.bool
-};
-
-export default LazyComponent;
+export default function LazyComponent({ loading, ...props }) {
+  return <Loadable
+    fn={() => loading().then(m => m.default)}
+    loading={Loading}
+    success={Component => <Component {...props} />}
+  />;
+}

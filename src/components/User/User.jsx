@@ -1,5 +1,5 @@
-import React from 'react'
-import { view } from 'react-easy-state'
+import { h } from 'preact'
+import { view } from 'preact-easy-state'
 
 import UserStore from 'store/user'
 import PageStore from 'store/page'
@@ -60,7 +60,7 @@ function User() {
         <Menu className={s.menu} align="right">
           {items.map(([path, text]) => (
             <MenuItem key={path}>
-              <Link to={path}>{text}</Link>
+              <Link href={path}>{text}</Link>
             </MenuItem>
           ))}
         </Menu>

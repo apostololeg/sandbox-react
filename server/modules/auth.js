@@ -1,16 +1,25 @@
 import jwt from 'jsonwebtoken'
 import gql from 'graphql-tag'
 import { GraphQLModule } from '@graphql-modules/core'
-import { JWT_SECRET, ADMIN_SECRET } from '../../config/const'
+import {
+  PRODUCTION,
+  JWT_SECRET,
+  SESSION_EXPIRED_AFTER,
+  ADMIN_SECRET
+} from '../../config/const'
 import schema from '../prisma/schema'
 
 const COOKIE_TOKEN_NAME = 'x-token';
 const COOKIE_OPTS = {
   httpOnly: true,
-  // secure: true // NOTE: enable only when run on https (has ssl sertificate)
+  secure: PRODUCTION
 };
 
-const getToken = id => jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
+const getToken = id => jwt.sign(
+  { id },
+  JWT_SECRET,
+  { expiresIn: SESSION_EXPIRED_AFTER }
+);
 const setCookie = (res, token) => {
   res.cookie(COOKIE_TOKEN_NAME, token, COOKIE_OPTS);
 }

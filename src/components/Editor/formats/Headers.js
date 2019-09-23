@@ -1,5 +1,5 @@
-import React from 'react';
-import { view } from 'react-easy-state';
+import { h } from 'preact';
+import { view } from 'preact-easy-state';
 
 import Select from 'components/UI/Select';
 

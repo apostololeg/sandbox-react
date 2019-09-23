@@ -1,6 +1,6 @@
-import React from 'react'
-import { Router } from '@reach/router'
-import { view } from 'react-easy-state'
+import { h } from 'preact'
+import { Router } from 'preact-router'
+import { view } from 'preact-easy-state'
 import userStore from 'store/user'
 
 import LazyComponent from 'components/LazyComponent'
@@ -36,8 +36,8 @@ function Routes() {
           'admin/posts/edit/:postId',
           () => import('components/Admin/PostEditor')
         ]
-      ].map(([path, loader]) => {
-        const props = { path, loader, key: path };
+      ].map(([path, loading]) => {
+        const props = { path, loading, key: path };
         return <LazyComponent {...props} />;
       })}
       <Post path="post/:slug" />

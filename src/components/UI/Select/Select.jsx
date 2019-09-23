@@ -1,4 +1,4 @@
-import React from 'react';
+import { h } from 'preact';
 
 import Popup from 'components/UI/Popup';
 import Button from 'components/UI/Button';

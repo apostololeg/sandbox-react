@@ -1,4 +1,4 @@
-import { store } from 'react-easy-state';
+import { store } from 'preact-easy-state';
 import nanoid from 'nanoid';
 
 import time from 'tools/time';

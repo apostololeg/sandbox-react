@@ -2,14 +2,15 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ComponentDirectoryPlugin = require('component-directory-webpack-plugin');
-const WebappWebpackPlugin = require('webapp-webpack-plugin');
+const FaviconWebpackPlugin = require('favicons-webpack-plugin');
 
 const paths = require('../paths');
 const {
   PRODUCTION,
   PAGE_LANG,
+  PAGE_TITLE,
   PROTOCOL,
   HOST,
   PORT,
@@ -32,7 +33,10 @@ module.exports = {
     ],
     alias: {
       config: paths.config,
-      quill: `${paths.modules}/quill`
+      quill: `${paths.modules}/quill`,
+      'react': 'preact/compat',
+      'react-dom': 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils'
     },
     plugins: [
       new ComponentDirectoryPlugin()
@@ -68,8 +72,9 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[name]__[local]___[hash:base64:5]'
+              modules: {
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              }
             }
           },
           {
@@ -94,7 +99,7 @@ module.exports = {
                 loader: 'babel-loader'
               },
               {
-                loader: 'svg-react-loader',
+                loader: 'preact-svg-loader',
               }
             ]
           },
@@ -121,15 +126,14 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(PRODUCTION),
       PROTOCOL: JSON.stringify(PROTOCOL),
       HOST: JSON.stringify(HOST),
       PORT: JSON.stringify(PORT),
       DO_SPACE_NS: JSON.stringify(DO_SPACE_NS),
       DO_SPACE_NAME: JSON.stringify(DO_SPACE_NAME)
     }),
-    new CleanWebpackPlugin(['build'], {
-      root: paths.root
-    }),
+    new CleanWebpackPlugin(),
     new CopyPlugin([
       {
         from: `${paths.assets}/common.css`,
@@ -138,10 +142,15 @@ module.exports = {
       {
         from: `${paths.assets}/logo.svg`,
         to: paths.build
+      },
+      {
+        from: `${paths.assets}/manifest.json`,
+        to: paths.build
       }
     ]),
     new HtmlWebpackPlugin({
       lang: PAGE_LANG,
+      title: PAGE_TITLE,
       filename: 'index.html',
       template: `${paths.assets}/index.html`,
       chunksSortMode: 'dependency',
@@ -158,16 +167,7 @@ module.exports = {
         minifyURLs: true
       }
     }),
-    new WebappWebpackPlugin({
-      logo: `${paths.assets}/logo.svg`,
-      favicons: {
-        appName: 'sandbox',
-        appDescription: 'My spaceship',
-        developerName: 'apostol',
-        background: '#fff',
-        theme_color: '#333'
-      }
-    }),
+    new FaviconWebpackPlugin(`${paths.assets}/logo.svg`),
     new MiniCssExtractPlugin({
       filename: PRODUCTION ? '[name].[hash].css' : '[name].css',
       chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css',

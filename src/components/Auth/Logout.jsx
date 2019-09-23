@@ -1,28 +1,27 @@
-import React, { Component } from 'react'
-import { store, view } from 'react-easy-state'
-import { Redirect } from '@reach/router'
+import { h, Component } from 'preact'
+import { store, view } from 'preact-easy-state'
 
 import UserStore, { logout } from 'store/user'
 
+import Redirect from 'components/UI/Redirect'
 import Spinner from 'components/UI/Spinner'
 
 import s from './Auth.styl'
 
 const REDIRECT_TIMEOUT = 500;
 
-@view
 class Logout extends Component {
-  state = store({ redirect: false });
+  store = store({ redirect: false });
 
   async componentDidMount() {
     if (!UserStore.isLogged) {
-      this.state.redirect = true;
+      this.store.redirect = true;
       return
     }
 
     await logout();
     this._timeout = setTimeout(
-      () => this.state.redirect = true,
+      () => this.store.redirect = true,
       REDIRECT_TIMEOUT
     );
   }
@@ -32,7 +31,7 @@ class Logout extends Component {
   }
 
   render() {
-    if (this.state.redirect) {
+    if (this.store.redirect) {
       return <Redirect to='/' noThrow />
     }
 
@@ -43,4 +42,4 @@ class Logout extends Component {
     );
   }
 }
-export default Logout;
+export default view(Logout);

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { h, Component } from 'preact';
 // import PropTypes from 'prop-types';
 
 class NoMatch extends Component {
@@ -15,11 +15,11 @@ class NoMatch extends Component {
   }
 
   render() {
-    const { location } = this.props;
+    const { url } = this.props;
 
     return (
       <div className="NoMatch">
-        <h2>Not found "{location.pathname}".</h2>
+        <h2>Not found "{url}".</h2>
       </div>
     );
   }

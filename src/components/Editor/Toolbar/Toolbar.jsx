@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { store, view } from 'react-easy-state';
+import { h, Component } from 'preact';
+import { store, view } from 'preact-easy-state';
 import { bind, debounce } from 'decko';
 
 import Headers from '../formats/Headers';

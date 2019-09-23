@@ -1,6 +1,6 @@
-import React, { Fragment, Component } from 'react'
+import { h, Fragment, Component } from 'preact'
 import { bind } from 'decko'
-import { store, view } from 'react-easy-state'
+import { store, view } from 'preact-easy-state'
 
 import { sliceWhere } from 'tools/array'
 
@@ -60,7 +60,7 @@ class Posts extends Component {
     return (
       <MenuItem key={id}>
         <h2>{title}</h2>
-        <Link to={`edit/${id}`}>Edit</Link>
+        <Link href={`edit/${id}`}>Edit</Link>
         <Button
           onClick={() => this.deletePost(id)}
           loading={this.store.deleting[id]}
@@ -88,7 +88,7 @@ class Posts extends Component {
       <Fragment>
         <div className={s.header}>
           <div className={s.gap} />
-          <Link to="new">Create New</Link>
+          <Link href="new">Create New</Link>
         </div>
         <Flex scrolled centered={loading}>
           {loading ? <Spinner size="l"/> : this.renderList()}

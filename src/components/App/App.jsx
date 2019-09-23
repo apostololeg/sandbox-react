@@ -1,5 +1,4 @@
-import React from 'react'
-import { view } from 'react-easy-state'
+import { h } from 'preact'
 
 import Flex from 'components/UI/Flex'
 import Container from 'components/UI/Container'
@@ -20,4 +19,4 @@ const App = () => (
   </Flex>
 );
 
-export default view(App);
+export default App;

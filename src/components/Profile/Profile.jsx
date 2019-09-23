@@ -1,4 +1,4 @@
-import React from 'react'
+import { h } from 'preact'
 import withTitle from 'components/HOC/withTitle'
 
 function Profile() {

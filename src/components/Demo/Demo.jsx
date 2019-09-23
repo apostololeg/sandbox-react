@@ -1,4 +1,4 @@
-import React from 'react'
+import { h } from 'preact'
 
 function Demo() {
     return <div className="Demo">Demo page!</div>

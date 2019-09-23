@@ -1,5 +1,6 @@
-import React, { Fragment, Component } from 'react'
-import { store, view } from 'react-easy-state'
+import { h, Fragment, Component } from 'preact'
+import { memo } from 'preact/compat'
+import { store, view } from 'preact-easy-state'
 import { bind, debounce } from 'decko'
 import pick from 'lodash/pick'
 
@@ -237,7 +238,13 @@ class PostEditor extends Component {
       <Fragment key="post-editor-form">
         <div className={s.slugWrap}>
           <Field name="slug" className={s.slug} />
-          <Field name="slugLock" component={Checkbox} type="checkbox" label="lock" />
+          <Field
+            name="slugLock"
+            component={Checkbox}
+            type="checkbox"
+            label="lock"
+            clearMargins
+          />
         </div>
         <Field
           className={flex('scrolled')}
@@ -289,4 +296,4 @@ class PostEditor extends Component {
   }
 }
 
-export default React.memo(view(PostEditor));
+export default memo(view(PostEditor));

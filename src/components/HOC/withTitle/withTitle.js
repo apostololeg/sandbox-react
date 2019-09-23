@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import { h, Component } from 'preact'
 import { setTitle } from 'store/page'
 
 export default function(title) {
-  return function HOC(HocComponent) {
+  return function HOC(Comp) {
     return class extends Component {
       componentDidMount() {
         this.prevTitle = setTitle(title);
@@ -15,7 +15,7 @@ export default function(title) {
       prevTitle;
 
       render() {
-        return <HocComponent {...this.props} />
+        return <Comp {...this.props} />
       }
     }
   }

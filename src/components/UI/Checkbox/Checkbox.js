@@ -1,4 +1,4 @@
-import React from 'react'
+import { h } from 'preact'
 import cn from 'classnames'
 import nanoid from 'nanoid'
 

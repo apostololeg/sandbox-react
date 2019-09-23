@@ -1,4 +1,4 @@
-import React from 'react';
+import { h } from 'preact';
 
 import { login } from 'store/user';
 
@@ -31,7 +31,7 @@ function Login({ children }) {
       },
     ],
     footerContent: (
-      <Link to="/reset-password">Forgot password?</Link>
+      <Link href="/reset-password">Forgot password?</Link>
     ),
     submitText: 'Sign in',
     onSubmit: login,
