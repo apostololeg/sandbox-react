@@ -45,7 +45,8 @@ if (PRODUCTION) {
   }));
 
   const httpServer = http.createServer(app);
-  const httpsServer = https.createServer({
+  const httpsServer = https.createSecureServer({
+    allowHTTP1: true,
     key: fs.readFileSync(`${PEM_DIR}privkey.pem`, 'utf8'),
     cert: fs.readFileSync(`${PEM_DIR}cert.pem`, 'utf8'),
     ca: fs.readFileSync(`${PEM_DIR}chain.pem`, 'utf8')

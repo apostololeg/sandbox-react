@@ -14,8 +14,13 @@ function init() {
   );
 }
 
-init();
+
+if (PRODUCTION) {
+  require('./pwa');
+}
 
 if (module.hot) {
   module.hot.accept('./components/App', () => requestAnimationFrame(init));
 }
+
+init();

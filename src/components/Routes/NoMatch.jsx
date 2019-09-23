@@ -1,17 +1,10 @@
 import { h, Component } from 'preact';
-// import PropTypes from 'prop-types';
+
+import { setTitle } from 'store/page';
 
 class NoMatch extends Component {
-  static propTypes = {
-    // page: PropTypes.shape({
-    //     setTitle: PropTypes.func
-    // })
-  };
-
   componentDidMount() {
-    // const { setTitle } = this.props.store.page;
-
-    // setTitle('404 | Not found');
+    setTitle('404');
   }
 
   render() {
