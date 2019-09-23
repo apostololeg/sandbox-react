@@ -136,8 +136,12 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyPlugin([
       {
-        from: `${paths.assets}/common.css`,
+        from: `${paths.assets}/*.css`,
         to: paths.build
+      },
+      {
+        from: `${paths.assets}/fonts`,
+        to: `${paths.build}/fonts`
       },
       {
         from: `${paths.assets}/logo.svg`,
