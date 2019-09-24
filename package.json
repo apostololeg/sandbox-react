@@ -101,7 +101,7 @@
     "component-directory-webpack-plugin": "^1.0.5",
     "css-loader": "^2.1.1",
     "cssnano": "^4.1.10",
-    "eslint": "4.17.0",
+    "eslint": "4.18.2",
     "eslint-config-airbnb": "16.1.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-import-resolver-webpack": "^0.10.1",
