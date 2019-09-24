@@ -1,6 +1,6 @@
 import fs from 'fs'
 import http from 'http'
-import http2 from 'http2'
+import https from 'https'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import historyApiFallback from 'connect-history-api-fallback'
@@ -45,10 +45,10 @@ if (PRODUCTION) {
   }));
 
   const httpServer = http.createServer(app);
-  const httpsServer = http2.createSecureServer({
-    allowHTTP1: true,
+  const httpsServer = https.createServer({
     key: fs.readFileSync(`${PEM_DIR}privkey.pem`, 'utf8'),
     cert: fs.readFileSync(`${PEM_DIR}cert.pem`, 'utf8'),
+    ca: fs.readFileSync(`${PEM_DIR}chain.pem`, 'utf8')
   }, app);
 
   console.log('\n');
