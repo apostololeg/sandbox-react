@@ -15,3 +15,9 @@ export default function LazyComponent({ loading, ...props }) {
     success={Component => <Component {...props} />}
   />;
 }
+
+export function LazyArray(routes) {
+  return routes.map(([ path, loading ]) =>
+    <LazyComponent path={path} loading={loading} key={path} />
+  );
+}

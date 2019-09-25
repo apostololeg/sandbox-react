@@ -16,30 +16,53 @@ function Routes() {
   const { isLogged, isAdmin } = userStore;
 
   return (
-    <Router style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
+    <Router>
       <Home path="/"/>
       {isLogged && <Profile path="profile" />}
-      {isAdmin && [
+      {isAdmin && <LazyComponent
+        path="admin"
+        loading={() => import('components/Admin')}
+      />}
+      {isAdmin && <LazyArray routes={[
+        [
+          'posts/new',
+          () => import('components/Admin/PostEditor')
+        ],
+        [
+          'posts/edit/:postId',
+          () => import('components/Admin/PostEditor')
+        ]
+      ]}/>
+
+      [
         [
           'admin',
           () => import('components/Admin')
         ],
         [
-          'admin/posts',
-          () => import('components/Admin/Posts')
-        ],
-        [
-          'admin/posts/new',
+          'posts/new',
           () => import('components/Admin/PostEditor')
         ],
         [
-          'admin/posts/edit/:postId',
+          'posts/edit/:postId',
           () => import('components/Admin/PostEditor')
         ]
       ].map(([path, loading]) => {
         const props = { path, loading, key: path };
         return <LazyComponent {...props} />;
       })}
+      <LazyComponent
+        path="posts"
+        loading={() => import('components/Admin/Posts')}
+      />
+      <LazyComponent
+        path="posts/new"
+        loading={() => import('components/Admin/PostsEditor')}
+      />
+      <LazyComponent
+        path="posts/edit/:postId"
+        loading={() => import('components/Admin/PostsEditor')}
+      />
       <Post path="post/:slug" />
       <Auth path="register" type="register"/>
       <Auth path="login" type="login"/>

@@ -1,7 +1,7 @@
-export default (...roles) => next => (root, args, context, info) => {
-  const isAdmin = context.user.roles.includes('ADMIN');
+import validateRole from '../permissions/validateRole';
 
-  if (isAdmin || context.user.roles.some(role => roles.includes(role))) {
+export default (...roles) => next => (root, args, context, info) => {
+  if (validateRole(context.user, ...roles) {
     return next(root, args, context, info);
   }
 
