@@ -9,7 +9,7 @@ import PageStore from 'store/page'
 
 import withTitle from 'components/HOC/withTitle'
 import Redirect from 'components/UI/Redirect'
-import Link from 'components/UI/Link'
+import Link from 'components/Routes/Link'
 import Flex from 'components/UI/Flex'
 import Form, { SubmitButtons } from 'components/UI/Form'
 

@@ -22,14 +22,16 @@ export default new GraphQLModule({
   `,
   resolvers: {
     Query: {
-      getPost: (root, { where, user }, { db }) => {
+      getPost: async (root, { where, user }, { db }) => {
         if (!validateRole(user, 'editor')) {
           where.published = false;
         }
 
-        return db.post(where);
+        const posts = await db.posts({ where });
+
+        return posts[0];
       },
-      getPosts: (root, { where }, { db }) => {
+      getPosts: (root, { where, user }, { db }) => {
         if (!validateRole(user, 'editor')) {
           where.published = false;
         }

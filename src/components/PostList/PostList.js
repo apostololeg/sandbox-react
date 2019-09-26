@@ -12,13 +12,13 @@ import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Spinner from 'components/UI/Spinner'
 import Button from 'components/UI/Button'
-import Link from 'components/UI/Link'
+import Link from 'components/Routes/Link'
 
-import s from './Posts.styl'
+import s from './PostList.styl'
 
-@withTitle('Posts')
+@withTitle('PostList')
 @view
-class Posts extends Component {
+class PostList extends Component {
   store = store({
     items: [],
     loading: false,
@@ -98,4 +98,4 @@ class Posts extends Component {
   }
 }
 
-export default Posts;
+export default PostList;

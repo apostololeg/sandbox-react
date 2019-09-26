@@ -1,7 +1,7 @@
 import validateRole from '../permissions/validateRole';
 
 export default (...roles) => next => (root, args, context, info) => {
-  if (validateRole(context.user, ...roles) {
+  if (validateRole(context.user, ...roles)) {
     return next(root, args, context, info);
   }
 
