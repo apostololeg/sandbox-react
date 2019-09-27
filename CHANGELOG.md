@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/apostololeg/sandbox-react/compare/v0.0.5...v0.0.6) (2019-09-27)
+
+
+### Bug Fixes
+
+* Form validation ([e0a4ecc](https://github.com/apostololeg/sandbox-react/commit/e0a4ecc))
+* PostEditor: better managing of localVersion ([4529836](https://github.com/apostololeg/sandbox-react/commit/4529836))
+
+
+### Features
+
+* /post/:slug ([73c85b7](https://github.com/apostololeg/sandbox-react/commit/73c85b7))
+* init admin ([9cafa56](https://github.com/apostololeg/sandbox-react/commit/9cafa56))
+* redirect to HTTPS ([ab156b4](https://github.com/apostololeg/sandbox-react/commit/ab156b4))
+
 ### [0.0.5](https://github.com/apostololeg/sandbox-react/compare/v0.0.4...v0.0.5) (2019-08-24)
 
 
