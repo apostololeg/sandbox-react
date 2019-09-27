@@ -66,7 +66,7 @@ class PostList extends Component {
           <h2>{title}</h2>
         </Link>
         {isAdmin && [
-          <Link href={`/post/edit/${id}`}>Edit</Link>,
+          <Link href={`/posts/edit/${id}`}>Edit</Link>,
           <Button
             onClick={() => this.deletePost(id)}
             loading={this.store.deleting[id]}

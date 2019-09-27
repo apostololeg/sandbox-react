@@ -1,5 +1,4 @@
 import { h } from 'preact'
-// import { Router } from 'preact-router'
 import { view } from 'preact-easy-state'
 
 import userStore from 'store/user'
