@@ -124,7 +124,7 @@ class PostEditor extends Component {
 
   @bind
   async createNewPost() {
-    const { navigate } = this.props;
+    const { route } = this.props;
     const { post } = this.store;
 
     if (!post.author) {
@@ -137,7 +137,7 @@ class PostEditor extends Component {
       const data = await createPost(post);
       this.setPostData(data)
       this.store.inProgress = false;
-      navigate(`../edit/${data.id}`, { replace: true });
+      route.navigate(`/posts/edit/${data.id}`, { replace: true });
     } catch(e) {
       this.store.inProgress = false;
       notify({

@@ -8,11 +8,11 @@ class NoMatch extends Component {
   }
 
   render() {
-    const { url } = this.props;
+    const { route } = this.props;
 
     return (
       <div className="NoMatch">
-        <h2>Not found "{url}".</h2>
+        <h2>Not found "{route.path}".</h2>
       </div>
     );
   }

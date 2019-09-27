@@ -9,6 +9,7 @@
   color $linkColor
   text-decoration none
 
+  cursor pointer
   outline none
   transition color .1s ease-out
 
@@ -24,8 +25,11 @@
     transition transform .1s ease-out
     pointer-events none
 
+  &.clear:before
+    content none;
+
   &.exact
-    color #333
+    color $accentColor
 
   &.external:before
     background-color $accentColor

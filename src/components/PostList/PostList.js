@@ -6,19 +6,20 @@ import { sliceWhere } from 'tools/array'
 
 import { notify } from 'store/notifications'
 import { getPosts, deletePost } from 'store/post'
+import userStore from 'store/user'
 
 import withTitle from 'components/HOC/withTitle'
 import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Spinner from 'components/UI/Spinner'
 import Button from 'components/UI/Button'
-import Link from 'components/UI/Link'
+import Link from 'components/Routes/Link'
 
-import s from './Posts.styl'
+import s from './PostList.styl'
 
-@withTitle('Posts')
+@withTitle('PostList')
 @view
-class Posts extends Component {
+class PostList extends Component {
   store = store({
     items: [],
     loading: false,
@@ -56,17 +57,23 @@ class Posts extends Component {
   }
 
   @bind
-  renderItem({ id, title }) {
+  renderItem({ id, slug, title }) {
+    const { isAdmin } = userStore;
+
     return (
       <MenuItem key={id}>
-        <h2>{title}</h2>
-        <Link href={`edit/${id}`}>Edit</Link>
-        <Button
-          onClick={() => this.deletePost(id)}
-          loading={this.store.deleting[id]}
-        >
-          Remove
-        </Button>
+        <Link href={`/post/${slug}`} isClear>
+          <h2>{title}</h2>
+        </Link>
+        {isAdmin && [
+          <Link href={`/posts/edit/${id}`}>Edit</Link>,
+          <Button
+            onClick={() => this.deletePost(id)}
+            loading={this.store.deleting[id]}
+          >
+            Remove
+          </Button>
+        ]}
       </MenuItem>
     );
   }
@@ -82,14 +89,17 @@ class Posts extends Component {
   }
 
   render() {
+    const { isAdmin } = userStore;
     const { loading } = this.store;
 
     return (
       <Fragment>
-        <div className={s.header}>
-          <div className={s.gap} />
-          <Link href="new">Create New</Link>
-        </div>
+        {isAdmin && (
+          <div className={s.header}>
+            <div className={s.gap} />
+            <Link href="new">Create New</Link>
+          </div>
+        )}
         <Flex scrolled centered={loading}>
           {loading ? <Spinner size="l"/> : this.renderList()}
         </Flex>
@@ -98,4 +108,4 @@ class Posts extends Component {
   }
 }
 
-export default Posts;
+export default PostList;

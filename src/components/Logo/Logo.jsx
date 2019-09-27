@@ -1,10 +1,10 @@
 import { h } from 'preact';
 
-import { Link } from 'preact-router';
+import Link from 'components/Routes/Link';
 import s from './Logo.styl';
 
 const Logo = () => (
-  <Link href="/">
+  <Link href="/" isClear>
     <div className={s.root} />
   </Link>
 );

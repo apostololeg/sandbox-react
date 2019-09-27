@@ -1,6 +1,9 @@
 import gql from 'graphql-tag'
 import { GraphQLModule } from '@graphql-modules/core'
+
 import schema from '../prisma/schema'
+import validateRole from '../permissions/validateRole';
+import ROLES from '../permissions/roles';
 
 export default new GraphQLModule({
   name: 'posts',
@@ -20,8 +23,22 @@ export default new GraphQLModule({
   `,
   resolvers: {
     Query: {
-      getPost: (root, { where }, { db }) => db.post(where),
-      getPosts: (root, { where }, { db }) => db.posts({ where })
+      getPost: async (root, { where }, { db, user }) => {
+        if (!validateRole(user, ROLES.EDITOR)) {
+          where.published = true;
+        }
+
+        const posts = await db.posts({ where });
+
+        return posts[0];
+      },
+      getPosts: (root, { where }, { db, user }) => {
+        if (!validateRole(user, ROLES.EDITOR)) {
+          where.published = true;
+        }
+
+        return db.posts({ where });
+      }
     },
     Mutation: {
       createPost: (_, { data }, { db }) => db.createPost(data),

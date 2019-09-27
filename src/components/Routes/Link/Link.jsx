@@ -1,11 +1,11 @@
 import { h } from 'preact'
-import { Link as RouterLink } from 'preact-router'
 import cn from 'classnames'
 
+import { navigate } from '../store';
 import ExternalIcon from './icons/external.svg'
 import s from './Link.styl'
 
-const Link = ({ className, children, ...props }) => {
+const Link = ({ className, children, isClear, ...props }) => {
   const { href } = props;
   const { pathname } = window.location;
 
@@ -13,9 +13,9 @@ const Link = ({ className, children, ...props }) => {
   const isNested = !/^\//.test(href) && !isExternal;
   const isExact = href === pathname;
 
-  const Component = isExternal ? 'a' : RouterLink;
   const classes = cn(
     s.root,
+    isClear && s.clear,
     isExact && s.exact,
     isExternal && s.external,
     className
@@ -29,11 +29,21 @@ const Link = ({ className, children, ...props }) => {
     props.target = '_blank';
   }
 
+  function handleClick(e) {
+    const { href } = props;
+
+    e.preventDefault();
+
+    if (location.pathname !== href) {
+      navigate(href);
+    }
+  }
+
   return (
-    <Component className={classes} {...props}>
+    <a className={classes} {...props} onClick={handleClick}>
       {children}
       {isExternal && <ExternalIcon class={s.externalIcon} />}
-    </Component>
+    </a>
   );
 };
 

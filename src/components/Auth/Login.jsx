@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import { login } from 'store/user';
 
-import Link from 'components/UI/Link';
+import Link from 'components/Routes/Link';
 
 function Login({ children }) {
   return children({

@@ -1,9 +1,10 @@
-import { Component } from 'preact';
-import { route } from 'preact-router';
+import { Component } from 'preact'
+
+import { navigate } from 'components/Routes/store';
 
 export default class Redirect extends Component {
   componentWillMount() {
-    route(this.props.to, true);
+    navigate(this.props.to, { replace: true });
   }
 
   render() {
