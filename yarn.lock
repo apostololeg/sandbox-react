@@ -8948,11 +8948,6 @@ preact-loadable@^1.0.0:
   resolved "https://registry.yarnpkg.com/preact-loadable/-/preact-loadable-1.0.0.tgz#31ae73689cb9613b5aaf1ff2a43a28054ca16a46"
   integrity sha512-QSPyzssrgIXjFGp+Dg+sXPJGDiNYRKRkrrbZmYNcaNOoI0cDaZM8zrtu6dxzpUIIWLFBiO5CGWKROwPz9ZFsnQ==
 
-preact-router@3:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/preact-router/-/preact-router-3.0.1.tgz#a42ef8a25b42847870658c636bb7c65a1deadb5f"
-  integrity sha512-vPnOBm9k79zWKLiOHnG72Mcq71XeEUXo/iWrHyQv8LQVzPT8SUeFauT1cqE/5R2+PPx2yA0tk77YmfbAcXHgUg==
-
 preact-svg-loader@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/preact-svg-loader/-/preact-svg-loader-0.2.1.tgz#3b50479a79b471ab71a7d4bf9e27c4e5b4d17102"
