@@ -6,6 +6,7 @@ import { sliceWhere } from 'tools/array'
 
 import { notify } from 'store/notifications'
 import { getPosts, deletePost } from 'store/post'
+import userStore from 'store/user'
 
 import withTitle from 'components/HOC/withTitle'
 import Flex from 'components/UI/Flex'
@@ -56,17 +57,23 @@ class PostList extends Component {
   }
 
   @bind
-  renderItem({ id, title }) {
+  renderItem({ id, slug, title }) {
+    const { isAdmin } = userStore;
+
     return (
       <MenuItem key={id}>
-        <h2>{title}</h2>
-        <Link href={`edit/${id}`}>Edit</Link>
-        <Button
-          onClick={() => this.deletePost(id)}
-          loading={this.store.deleting[id]}
-        >
-          Remove
-        </Button>
+        <Link href={`/post/${slug}`} isClear>
+          <h2>{title}</h2>
+        </Link>
+        {isAdmin && [
+          <Link href={`/post/edit/${id}`}>Edit</Link>,
+          <Button
+            onClick={() => this.deletePost(id)}
+            loading={this.store.deleting[id]}
+          >
+            Remove
+          </Button>
+        ]}
       </MenuItem>
     );
   }
@@ -82,14 +89,17 @@ class PostList extends Component {
   }
 
   render() {
+    const { isAdmin } = userStore;
     const { loading } = this.store;
 
     return (
       <Fragment>
-        <div className={s.header}>
-          <div className={s.gap} />
-          <Link href="new">Create New</Link>
-        </div>
+        {isAdmin && (
+          <div className={s.header}>
+            <div className={s.gap} />
+            <Link href="new">Create New</Link>
+          </div>
+        )}
         <Flex scrolled centered={loading}>
           {loading ? <Spinner size="l"/> : this.renderList()}
         </Flex>
