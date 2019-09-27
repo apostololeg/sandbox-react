@@ -1,11 +1,11 @@
 import { h } from 'preact'
 import cn from 'classnames'
 
-import RouteStore from '../store';
+import { navigate } from '../store';
 import ExternalIcon from './icons/external.svg'
 import s from './Link.styl'
 
-const Link = ({ className, children, ...props }) => {
+const Link = ({ className, children, isClear, ...props }) => {
   const { href } = props;
   const { pathname } = window.location;
 
@@ -15,6 +15,7 @@ const Link = ({ className, children, ...props }) => {
 
   const classes = cn(
     s.root,
+    isClear && s.clear,
     isExact && s.exact,
     isExternal && s.external,
     className
@@ -34,8 +35,7 @@ const Link = ({ className, children, ...props }) => {
     e.preventDefault();
 
     if (location.pathname !== href) {
-      history.pushState({}, '', href);
-      RouteStore.path = href;
+      navigate(href);
     }
   }
 

@@ -32,7 +32,7 @@ module.exports = merge(common, {
     publicPath: '/',
   },
   plugins,
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   devServer: {
     // hot: true,
     headers: {

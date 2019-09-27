@@ -1,8 +1,9 @@
 import { h, Component, Fragment } from 'preact'
 import { view } from 'preact-easy-state'
 import PathParser from 'path-parser'
+import { bind } from 'decko'
 
-import RouteStore from './store';
+import RouteStore, { navigate } from './store';
 
 function parseRouteParams(routes) {
   const items = [];
@@ -41,19 +42,33 @@ function parseRouteParams(routes) {
   return items;
 }
 
+function updateRouteState() {
+  RouteStore.path = location.pathname;
+}
+
 @view
 class Router extends Component {
   constructor(props) {
     super(props);
-    this.update();
+    this.rebuildRoutes();
+  }
+
+  componentDidMount() {
+    window.addEventListener('popstate', updateRouteState);
+    window.addEventListener('pushstate', updateRouteState);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', updateRouteState);
+    window.removeEventListener('pushstate', updateRouteState);
   }
 
   shouldComponentUpdate(nextProps) {
-    this.update(nextProps.children);
+    this.rebuildRoutes(nextProps.children);
     return true
   }
 
-  update(items = this.props.children) {
+  rebuildRoutes(items = this.props.children) {
     this.routes = parseRouteParams(items);
   }
 
@@ -76,13 +91,22 @@ class Router extends Component {
       return false
     });
 
-    return this.routes[index].render;
+    const { render } = this.routes[index];
+    const routePatch = {
+      route: { ...RouteStore, navigate }
+    };
+
+    Object.assign(render.props, params, routePatch);
+
+    return render;
   }
 
   render() {
     const Route = this.getRoute();
 
-    return Route;
+    return <Fragment key={Route.props.path || 'default'}>
+      {Route}
+    </Fragment>
   }
 }
 
