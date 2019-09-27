@@ -2,6 +2,7 @@ const merge = require('webpack-merge');
 const common = require('./common.js');
 
 const CompressionPlugin = require('compression-webpack-plugin');
+const OfflinePlugin = require('offline-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const zopfli = require('@gfx/zopfli');
 // const SentryPlugin = require('@sentry/webpack-plugin');
@@ -29,5 +30,6 @@ module.exports = merge(common, {
     //   include: './dist',
     //   ignore: ['node_modules', 'webpack.config.js'],
     // })
+    new OfflinePlugin(),
   ]
 });

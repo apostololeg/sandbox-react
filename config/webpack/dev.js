@@ -4,6 +4,7 @@ const common = require('./common.js');
 const paths = require('../paths');
 
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const proxyConfig = {
   secure: false,
@@ -16,17 +17,22 @@ const proxyConfig = {
   },
 };
 
+const plugins = [
+  new webpack.HotModuleReplacementPlugin(),
+  new webpack.NoEmitOnErrorsPlugin()
+];
+
+if (process.env.ANALYZE) {
+  plugins.push(new BundleAnalyzerPlugin());
+}
+
 module.exports = merge(common, {
   mode: 'development',
   output: {
     publicPath: '/',
   },
-  plugins: [
-    new ErrorOverlayPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
-  ],
-  devtool: 'eval-source-map',
+  plugins,
+  devtool: 'source-map',
   devServer: {
     // hot: true,
     headers: {

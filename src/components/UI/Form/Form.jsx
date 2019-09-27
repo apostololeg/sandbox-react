@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { store, view } from 'react-easy-state'
+import { h, Component } from 'preact'
+import { store, view } from 'preact-easy-state'
 import cn from 'classnames'
 import { bind } from 'decko'
 import Validator from 'fastest-validator'
@@ -13,7 +13,13 @@ import s from './Form.styl'
 const FORM_STORES = {};
 
 const Field = (formId, handleChange) => view(props => {
-  const { component: Control = Input, className, onChange, ...controlProps } = props;
+  const {
+    component: Control = Input,
+    className,
+    onChange,
+    clearMargins,
+    ...controlProps
+  } = props;
   const { values, changed, errors } = FORM_STORES[formId];
   const { name, hidden } = controlProps;
 
@@ -22,6 +28,7 @@ const Field = (formId, handleChange) => view(props => {
     className,
     s.field,
     changed[name] && s.changed,
+    clearMargins && s.clearMargins,
     hidden && s.hidden
   );
 

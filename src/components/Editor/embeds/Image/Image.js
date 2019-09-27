@@ -1,5 +1,5 @@
-import React, { Component, createRef } from 'react'
-import { store, view } from 'react-easy-state'
+import { h, Component, createRef } from 'preact'
+import { store, view } from 'preact-easy-state'
 import { bind, debounce } from 'decko'
 
 import Input from 'components/UI/Input'

@@ -2,17 +2,18 @@
 
 .root
   position relative
-  color #3089fe
-  text-decoration none
   display inline-block
   padding 5px
+
+  white-space nowrap
+  color $linkColor
+  text-decoration none
+
+  cursor pointer
   outline none
   transition color .1s ease-out
 
-  &.exact
-    color #333
-
-  &:after
+  &:before
     content ''
     position absolute
     bottom 0
@@ -22,14 +23,34 @@
     background-color $activeColor
     transform scale(0)
     transition transform .1s ease-out
+    pointer-events none
+
+  &.clear:before
+    content none;
+
+  &.exact
+    color $accentColor
+
+  &.external:before
+    background-color $accentColor
 
   &:hover
   &:active
   &:focus
     color $activeColor
 
+    &.external
+      color $accentColor
+
     &::selection
       color $accentColor
 
-    &:after
+    &:before
       transform scale(1)
+
+&.externalIcon
+  height 1em
+  width 1em
+  display inline-block
+  margin-left 3px
+  margin-bottom -2px

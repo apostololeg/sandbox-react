@@ -26,7 +26,8 @@ export const getPost = where => query(GET_POST, {
 
 export const getPosts = (where = {}) => query(GET_POSTS, {
   variables: { where },
-  dataAccessor: 'getPosts'
+  dataAccessor: 'getPosts',
+  fetchPolicy: 'no-cache',
 });
 
 export const createPost = data => mutate(CREATE_POST, {

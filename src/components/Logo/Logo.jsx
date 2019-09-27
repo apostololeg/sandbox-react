@@ -1,10 +1,10 @@
-import React from 'react';
+import { h } from 'preact';
 
-import { Link } from '@reach/router';
+import Link from 'components/Routes/Link';
 import s from './Logo.styl';
 
 const Logo = () => (
-  <Link to="/">
+  <Link href="/" isClear>
     <div className={s.root} />
   </Link>
 );

@@ -1,6 +1,6 @@
-import React from 'react';
+import { h } from 'preact';
 import cn from 'classnames';
-import { store, view } from 'react-easy-state';
+import { store, view } from 'preact-easy-state';
 
 import s from './ControlBase.styl';
 

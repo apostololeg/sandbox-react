@@ -1,25 +1,18 @@
-import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import { h, Component } from 'preact';
+
+import { setTitle } from 'store/page';
 
 class NoMatch extends Component {
-  static propTypes = {
-    // page: PropTypes.shape({
-    //     setTitle: PropTypes.func
-    // })
-  };
-
   componentDidMount() {
-    // const { setTitle } = this.props.store.page;
-
-    // setTitle('404 | Not found');
+    setTitle('404');
   }
 
   render() {
-    const { location } = this.props;
+    const { route } = this.props;
 
     return (
       <div className="NoMatch">
-        <h2>Not found "{location.pathname}".</h2>
+        <h2>Not found "{route.path}".</h2>
       </div>
     );
   }

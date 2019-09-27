@@ -1,50 +1,55 @@
-import React from 'react'
-import { Router } from '@reach/router'
-import { view } from 'react-easy-state'
+import { h } from 'preact'
+import { view } from 'preact-easy-state'
+
 import userStore from 'store/user'
 
 import LazyComponent from 'components/LazyComponent'
-
 import Home from 'components/Home'
-import Profile from 'components/Profile'
 import Auth from 'components/Auth'
-import Post from 'components/Post'
 
+import Router from './Router'
 import NoMatch from './NoMatch'
 
 function Routes() {
   const { isLogged, isAdmin } = userStore;
 
   return (
-    <Router style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
+    <Router>
       <Home path="/"/>
-      {isLogged && <Profile path="profile" />}
+      <Auth path="/register" type="register"/>
+      <Auth path="/login" type="login"/>
+      <Auth path="/logout" type="logout" />
+
+      <LazyComponent
+        path="/posts"
+        loading={() => import('components/PostList')}
+      />
+      <LazyComponent
+        path="/post/:slug"
+        loading={() => import('components/Post')}
+      />
+
+      {isLogged && <LazyComponent
+        path="/profile"
+        loading={() => import('components/Profile')}
+      />}
+
       {isAdmin && [
-        [
-          'admin',
-          () => import('components/Admin')
-        ],
-        [
-          'admin/posts',
-          () => import('components/Admin/Posts')
-        ],
-        [
-          'admin/posts/new',
-          () => import('components/Admin/PostEditor')
-        ],
-        [
-          'admin/posts/edit/:postId',
-          () => import('components/Admin/PostEditor')
-        ]
-      ].map(([path, loader]) => {
-        const props = { path, loader, key: path };
-        return <LazyComponent {...props} />;
-      })}
-      <Post path="post/:slug" />
-      <Auth path="register" type="register"/>
-      <Auth path="login" type="login"/>
-      <Auth path="logout" type="logout" />
-      <NoMatch default />
+        <LazyComponent
+          path="/admin"
+          loading={() => import('components/Admin')}
+        />,
+        <LazyComponent
+          path="/posts/new"
+          loading={() => import('components/Admin/PostEditor')}
+        />,
+        <LazyComponent
+          path="/posts/edit/:postId"
+          loading={() => import('components/Admin/PostEditor')}
+        />
+      ]}
+
+      <NoMatch />
     </Router>
   );
 }

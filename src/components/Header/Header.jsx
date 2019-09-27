@@ -1,5 +1,5 @@
-import React from 'react';
-import { view } from 'react-easy-state';
+import { h } from 'preact';
+import { view } from 'preact-easy-state';
 
 import Container from 'components/UI/Container';
 import User from 'components/User';

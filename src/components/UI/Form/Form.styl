@@ -9,6 +9,12 @@
   display flex
   flex-direction column
 
+  & + &
+    margin-top $indent_s
+
+    &.clearMargins
+      margin-top 0
+
   &.changed::after
     contnet ''
     position absolute

@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import { store, view } from 'react-easy-state'
-import { Redirect } from '@reach/router'
+import { h, Component, Fragment } from 'preact'
+import { store, view } from 'preact-easy-state'
 import { bind } from 'decko'
 
 import { capitalize } from 'tools/string'
@@ -9,8 +8,9 @@ import { notify } from 'store/notifications'
 import PageStore from 'store/page'
 
 import withTitle from 'components/HOC/withTitle'
+import Redirect from 'components/UI/Redirect'
+import Link from 'components/Routes/Link'
 import Flex from 'components/UI/Flex'
-import Link from 'components/UI/Link'
 import Form, { SubmitButtons } from 'components/UI/Form'
 
 import Login from './Login'
@@ -69,7 +69,7 @@ class Auth extends Component {
           <h2>{title}</h2>
           {titleContent}
           {titleLink && (
-            <Link to={titleLink.to} className={s.link}>
+            <Link href={titleLink.to} className={s.link}>
               {titleLink.text}
             </Link>
           )}

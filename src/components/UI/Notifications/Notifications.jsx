@@ -1,5 +1,5 @@
-import React from 'react';
-import { view } from 'react-easy-state';
+import { h } from 'preact';
+import { view } from 'preact-easy-state';
 import cn from 'classnames';
 
 import NStore, { pause, unpause, close } from 'store/notifications';

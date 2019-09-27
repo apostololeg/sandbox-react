@@ -1,11 +1,8 @@
-import React from 'react'
+import { h } from 'preact'
 import withTitle from 'components/HOC/withTitle'
 
 function Profile() {
-  return (
-    <h1>Profile!</h1>
-    // TODO: profile edit form
-  );
+  return "Your profile";
 }
 
 export default withTitle('Profile')(Profile);

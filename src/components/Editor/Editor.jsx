@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { h, Component } from 'preact'
 import { bind, debounce } from 'decko'
 
 import Flex from 'components/UI/Flex'
