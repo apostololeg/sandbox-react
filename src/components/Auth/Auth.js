@@ -1,5 +1,4 @@
 import { h, Component, Fragment } from 'preact'
-import { store, view } from 'preact-easy-state'
 import { bind } from 'decko'
 
 import { capitalize } from 'tools/string'
@@ -8,8 +7,7 @@ import { notify } from 'store/notifications'
 import PageStore from 'store/page'
 
 import withTitle from 'components/HOC/withTitle'
-import Redirect from 'components/UI/Redirect'
-import Link from 'components/Routes/Link'
+import { Link } from 'components/Router'
 import Flex from 'components/UI/Flex'
 import Form, { SubmitButtons } from 'components/UI/Form'
 
@@ -26,10 +24,7 @@ const Forms = {
 };
 
 @withTitle('Auth')
-@view
 class Auth extends Component {
-  store = store({ needRedirect: false });
-
   componentDidMount() {
     PageStore.isAuth = true;
   }
@@ -40,9 +35,11 @@ class Auth extends Component {
 
   @bind
   async onSubmit(onSubmit, payload) {
+    const { route } = this.props;
+
     try {
       await onSubmit(payload);
-      this.store.needRedirect = true;
+      route.navigate('/');
     } catch(err) {
       notify({
         type: 'error',
@@ -104,12 +101,7 @@ class Auth extends Component {
 
   render() {
     const { type } = this.props;
-    const { needRedirect } = this.store;
     const AuthForm = Forms[capitalize(type)];
-
-    if (needRedirect) {
-      return <Redirect to="/" noThrow />;
-    }
 
     return (
       <Flex centered scrolled>

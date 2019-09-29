@@ -137,7 +137,7 @@ class PostEditor extends Component {
       const data = await createPost(post);
       this.setPostData(data)
       this.store.inProgress = false;
-      route.navigate(`/posts/edit/${data.id}`, { replace: true });
+      route.navigate(`/posts/${data.id}/edit`, { replace: true });
     } catch(e) {
       this.store.inProgress = false;
       notify({

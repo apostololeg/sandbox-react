@@ -7,6 +7,7 @@ import RouteStore, { navigate } from './store';
 
 function parseRouteParams(routes) {
   const items = [];
+  const exactItems = [];
 
   function parse(route) {
     if (!route) {
@@ -23,15 +24,15 @@ function parseRouteParams(routes) {
       return
     }
 
-    const { path } = route.props;
-    const defaultParams = { render: route };
+    const { path, exact } = route.props;
+    const defaultParams = { path, exact, render: route };
 
     if (!path) {
-      items.unshift(defaultParams);
+      exactItems.unshift(defaultParams);
       return
     }
 
-    items.push({
+    (exact ? exactItems : items).push({
       ...defaultParams,
       parsed: new PathParser(path)
     });
@@ -39,7 +40,7 @@ function parseRouteParams(routes) {
 
   parse(routes);
 
-  return items;
+  return [...exactItems, ...items];
 }
 
 function updateRouteState() {
@@ -76,9 +77,14 @@ class Router extends Component {
     let index = 0;
     let params = {};
 
-    this.routes.some(({ parsed }, i) => {
+    this.routes.some(({ path, exact, parsed }, i) => {
       if (!parsed) {
         return false
+      }
+
+      if (exact && path === RouteStore.path) {
+        index = i;
+        return true;
       }
 
       params = parsed.test(RouteStore.path);
@@ -111,3 +117,5 @@ class Router extends Component {
 }
 
 export default Router;
+export { default as Link } from './Link'
+export { default as Redirect } from './Redirect'

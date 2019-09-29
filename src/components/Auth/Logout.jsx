@@ -1,9 +1,8 @@
 import { h, Component } from 'preact'
-import { store, view } from 'preact-easy-state'
+import { bind } from 'decko'
 
 import UserStore, { logout } from 'store/user'
 
-import Redirect from 'components/UI/Redirect'
 import Spinner from 'components/UI/Spinner'
 
 import s from './Auth.styl'
@@ -11,19 +10,33 @@ import s from './Auth.styl'
 const REDIRECT_TIMEOUT = 500;
 
 class Logout extends Component {
-  store = store({ redirect: false });
-
-  async componentDidMount() {
+  componentDidMount() {
     if (!UserStore.isLogged) {
-      this.store.redirect = true;
+      this.redirect();
       return
     }
 
+    this.logout();
+  }
+
+  async logout() {
+    const startTime = Date.now();
     await logout();
-    this._timeout = setTimeout(
-      () => this.store.redirect = true,
-      REDIRECT_TIMEOUT
-    );
+    const delay = REDIRECT_TIMEOUT - (Date.now() - startTime);
+
+    if (delay <= 0) {
+      this.redirect();
+      return
+    }
+
+    this._timeout = setTimeout(this.redirect, delay);
+  }
+
+  @bind
+  redirect() {
+    const { route } = this.props;
+
+    route.navigate('/', { replace: true });
   }
 
   componentWillUnmount() {
@@ -31,10 +44,6 @@ class Logout extends Component {
   }
 
   render() {
-    if (this.store.redirect) {
-      return <Redirect to='/' noThrow />
-    }
-
     return (
       <div className={s.wrap}>
         logging out<Spinner paddedX />
@@ -42,4 +51,4 @@ class Logout extends Component {
     );
   }
 }
-export default view(Logout);
+export default Logout;

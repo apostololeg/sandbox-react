@@ -4,7 +4,7 @@ import { view } from 'preact-easy-state'
 import UserStore from 'store/user'
 import PageStore from 'store/page'
 
-import Link from 'components/Routes/Link'
+import { Link } from 'components/Router'
 import Popup from 'components/UI/Popup'
 import Menu, { MenuItem } from 'components/UI/Menu'
 

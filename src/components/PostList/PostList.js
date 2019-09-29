@@ -8,12 +8,12 @@ import { notify } from 'store/notifications'
 import { getPosts, deletePost } from 'store/post'
 import userStore from 'store/user'
 
+import { Link } from 'components/Router'
 import withTitle from 'components/HOC/withTitle'
 import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Spinner from 'components/UI/Spinner'
 import Button from 'components/UI/Button'
-import Link from 'components/Routes/Link'
 
 import s from './PostList.styl'
 
@@ -62,11 +62,11 @@ class PostList extends Component {
 
     return (
       <MenuItem key={id}>
-        <Link href={`/post/${slug}`} isClear>
+        <Link href={`/posts/${slug}`} isClear>
           <h2>{title}</h2>
         </Link>
         {isAdmin && [
-          <Link href={`/posts/edit/${id}`}>Edit</Link>,
+          <Link href={`/posts/${id}/edit`}>Edit</Link>,
           <Button
             onClick={() => this.deletePost(id)}
             loading={this.store.deleting[id]}

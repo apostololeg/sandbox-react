@@ -2,7 +2,7 @@ import { h } from 'preact'
 
 import withTitle from 'components/HOC/withTitle'
 import Menu, { MenuItem } from 'components/UI/Menu'
-import Link from 'components/Routes/Link'
+import { Link } from 'components/Router'
 
 function Home() {
   return (

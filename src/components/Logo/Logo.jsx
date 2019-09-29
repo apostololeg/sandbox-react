@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-import Link from 'components/Routes/Link';
+import { Link } from 'components/Router';
 import s from './Logo.styl';
 
 const Logo = () => (

@@ -3,11 +3,11 @@ import { view } from 'preact-easy-state'
 
 import userStore from 'store/user'
 
+import Router from 'components/Router'
 import LazyComponent from 'components/LazyComponent'
 import Home from 'components/Home'
 import Auth from 'components/Auth'
 
-import Router from './Router'
 import NoMatch from './NoMatch'
 
 function Routes() {
@@ -25,7 +25,7 @@ function Routes() {
         loading={() => import('components/PostList')}
       />
       <LazyComponent
-        path="/post/:slug"
+        path="/posts/:slug"
         loading={() => import('components/Post')}
       />
 
@@ -41,10 +41,11 @@ function Routes() {
         />,
         <LazyComponent
           path="/posts/new"
+          exact
           loading={() => import('components/Admin/PostEditor')}
         />,
         <LazyComponent
-          path="/posts/edit/:postId"
+          path="/posts/:postId/edit"
           loading={() => import('components/Admin/PostEditor')}
         />
       ]}
