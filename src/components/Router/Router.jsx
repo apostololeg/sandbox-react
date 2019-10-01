@@ -3,7 +3,7 @@ import { view } from 'preact-easy-state'
 import PathParser from 'path-parser'
 import { bind } from 'decko'
 
-import RouteStore, { navigate } from './store';
+import RouteStore, { navigate, replaceState } from './store';
 
 function parseRouteParams(routes) {
   const items = [];
@@ -99,7 +99,7 @@ class Router extends Component {
 
     const { render } = this.routes[index];
     const routePatch = {
-      route: { ...RouteStore, navigate }
+      route: { ...RouteStore, navigate, replaceState }
     };
 
     Object.assign(render.props, params, routePatch);
@@ -119,3 +119,4 @@ class Router extends Component {
 export default Router;
 export { default as Link } from './Link'
 export { default as Redirect } from './Redirect'
+export * as store from './store'

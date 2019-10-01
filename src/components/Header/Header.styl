@@ -1,16 +1,13 @@
-@import '~theme/theme.styl';
+@import '~theme/theme.styl'
 
 .root
   display flex
-  align-items center
+  align-items flex-start
   z-index 10
 
 .title
-  margin 0 20px
-  white-space nowrap
-  overflow hidden
-  text-overflow ellipsis
-  padding 0
-
-.gap
+  display flex
+  align-items center
   flex-grow 1
+  min-width 0
+  padding-right $indent_s

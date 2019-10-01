@@ -3,8 +3,8 @@ import { view } from 'preact-easy-state'
 
 import userStore from 'store/user'
 
-import withTitle from 'components/HOC/withTitle'
 import { Redirect } from 'components/Router'
+import { Title } from 'components/Header'
 import Flex from 'components/UI/Flex'
 
 function Admin() {
@@ -14,9 +14,10 @@ function Admin() {
 
   return (
     <Flex className="Admin">
+      <Title text="Admin"/>
       What's going on here?
     </Flex>
   );
 }
 
-export default withTitle('Admin')(view(Admin));
+export default view(Admin);

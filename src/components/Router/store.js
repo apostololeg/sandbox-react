@@ -8,3 +8,7 @@ export function navigate(href, { replace } = {}) {
   history[replace ? 'replaceState' : 'pushState']({}, '', href);
   RouteStore.path = href;
 }
+
+export function replaceState(href) {
+  history.replaceState({}, '', href);
+}

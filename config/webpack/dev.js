@@ -34,7 +34,7 @@ module.exports = merge(common, {
   plugins,
   devtool: 'source-map',
   devServer: {
-    // hot: true,
+    hot: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true,

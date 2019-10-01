@@ -9,7 +9,7 @@ import { getPosts, deletePost } from 'store/post'
 import userStore from 'store/user'
 
 import { Link } from 'components/Router'
-import withTitle from 'components/HOC/withTitle'
+import { Title } from 'components/Header'
 import Flex from 'components/UI/Flex'
 import Menu, { MenuItem } from 'components/UI/Menu'
 import Spinner from 'components/UI/Spinner'
@@ -17,7 +17,6 @@ import Button from 'components/UI/Button'
 
 import s from './PostList.styl'
 
-@withTitle('PostList')
 @view
 class PostList extends Component {
   store = store({
@@ -62,11 +61,11 @@ class PostList extends Component {
 
     return (
       <MenuItem key={id}>
-        <Link href={`/posts/${slug}`} isClear>
-          <h2>{title}</h2>
+        <Link href={slug} isClear>
+          <h2>{title || `[${slug}]`}</h2>
         </Link>
         {isAdmin && [
-          <Link href={`/posts/${id}/edit`}>Edit</Link>,
+          <Link href={`${slug}/edit`}>Edit</Link>,
           <Button
             onClick={() => this.deletePost(id)}
             loading={this.store.deleting[id]}
@@ -94,12 +93,9 @@ class PostList extends Component {
 
     return (
       <Fragment>
-        {isAdmin && (
-          <div className={s.header}>
-            <div className={s.gap} />
-            <Link href="new">Create New</Link>
-          </div>
-        )}
+        <Title text="Posts">
+          {isAdmin && <Link href="new">Create New</Link>}
+        </Title>
         <Flex scrolled centered={loading}>
           {loading ? <Spinner size="l"/> : this.renderList()}
         </Flex>

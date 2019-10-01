@@ -1,11 +1,16 @@
+@import '~theme/theme.styl'
+
 .root
-  height: 30px;
-  width: 30px;
-  background: url(/logo.svg) no-repeat center;
-  transition: transform .1s ease-out;
+  height 30px
+  width 30px
+  min-width 30px
+  background url(/logo.svg) no-repeat center
+  transition transform .1s ease-out
+  padding 0
+  margin-right $indent_s
 
   &:hover
-    transform: scale(1.03);
+    transform scale(1.05)
 
   &:active
-    transform: none;
+    transform none

@@ -7,15 +7,16 @@ import Logo from 'components/Logo';
 
 import PageStore from 'store/page';
 
+import Title, { Gap } from './Title';
 import s from './Header.styl';
 
 const Header = () => (
   <Container className={s.root}>
     <Logo />
-    <h1 className={s.title}>{PageStore.title}</h1>
-    <div className={s.gap} />
+    <div className={s.title} id="app-title" />
     <User />
   </Container>
 );
 
 export default view(Header);
+export { Title, Gap } from './Title';

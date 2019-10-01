@@ -42,11 +42,16 @@ function Routes() {
         <LazyComponent
           path="/posts/new"
           exact
-          loading={() => import('components/Admin/PostEditor')}
+          loading={() => import('components/Post/PostEditor')}
         />,
         <LazyComponent
-          path="/posts/:postId/edit"
-          loading={() => import('components/Admin/PostEditor')}
+          path="/posts/:slug/edit"
+          loading={() => import('components/Post/PostEditor')}
+        />,
+        <LazyComponent
+          path="/posts/:slug/preview"
+          loading={() => import('components/Post')}
+          preview
         />
       ]}
 

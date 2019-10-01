@@ -3,6 +3,7 @@ import { bind } from 'decko'
 
 import UserStore, { logout } from 'store/user'
 
+import { store as RouterStore } from 'components/Router'
 import Spinner from 'components/UI/Spinner'
 
 import s from './Auth.styl'
@@ -34,9 +35,7 @@ class Logout extends Component {
 
   @bind
   redirect() {
-    const { route } = this.props;
-
-    route.navigate('/', { replace: true });
+    RouterStore.navigate('/', { replace: true });
   }
 
   componentWillUnmount() {

@@ -9,7 +9,7 @@ let root;
 function init() {
   root = render(
     <ErrorBoundary><App/></ErrorBoundary>,
-    document.body,
+    document.getElementById('app-root'),
     root
   );
 }
@@ -20,6 +20,7 @@ if (PRODUCTION) {
 }
 
 if (module.hot) {
+  module.hot.accept();
   module.hot.accept('./components/App', () => requestAnimationFrame(init));
 }
 

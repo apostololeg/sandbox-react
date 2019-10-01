@@ -1,8 +1,14 @@
-import { h } from 'preact'
-import withTitle from 'components/HOC/withTitle'
+import { h, Fragment } from 'preact'
+
+import { Title } from 'components/Header'
 
 function Profile() {
-  return "Your profile";
+  return (
+    <Fragment>
+      <Title text="Profile" />
+      Your profile
+    </Fragment>
+  );
 }
 
-export default withTitle('Profile')(Profile);
+export default Profile;

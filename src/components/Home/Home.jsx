@@ -1,17 +1,20 @@
-import { h } from 'preact'
+import { h, Fragment } from 'preact'
 
-import withTitle from 'components/HOC/withTitle'
 import Menu, { MenuItem } from 'components/UI/Menu'
+import { Title } from 'components/Header'
 import { Link } from 'components/Router'
 
 function Home() {
   return (
-    <Menu>
-      <MenuItem>
-        <Link href="posts">Posts</Link>
-      </MenuItem>
-    </Menu>
+    <Fragment>
+      <Title text="~/apostol" />
+      <Menu>
+        <MenuItem>
+          <Link href="posts">Posts</Link>
+        </MenuItem>
+      </Menu>
+    </Fragment>
   );
 }
 
-export default withTitle('~/apostol')(Home);
+export default Home;

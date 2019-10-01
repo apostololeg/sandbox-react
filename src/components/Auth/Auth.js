@@ -6,7 +6,7 @@ import { capitalize } from 'tools/string'
 import { notify } from 'store/notifications'
 import PageStore from 'store/page'
 
-import withTitle from 'components/HOC/withTitle'
+import { Title } from 'components/Header'
 import { Link } from 'components/Router'
 import Flex from 'components/UI/Flex'
 import Form, { SubmitButtons } from 'components/UI/Form'
@@ -23,7 +23,6 @@ const Forms = {
   Register
 };
 
-@withTitle('Auth')
 class Auth extends Component {
   componentDidMount() {
     PageStore.isAuth = true;
@@ -105,6 +104,7 @@ class Auth extends Component {
 
     return (
       <Flex centered scrolled>
+        <Title text="Auth" />
         <AuthForm>{this.renderAuthForm}</AuthForm>
       </Flex>
     );

@@ -5,7 +5,7 @@ import { navigate } from '../store';
 import ExternalIcon from './icons/external.svg'
 import s from './Link.styl'
 
-const Link = ({ className, children, isClear, ...props }) => {
+const Link = ({ className, children, isClear, isDisabled, ...props }) => {
   const { href } = props;
   const { pathname } = window.location;
 
@@ -15,6 +15,7 @@ const Link = ({ className, children, isClear, ...props }) => {
 
   const classes = cn(
     s.root,
+    isDisabled && s.disabled,
     isClear && s.clear,
     isExact && s.exact,
     isExternal && s.external,
