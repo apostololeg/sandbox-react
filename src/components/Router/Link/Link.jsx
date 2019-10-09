@@ -5,7 +5,7 @@ import { navigate } from '../store';
 import ExternalIcon from './icons/external.svg'
 import s from './Link.styl'
 
-const Link = ({ className, children, isClear, isDisabled, ...props }) => {
+const Link = ({ className, children, isClear, isClearPadding, isDisabled, ...props }) => {
   const { href } = props;
   const { pathname } = window.location;
 
@@ -16,9 +16,10 @@ const Link = ({ className, children, isClear, isDisabled, ...props }) => {
   const classes = cn(
     s.root,
     isDisabled && s.disabled,
-    isClear && s.clear,
-    isExact && s.exact,
     isExternal && s.external,
+    isExact && s.exact,
+    isClear && s.clear,
+    isClearPadding && s.clearPadding,
     className
   );
 
@@ -28,14 +29,17 @@ const Link = ({ className, children, isClear, isDisabled, ...props }) => {
 
   if (isExternal) {
     props.target = '_blank';
+
+    if (!/^http/.test(href)) {
+      props.href = `http://${href}`;
+    }
   }
 
   function handleClick(e) {
     const { href } = props;
 
-    e.preventDefault();
-
-    if (location.pathname !== href) {
+    if (!isExternal && location.pathname !== href) {
+      e.preventDefault();
       navigate(href);
     }
   }

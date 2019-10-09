@@ -7,9 +7,16 @@ const Link = ({ editor, state: { selection }, ...props }) => {
   const onClick = () => {
     const { index, length } = selection;
     const text = editor.getText(index, length);
-    const link = prompt(`Link for "${text}"`); // eslint-disable-line
+    const href = prompt(`Link for "${text}"`); // eslint-disable-line
+    // TODO: upgrade popup and ask more props for component
 
-    editor.format('link', link);
+    editor.deleteText(index, length);
+    editor.insertEmbed(index, 'component', {
+      component: 'Link',
+      isClearPadding: true,
+      text,
+      href
+    });
   };
 
   return (
