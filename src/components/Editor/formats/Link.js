@@ -6,15 +6,15 @@ import Button from 'components/UI/Button'
 const Link = ({ editor, state: { selection }, ...props }) => {
   const onClick = () => {
     const { index, length } = selection;
-    const text = editor.getText(index, length);
-    const href = prompt(`Link for "${text}"`); // eslint-disable-line
+    const children = editor.getText(index, length);
+    const href = prompt(`Link for "${children}"`); // eslint-disable-line
     // TODO: upgrade popup and ask more props for component
 
     editor.deleteText(index, length);
     editor.insertEmbed(index, 'component', {
       component: 'Link',
       isClearPadding: true,
-      text,
+      children,
       href
     });
   };

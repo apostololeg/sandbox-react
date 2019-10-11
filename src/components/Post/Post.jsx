@@ -1,12 +1,14 @@
-import { h, Component, Fragment } from 'preact'
+import { h, Component, Fragment, createRef } from 'preact'
 import { store, view } from 'preact-easy-state'
 
 import LS from 'tools/localStorage'
+import Time from 'tools/time'
 
 import UserStore from 'store/user'
 import { getPosts } from 'store/post'
 
 import { Title } from 'components/Header'
+import { hydrateComponents } from 'components/Editor'
 import { Link } from 'components/Router'
 import Flex, { mix as flex } from 'components/UI/Flex'
 import Spinner from 'components/UI/Spinner'
@@ -14,6 +16,8 @@ import Spinner from 'components/UI/Spinner'
 import s from './Post.styl';
 
 class Post extends Component {
+  container = createRef();
+
   store = store({
     data: {},
     loading: false,
@@ -26,6 +30,7 @@ class Post extends Component {
     if (preview) {
       this.store.data = LS.get(`editor-post-${slug}`);
       this.store.hasPreview = true;
+      this.hydrate();
       return
     }
 
@@ -39,6 +44,11 @@ class Post extends Component {
     const posts = await getPosts({ slug });
     this.store.data = posts.pop();
     this.store.loading = false;
+    this.hydrate();
+  }
+
+  hydrate() {
+    Time.nextTick(() => hydrateComponents(this.container.current));
   }
 
   renderTitle() {
@@ -85,7 +95,10 @@ class Post extends Component {
     return (
       <Fragment>
         {author && (author.name || author.email)}
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <div
+          ref={this.container}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
       </Fragment>
     );
   }
