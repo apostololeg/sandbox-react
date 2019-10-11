@@ -6,7 +6,7 @@ import { Link } from 'components/Router'
 import s from './Logo.styl'
 
 const Logo = ({ className }) => (
-  <Link href="/" className={cn(s.root, className)} isClearPadding />
+  <Link href="/" className={cn(s.root, className)} isClear />
 );
 
 export default Logo;

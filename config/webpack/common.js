@@ -157,7 +157,6 @@ module.exports = {
       title: PAGE_TITLE,
       filename: 'index.html',
       template: `${paths.assets}/index.html`,
-      chunksSortMode: 'dependency',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -176,6 +175,6 @@ module.exports = {
       filename: PRODUCTION ? '[name].[hash].css' : '[name].css',
       chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css',
     }),
-    new webpack.NamedModulesPlugin()
+    new webpack.NamedModulesPlugin(),
   ]
 };

@@ -3,7 +3,6 @@ const merge = require('webpack-merge');
 const common = require('./common.js');
 const paths = require('../paths');
 
-const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const proxyConfig = {
