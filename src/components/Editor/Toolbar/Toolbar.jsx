@@ -6,6 +6,9 @@ import Headers from '../formats/Headers';
 import Bold from '../formats/Bold';
 import Italic from '../formats/Italic';
 import Link from '../formats/Link';
+import List from '../formats/List';
+import IndentPlus from '../formats/IndentPlus';
+import IndentMinus from '../formats/IndentMinus';
 import Image from '../embeds/Image';
 
 import s from './Toolbar.styl';
@@ -60,6 +63,7 @@ class Toolbar extends Component {
         <Italic key="italic" {...itemProps} />
         <Link key="link" {...itemProps} />
         <Image key="image" {...itemProps} />
+        <List key="list" {...itemProps} />
       </div>
     );
   }

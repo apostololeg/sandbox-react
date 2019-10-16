@@ -2,10 +2,13 @@
 
 * {
   margin: 0;
-  padding: 0;
   border: 0;
   font-family: Play;
   outline: none;
+}
+
+*:not(ul) {
+  padding: 0;
 }
 
 body {
