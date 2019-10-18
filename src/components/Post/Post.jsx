@@ -25,30 +25,38 @@ class Post extends Component {
   });
 
   componentDidMount() {
-    const { preview, slug } = this.props;
+    const { preview } = this.props;
 
     if (preview) {
-      this.store.data = LS.get(`editor-post-${slug}`);
-      this.store.hasPreview = true;
-      this.hydrate();
+      this.loadLocal();
       return
     }
 
-    this.loadPost();
+    this.loadRemote();
   }
 
-  async loadPost() {
+  loadLocal() {
+    const { slug } = this.props;
+
+    this.store.data = LS.get(`editor-post-${slug}`);
+    this.store.hasPreview = true;
+
+    this.hydrate();
+  }
+
+  async loadRemote() {
     const { slug } = this.props;
 
     this.store.loading = true;
     const posts = await getPosts({ slug });
     this.store.data = posts.pop();
     this.store.loading = false;
+
     this.hydrate();
   }
 
   hydrate() {
-    Time.nextTick(() => hydrateComponents(this.container.current));
+    Time.after(100, () => hydrateComponents(this.container.current));
   }
 
   renderTitle() {
@@ -90,15 +98,18 @@ class Post extends Component {
       return <Flex><Spinner /></Flex>;
     }
 
-    const { author, content } = data;
+    const { author, createdAt, content } = data;
 
     return (
       <Fragment>
-        {author && (author.name || author.email)}
         <div
           ref={this.container}
           dangerouslySetInnerHTML={{ __html: content }}
         />
+        <div className={s.footer}>
+          {author && (author.name || author.email)}
+          {new Date(createdAt)}
+        </div>
       </Fragment>
     );
   }
