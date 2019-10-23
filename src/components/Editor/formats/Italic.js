@@ -3,17 +3,26 @@ import { view } from 'preact-easy-state'
 
 import Button from 'components/UI/Button'
 
-const Italic = ({ editor, state: { format, selection }, ...props }) => {
-  const onClick = () => {
-    const val = !format.italic;
+import IconItalic from './icons/italic.svg'
 
-    editor.formatText(selection, 'italic', val);
-    format.italic = val;
-  };
+const Italic = ({ editor, state, ...props }) => {
+  const { format, hasUserSelection, selection, blotSelection } = state;
+    const currSelection = hasUserSelection ? selection : blotSelection;
+
+    const onClick = () => {
+      const val = !format.italic;
+
+      editor.formatText(currSelection, 'italic', val);
+      format.italic = val;
+
+      if (!val && !hasUserSelection) {
+        editor.setSelection(blotSelection);
+      }
+    };
 
   return (
-    <Button onClick={onClick} {...props} disabled={selection.length === 0}>
-      Italic
+    <Button onClick={onClick} {...props} checked={format.italic}>
+      <IconItalic height="20px" />
     </Button>
   );
 }

@@ -1,4 +1,4 @@
-import { h, render, Component } from 'preact'
+import { h, Component } from 'preact'
 import { bind, debounce } from 'decko'
 
 import Flex from 'components/UI/Flex'
@@ -8,6 +8,7 @@ import tools from './tools'
 
 import s from './Editor.styl'
 import { hydrateComponents } from './Editor.helpers'
+import PostRenderHelpers from './PostRenderHelpers'
 
 const ON_CHANGE_DELAY = 1000;
 
@@ -78,6 +79,7 @@ class Editor extends Component {
 
     return (
       <Flex className={s.root}>
+        <PostRenderHelpers />
         {showToolbar && <Toolbar editor={this.editor} tools={this.tools} />}
         <Flex scrolled id="editor" className={s.editor} />
       </Flex>
@@ -87,5 +89,6 @@ class Editor extends Component {
 
 export {
   Editor as default,
-  hydrateComponents
+  hydrateComponents,
+  PostRenderHelpers
 };

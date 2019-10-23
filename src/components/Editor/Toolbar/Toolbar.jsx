@@ -1,21 +1,29 @@
-import { h, Component } from 'preact';
-import { store, view } from 'preact-easy-state';
-import { bind, debounce } from 'decko';
+import { h, Component } from 'preact'
+import { store, view } from 'preact-easy-state'
+import { bind, debounce } from 'decko'
 
-import Headers from '../formats/Headers';
-import Bold from '../formats/Bold';
-import Italic from '../formats/Italic';
-import Link from '../formats/Link';
-import Image from '../embeds/Image';
+import Headers from '../formats/Headers'
+import Bold from '../formats/Bold'
+import Italic from '../formats/Italic'
+import Link from '../formats/Link'
+import ListBulleted from '../formats/ListBulleted'
+import ListNumbered from '../formats/ListNumbered'
+import IndentPlus from '../formats/IndentPlus'
+import IndentMinus from '../formats/IndentMinus'
+import Image from '../embeds/Image'
 
-import s from './Toolbar.styl';
+import s from './Toolbar.styl'
 
-const state = store({
-  selection: false,
-  format: {},
-});
-
+@view
 class Toolbar extends Component {
+  constructor(props) {
+    super(props);
+    this.store = store({
+      selection: false,
+      format: {},
+    });
+  }
+
   componentDidMount() {
     const { editor } = this.props;
 
@@ -39,9 +47,26 @@ class Toolbar extends Component {
   @bind
   updateState() {
     const { editor } = this.props;
+    const editorSelection = editor.getSelection();
+    const blotSelection = this.getBlotSelection(Object(editorSelection).index);
+    const selection = editorSelection || blotSelection;
 
-    state.selection = editor.getSelection() || [];
-    state.format = editor.getFormat(state.selection);
+    Object.assign(this.store, {
+      selection,
+      blotSelection,
+      hasUserSelection: selection.length > 0,
+      format: editor.getFormat(selection)
+    });
+  }
+
+  getBlotSelection(index = 0) {
+    const { editor } = this.props;
+    const blot = editor.scroll.path(index).slice(-1)[0][0];
+
+    return {
+      index: blot.offset(editor.scroll),
+      length: blot.length()
+    };
   }
 
   render() {
@@ -50,7 +75,7 @@ class Toolbar extends Component {
       className: s.item,
       editor,
       tools,
-      state,
+      state: this.store,
     };
 
     return (
@@ -60,9 +85,13 @@ class Toolbar extends Component {
         <Italic key="italic" {...itemProps} />
         <Link key="link" {...itemProps} />
         <Image key="image" {...itemProps} />
+        <ListBulleted key="list-bulleted" {...itemProps} />
+        <ListNumbered key="list-numbered" {...itemProps} />
+        <IndentMinus key="intent-minus" {...itemProps} />
+        <IndentPlus key="intent-plus" {...itemProps} />
       </div>
     );
   }
 };
 
-export default view(Toolbar);
+export default Toolbar;

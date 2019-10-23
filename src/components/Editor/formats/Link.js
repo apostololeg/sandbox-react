@@ -3,6 +3,8 @@ import { view } from 'preact-easy-state'
 
 import Button from 'components/UI/Button'
 
+import IconLink from './icons/link.svg'
+
 const Link = ({ editor, state: { selection }, ...props }) => {
   const onClick = () => {
     const { index, length } = selection;
@@ -21,7 +23,7 @@ const Link = ({ editor, state: { selection }, ...props }) => {
 
   return (
     <Button onClick={onClick} {...props} disabled={selection.length === 0}>
-      Link
+      <IconLink height="20px" />
     </Button>
   );
 }

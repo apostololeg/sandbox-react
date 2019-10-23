@@ -34,6 +34,7 @@ module.exports = {
     alias: {
       config: paths.config,
       quill: `${paths.modules}/quill`,
+      'quill-css': `${paths.modules}/quill/dist/quill.core.css`,
       'react': 'preact/compat',
       'react-dom': 'preact/compat',
       'react-dom/test-utils': 'preact/test-utils'
@@ -41,7 +42,7 @@ module.exports = {
     plugins: [
       new ComponentDirectoryPlugin()
     ],
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.css']
   },
   module: {
     noParse: /node_modules\/quill\/dist/,
@@ -57,13 +58,6 @@ module.exports = {
             /\.quill\.js$/,
           ]
         }
-      },
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader"
-        ]
       },
       {
         test: /\.styl$/,

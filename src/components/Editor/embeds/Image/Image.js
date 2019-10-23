@@ -8,7 +8,10 @@ import Popup from 'components/UI/Popup'
 
 import FileUploader from 'components/FileUploader'
 
+import IconImage from '../icons/image.svg'
+
 import s from './Image.styl';
+
 
 class Image extends Component {
   @bind
@@ -60,9 +63,9 @@ class Image extends Component {
     const { uploaded } = this.store;
 
     return (
-      <Popup {...props} outlined horizontal="left" onClose={this.onPopupClose}>
+      <Popup {...props} horizontal="left" onClose={this.onPopupClose}>
         <Button {...props}>
-          Image
+          <IconImage height="20px" />
         </Button>
         <div className={s.popupContainer}>
           <FileUploader

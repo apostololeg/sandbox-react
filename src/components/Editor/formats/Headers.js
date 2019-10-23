@@ -9,19 +9,13 @@ const OPTIONS = [
   { text: 'Header 3', val: 'h3' },
 ];
 
-const Headers = ({ editor, state: { format }, ...props }) => {
+const Headers = ({ editor, state: { format, selection }, ...props }) => {
   const getValue = () => Object(OPTIONS[format.header - 1]).val;
   const onChange = val => {
-    const range = editor.getSelection();
-
-    if (!range) {
-      return;
-    }
-
     const newVal = val === getValue() ? false : val;
 
-    editor.removeFormat(range);
-    editor.formatLine(range, 'header', newVal);
+    editor.removeFormat(selection);
+    editor.formatLine(selection, 'header', newVal);
   };
 
   return (
