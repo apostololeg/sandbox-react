@@ -164,7 +164,23 @@ module.exports = {
         minifyURLs: true
       }
     }),
-    new FaviconWebpackPlugin(`${paths.assets}/logo.svg`),
+    new FaviconWebpackPlugin({
+      logo: `${paths.assets}/logo.svg`,
+      mode: 'webapp',     // optional can be 'webapp' or 'light' - 'webapp' by default
+      devMode: 'webapp',  // optional can be 'webapp' or 'light' - 'light' by default
+      favicons: {
+        appName: 'sandbox',
+        appDescription: 'sandbox',
+        developerName: 'Me',
+        developerURL: null, // prevent retrieving from the nearest package.json
+        background: '#fff',
+        theme_color: '#111',
+        icons: {
+          coast: false,
+          yandex: false
+        }
+      }
+    }),
     new MiniCssExtractPlugin({
       filename: PRODUCTION ? '[name].[hash].css' : '[name].css',
       chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css',

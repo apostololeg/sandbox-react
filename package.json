@@ -2,15 +2,15 @@
   "version": "0.0.6",
   "author": "Oleg Apostol",
   "bugs": {
-    "url": "https://github.com/apostololeg/sandbox-react/issues"
+    "url": "https://github.com/apostololeg/sandboxt/issues"
   },
-  "homepage": "https://github.com/apostololeg/sandbox-react#readme",
+  "homepage": "https://github.com/apostololeg/sandboxt#readme",
   "license": "ISC",
   "main": "src/index.js",
-  "name": "sandbox-react",
+  "name": "sandboxt",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apostololeg/sandbox-react.git"
+    "url": "git+https://github.com/apostololeg/sandboxt.git"
   },
   "scripts": {
     "dev:client": "NODE_ENV=development webpack-dev-server --config ./config/webpack/dev.js --progress",
