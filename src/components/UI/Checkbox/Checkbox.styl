@@ -1,5 +1,9 @@
 @import '~theme/theme.styl'
 
+checkmark(scale)
+  transform scale(scale) rotateZ(-45deg)
+  transform-origin center
+
 .root
   cursor pointer
   display inline-flex
@@ -10,15 +14,63 @@
   color inherit
   user-select none
 
-.control
-  cursor pointer
+.controlWrapper
+  position relative
   width 30px
+  height 30px
+
+.control
+  background-color $accentColor
   transition .1s ease-out
   transition-property background-color, color
+  cursor pointer
+  borderRadius(1.2)
 
   &.checked
     background-color $accentColor
-    color $decentColor
+
+.checkmark
+  position absolute
+  left -1px
+  top 6px
+
+  height 100%
+  width 100%
+
+  checkmark(.6)
+  opacity 0
+  transition .05s ease-in
+  transition-property transform, opacity, top
+  pointer-events none
+
+  &::before
+  &::after
+    content ''
+    position absolute
+    width 4px
+    background-color $decentColor
+    border-radius 2px
+
+  &::before
+    left calc(50% - 2px)
+    height 16px
+    z-index 1
+
+  &::after
+    top 2px
+    left 24px
+    height 24px
+    transform rotateZ(-90deg)
+
+  &.checked
+    checkmark(.8)
+    opacity 1
+
+  &.focused
+    checkmark(.65)
+
+.root:hover .checkmark
+  checkmark(.65)
 
 .label
   display flex

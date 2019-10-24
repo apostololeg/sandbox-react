@@ -11,19 +11,24 @@
   &.disabled
     pointer-events none
 
+.contentWrapper
+  position absolute
+
 .content
   position absolute
   min-width 100px
-  margin-top 3px
   border-radius 2px
+  margin 3px
   opacity 0
   background-color $decentColor
   transform-origin top center
   transform scale(.5)
   transition all .1s ease-out
+  z-index 1
 
-  &.outlined
-    box-shadow 0 0px 0px 2px $decentColor
+  &.open
+    transform scale(1)
+    opacity 1
 
 .bottom
   top 100%
@@ -46,9 +51,3 @@
 
 .bottom.right
   transform-origin top right
-
-.open
-
-  & .content
-    transform scale(1)
-    opacity 1

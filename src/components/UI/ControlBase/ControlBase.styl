@@ -3,9 +3,9 @@
 .control
   appearance none
   outline none
-  background-color $decentColor
+  background-color transparent
   box-sizing border-box
-  border-radius 4px
+  borderRadius()
 
   &[disabled]
     color #808080
@@ -22,21 +22,25 @@
     right 0
     bottom 0
     left 0
-    controlBorder()
-    border-radius 4px
+    borderRadius()
+    controlBorder($accentColor)
     pointer-events none
     transition all .1s ease-out
+
+  &:hover::before
+    controlBorder(mix($accentColor, $activeColor, 30%))
 
   &.focused::before
     controlBorder($activeColor)
 
-  &:hover::before
-    background-color $activeColorLight
+  &.disabled
+    &
+    &::before
+      opacity .5
+      background-color $accentColorLight
 
-  &.disabled::before
-    controlBorder()
-    opacity .5
-    background-color $accentColorLight
+    &::before
+      controlBorder($accentColor)
 
 .size
 
@@ -44,6 +48,7 @@
     height 30px
     min-height 30px
     max-height 30px
+    min-width 30px
     padding 0 10px
     font-size 80% !important
 
@@ -51,6 +56,7 @@
     height 40px
     min-height 40px
     max-height 40px
+    min-width 40px
     padding 0 12px
     font-size 100% !important
 
@@ -58,6 +64,7 @@
     height 50px
     min-height 50px
     max-height 50px
+    min-width 50px
     padding 0 14px
     font-size 120% !important
 

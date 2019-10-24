@@ -6,32 +6,40 @@ import ControlBase from 'components/UI/ControlBase'
 
 import s from './Checkbox.styl'
 
-function Control({
-  baseStyles,
-  className,
-  children,
-  label,
-  ...props
-}) {
-  const id = props.id || nanoid();
-  const classes = cn(s.root, className);
-  const classesControl = cn(
-    baseStyles.control,
-    baseStyles.decor,
-    s.control,
-    props.checked && s.checked,
-  );
+class CheckBox extends ControlBase {
+  render() {
+    const {
+      id = nanoid(),
+      className,
+      label,
+      children,
+      ...props
+    } = this.renderProps;
+    const { focused } = this.store;
 
-  return (
-    <div className={classes}>
-      <input className={classesControl} {...props} id={id} type="checkbox" />
-      {label && <label className={s.label} htmlFor={id}>{label}</label>}
-    </div>
-  );
+    const classes = cn(s.root, className);
+    const classesControl = cn(
+      this.styles.control,
+      this.styles.decor,
+      s.control,
+      props.checked && s.checked
+    );
+    const markClasses = cn(
+      s.checkmark,
+      props.checked && s.checked,
+      focused && s.focused
+    );
+
+    return (
+      <div className={classes}>
+        <div className={s.controlWrapper}>
+          <input className={classesControl} {...props} id={id} type="checkbox" tabIndex={0} />
+          <div className={markClasses} />
+        </div>
+        {label && <label className={s.label} htmlFor={id}>{label}</label>}
+      </div>
+    );
+  }
 }
 
-const Button = props => (
-  <ControlBase {...props} Component={Control} />
-);
-
-export default Button;
+export default CheckBox;

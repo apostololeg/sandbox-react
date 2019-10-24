@@ -6,35 +6,34 @@ import Spinner from 'components/UI/Spinner'
 
 import s from './Button.styl'
 
-function Control({
-  baseStyles,
-  className,
-  loading,
-  checked,
-  children,
-  type = 'button',
-  As = 'button',
-  ...props
-}) {
-  const classes = cn(
-    baseStyles.control,
-    baseStyles.decor,
-    s.root,
-    loading && s.loading,
-    checked && s.checked,
-    className,
-  );
+class Button extends ControlBase {
+  render() {
+    const {
+      className,
+      loading,
+      checked,
+      children,
+      type = 'button',
+      As = 'button',
+      ...props
+    } = this.renderProps;
 
-  return (
-    <As className={classes} {...props} type={type}>
-      {children}
-      {loading && <Spinner className={s.spinner} size='s' />}
-    </As>
-  );
+    const classes = cn(
+      this.styles.control,
+      this.styles.decor,
+      s.root,
+      loading && s.loading,
+      checked && s.checked,
+      className,
+    );
+
+    return (
+      <As className={classes} {...props} type={type}>
+        {children}
+        {loading && <Spinner className={s.spinner} size='s' />}
+      </As>
+    );
+  }
 }
-
-const Button = props => (
-  <ControlBase {...props} Component={Control} />
-);
 
 export default Button;

@@ -7,7 +7,7 @@ import ControlBase from 'components/UI/ControlBase'
 
 import s from './Input.styl'
 
-class Control extends Component {
+class Input extends ControlBase {
   controlEl = createRef();
 
   static defaultProps = {
@@ -34,7 +34,7 @@ class Control extends Component {
       input.focus();
     }
 
-    onClick && onClick(e); // eslint-disable-line
+    if (onClick) onClick(e);
   }
 
   @bind
@@ -46,27 +46,27 @@ class Control extends Component {
       const { name = '' } = Object(e.target.files[0]);
       this.store.fileName = name;
     }
-    onChange && onChange(e); // eslint-disable-line
+
+    if (onChange) onChange(e);
   }
 
   render() {
     const {
-      baseStyles,
       className,
       controlClassName,
       loading,
       ...props
-    } = this.props;
+    } = this.renderProps;
     const { isFileInput, fileName } = this.store;
 
     const classes = cn(
-      baseStyles.control,
+      this.styles.control,
       s.control,
       loading && s.loading,
       controlClassName
     );
     const classesWrap = cn(
-      baseStyles.decor,
+      this.styles.decor,
       s[`type_${props.type}`],
       className
     );
@@ -99,9 +99,5 @@ class Control extends Component {
     );
   }
 }
-
-const Input = props => (
-  <ControlBase {...props} Component={Control} />
-);
 
 export default view(Input);

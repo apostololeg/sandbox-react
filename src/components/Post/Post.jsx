@@ -8,7 +8,7 @@ import UserStore from 'store/user'
 import { getPosts } from 'store/post'
 
 import { Title } from 'components/Header'
-import { hydrateComponents } from 'components/Editor'
+import { hydrateComponents, PostRenderHelpers } from 'components/Editor'
 import { Link } from 'components/Router'
 import Flex, { mix as flex } from 'components/UI/Flex'
 import Spinner from 'components/UI/Spinner'
@@ -56,12 +56,16 @@ class Post extends Component {
   }
 
   hydrate() {
-    Time.after(100, () => hydrateComponents(this.container.current));
+    Time.after(100, () => {
+      if (this.store.data) {
+        hydrateComponents(this.container.current);
+      }
+    });
   }
 
   renderTitle() {
     const { data, hasPreview } = this.store;
-    const { slug, title } = data;
+    const { slug } = data;
 
     return (
       <Fragment>
@@ -69,26 +73,6 @@ class Post extends Component {
         {hasPreview && <Link href={`/posts/${slug}`}>Original</Link>}
       </Fragment>
     )
-  }
-
-  renderLayout() {
-    const { isAdmin } = UserStore;
-    const { className, data } = this.store;
-    const { title } = data;
-
-    return (
-      <Fragment>
-        <Title text={title}>
-          {isAdmin && this.renderTitle()}
-        </Title>
-        <div
-          className={flex('scrolled', className, s.root)}
-          onScroll={this.onScroll}
-        >
-          {this.renderContent()}
-        </div>
-      </Fragment>
-    );
   }
 
   renderContent() {
@@ -115,11 +99,27 @@ class Post extends Component {
   }
 
   render() {
-    if (!this.store.data) {
+    const { isAdmin } = UserStore;
+    const { className, data } = this.store;
+
+    if (!data) {
       return 'Failed to fetch post data.';
     }
 
-    return this.renderLayout()
+    return (
+      <Fragment>
+        <PostRenderHelpers />
+        <Title text={data.title}>
+          {isAdmin && this.renderTitle()}
+        </Title>
+        <div
+          className={flex('scrolled', className, s.root)}
+          onScroll={this.onScroll}
+        >
+          {this.renderContent()}
+        </div>
+      </Fragment>
+    );
   }
 }
 

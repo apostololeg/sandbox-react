@@ -1,9 +1,12 @@
-import { h, Component, createRef } from 'preact';
-import { store, view } from 'preact-easy-state';
-import cn from 'classnames';
-import { bind, debounce } from 'decko';
+import { h, Component, createRef } from 'preact'
+import { createPortal } from 'preact/compat'
+import { store, view } from 'preact-easy-state'
+import cn from 'classnames'
+import { bind, debounce } from 'decko'
 
-import s from './Popup.styl';
+import { getCoords, hasParent } from 'tools/dom'
+
+import s from './Popup.styl'
 
 const ANIMATION_DURATION = 200;
 
@@ -29,17 +32,25 @@ const ANIMATION_DURATION = 200;
 class Popup extends Component {
   domElem = createRef();
 
+  triggerElem = createRef();
+
+  containerElem = createRef();
+
   store = store({
     open: false,
-    contentVisibility: false
+    showContent: false
   });
 
   componentDidMount() {
-    document.addEventListener('click', this.onDocCLick);
+    document.body.addEventListener('mousedown', this.onDocTouch);
+    document.body.addEventListener('touchstart', this.onDocTouch);
+    document.addEventListener('keydown', this.onKeyDown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.onDocCLick);
+    document.body.removeEventListener('mousedown', this.onDocTouch);
+    document.body.removeEventListener('touchstart', this.onDocTouch);
+    document.removeEventListener('keydown', this.onKeyDown);
   }
 
   timeoutVisibility;
@@ -53,21 +64,37 @@ class Popup extends Component {
     return null
   }
 
+  isTargetInside(target) {
+    return hasParent(target, this.domElem.current)
+      || hasParent(target, this.containerElem.current)
+  }
+
   @bind
-  onDocCLick(e) {
+  onKeyDown(e) {
+    if (!this.isTargetInside(e.target) || e.key === 'Escape') {
+      this.close();
+      e.stopPropagation();
+      return
+    }
+
+    if (/(Enter| )/.test(e.key)) {
+      this.toggle();
+      e.stopPropagation();
+    }
+  }
+
+  @bind
+  onDocTouch(e) {
+    console.log('onDocTouch');
+
     if (!this.store.open) {
       return
     }
 
-    if (this.props.autoClose) {
+    if (this.props.autoClose || !this.isTargetInside(e.target)) {
+      e.stopPropagation();
       this.close();
       return
-    }
-
-    const rootClass = this.domElem.current.className.split(' ')[0];
-
-    if (!e.target.closest(`.${rootClass}`)) {
-      this.close();
     }
   }
 
@@ -79,13 +106,6 @@ class Popup extends Component {
   }
 
   @bind
-  onKeyDown(e) {
-    if (['Escape', 'Enter', ' '].includes(e.key)) {
-      this.toggle();
-    }
-  }
-
-  @bind
   @debounce(100)
   setOpen(val) {
     clearTimeout(this.timeoutVisibility);
@@ -93,11 +113,11 @@ class Popup extends Component {
 
     if (!val) {
       this.timeoutVisibility = setTimeout(
-        () => this.store.contentVisibility = val,
+        () => this.store.showContent = val,
         ANIMATION_DURATION
       );
     } else {
-      this.store.contentVisibility = val;
+      this.store.showContent = val;
     }
   }
 
@@ -122,54 +142,78 @@ class Popup extends Component {
     this.setOpen(!this.store.open);
   }
 
-  render() {
-    const {
-      className,
-      children,
-      disabled,
-      outlined,
-      vertical='bottom',
-      horizontal='right',
-    } = this.props;
-    const { open } = this.store;
+  renderTrigger() {
+    const { children, disabled } = this.props;
 
     const [trigger, content] = children;
     const disableTrigger = disabled || !content;
-
-    const classes = cn(
-      s.root,
-      !disabled && open && s.open,
-      className
-    );
     const classesTrigger = cn(s.trigger, disableTrigger && s.disabled);
-    const classesContent = cn(
-      s.content,
-      outlined && s.outlined,
-      s[vertical],
-      s[horizontal]
-    );
-
     const triggerProps = {};
-    const contentProps = {};
 
     if (!disableTrigger) {
       Object.assign(triggerProps, {
         role: 'button',
-        tabIndex: 0,
         onClick: this.onClick,
-        onKeyDown: this.onKeyDown,
-        onFocus: this.open
+        onFocusCapture: this.open,
+        onBlurCapture: this.close
       });
     }
 
     return (
+      <div className={classesTrigger} {...triggerProps} ref={this.triggerElem}>
+        {trigger}
+      </div>
+    );
+  }
+
+  renderContent() {
+    const {
+      children,
+      disabled,
+      vertical='bottom',
+      horizontal='right',
+    } = this.props;
+    const { open, showContent } = this.store;
+
+    const [trigger, content] = children;
+    const triggerElem = this.triggerElem.current;
+
+    const wrppperProps = {};
+    const classes = cn(
+      s.content,
+      !disabled && open && s.open,
+      s[vertical],
+      s[horizontal]
+    );
+
+    if (triggerElem) {
+      const { offsetHeight, offsetWidth } = triggerElem;
+
+      wrppperProps.style = {
+        height: offsetHeight,
+        width: offsetWidth,
+        ...getCoords(triggerElem)
+      };
+    }
+
+    return createPortal(
+      <div className={s.contentWrapper} {...wrppperProps}>
+        <div className={classes} ref={this.containerElem}>
+          {showContent && content}
+        </div>
+      </div>,
+      document.getElementById('app-modal')
+    );
+  }
+
+  render() {
+    const { className } = this.props;
+    const classes = cn(s.root, className);
+
+    return (
       <div className={classes} ref={this.domElem}>
-        <div className={classesTrigger} {...triggerProps}>
-          {trigger}
-        </div>
-        <div className={classesContent} {...contentProps}>
-          {open && content}
-        </div>
+        {this.renderTrigger()}
+        {this.renderContent()}
       </div>
     );
   }
