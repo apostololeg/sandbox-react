@@ -2,8 +2,9 @@ import { h } from 'preact'
 import { view } from 'preact-easy-state'
 
 import Button from 'components/UI/Button'
+import SvgIcon from 'components/UI/SvgIcon'
 
-import IconBold from './icons/bold.svg'
+import boldSvg from './icons/bold.svg'
 
 const Bold = ({ editor, state, ...props }) => {
   const { format, hasUserSelection, selection, blotSelection } = state;
@@ -22,7 +23,7 @@ const Bold = ({ editor, state, ...props }) => {
 
   return (
     <Button onClick={onClick} {...props} checked={format.bold}>
-      <IconBold height="20px" />
+      <SvgIcon icon={boldSvg} size={20} />
     </Button>
   );
 }

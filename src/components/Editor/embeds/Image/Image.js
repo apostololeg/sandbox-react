@@ -5,10 +5,11 @@ import { bind, debounce } from 'decko'
 import Input from 'components/UI/Input'
 import Button from 'components/UI/Button'
 import Popup from 'components/UI/Popup'
+import SvgIcon from 'components/UI/SvgIcon'
 
 import FileUploader from 'components/FileUploader'
 
-import IconImage from '../icons/image.svg'
+import imageSvg from '../icons/image.svg'
 
 import s from './Image.styl';
 
@@ -65,7 +66,7 @@ class Image extends Component {
     return (
       <Popup {...props} horizontal="left" onClose={this.onPopupClose}>
         <Button {...props}>
-          <IconImage height="20px" />
+          <SvgIcon icon={imageSvg} size={20} />
         </Button>
         <div className={s.popupContainer}>
           <FileUploader

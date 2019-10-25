@@ -2,8 +2,9 @@ import { h } from 'preact'
 import { view } from 'preact-easy-state'
 
 import Button from 'components/UI/Button'
+import SvgIcon from 'components/UI/SvgIcon'
 
-import IconBulleted from './icons/list_bulleted.svg'
+import bulletedSvg from './icons/list_bulleted.svg'
 
 const List = ({ editor, state: { format, selection }, ...props }) => {
   const onClick = () => {
@@ -15,7 +16,7 @@ const List = ({ editor, state: { format, selection }, ...props }) => {
 
   return (
     <Button onClick={onClick} {...props}>
-      <IconBulleted height="20px" />
+      <SvgIcon icon={bulletedSvg} size={20} />
     </Button>
   );
 }

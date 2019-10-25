@@ -2,8 +2,9 @@ import { h } from 'preact'
 import { view } from 'preact-easy-state'
 
 import Button from 'components/UI/Button'
+import SvgIcon from 'components/UI/SvgIcon'
 
-import IconDecrease from './icons/indent_decrease.svg'
+import decreaseSvg from './icons/indent_decrease.svg'
 
 const IndentPlus = ({ editor, state: { format, selection }, ...props }) => {
   const onClick = () => {
@@ -12,7 +13,7 @@ const IndentPlus = ({ editor, state: { format, selection }, ...props }) => {
 
   return (
     <Button onClick={onClick} {...props}>
-      <IconDecrease height="20px" />
+      <SvgIcon icon={decreaseSvg} size={20} />
     </Button>
   );
 }

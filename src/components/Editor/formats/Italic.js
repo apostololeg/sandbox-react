@@ -2,8 +2,9 @@ import { h } from 'preact'
 import { view } from 'preact-easy-state'
 
 import Button from 'components/UI/Button'
+import SvgIcon from 'components/UI/SvgIcon'
 
-import IconItalic from './icons/italic.svg'
+import italicSvg from './icons/italic.svg'
 
 const Italic = ({ editor, state, ...props }) => {
   const { format, hasUserSelection, selection, blotSelection } = state;
@@ -22,7 +23,7 @@ const Italic = ({ editor, state, ...props }) => {
 
   return (
     <Button onClick={onClick} {...props} checked={format.italic}>
-      <IconItalic height="20px" />
+      <SvgIcon icon={italicSvg} size={20} />
     </Button>
   );
 }

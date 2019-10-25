@@ -84,11 +84,11 @@ class Toolbar extends Component {
         <Bold key="bold" {...itemProps} />
         <Italic key="italic" {...itemProps} />
         <Link key="link" {...itemProps} />
-        <Image key="image" {...itemProps} />
         <ListBulleted key="list-bulleted" {...itemProps} />
         <ListNumbered key="list-numbered" {...itemProps} />
         <IndentMinus key="intent-minus" {...itemProps} />
         <IndentPlus key="intent-plus" {...itemProps} />
+        <Image key="image" {...itemProps} />
       </div>
     );
   }
