@@ -5,6 +5,7 @@ import cn from 'classnames'
 import { bind, debounce } from 'decko'
 
 import { getCoords, hasParent } from 'tools/dom'
+import Time from 'tools/time'
 
 import s from './Popup.styl'
 
@@ -41,16 +42,20 @@ class Popup extends Component {
     showContent: false
   });
 
+  _clickInsideContent = false;
+
+  _focused = false;
+
   componentDidMount() {
     document.body.addEventListener('mousedown', this.onDocTouch);
     document.body.addEventListener('touchstart', this.onDocTouch);
-    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keydown', this.onDocKeyDown);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('mousedown', this.onDocTouch);
     document.body.removeEventListener('touchstart', this.onDocTouch);
-    document.removeEventListener('keydown', this.onKeyDown);
+    document.removeEventListener('keydown', this.onDocKeyDown);
   }
 
   timeoutVisibility;
@@ -64,42 +69,57 @@ class Popup extends Component {
     return null
   }
 
-  isTargetInside(target) {
-    return hasParent(target, this.domElem.current)
-      || hasParent(target, this.containerElem.current)
-  }
-
   @bind
-  onKeyDown(e) {
-    if (!this.isTargetInside(e.target) || e.key === 'Escape') {
-      this.close();
+  onDocKeyDown(e) {
+    if (this.store.open && e.key === 'Escape') {
       e.stopPropagation();
+      this.close();
       return
     }
 
+    if (!this._focused) return;
+
     if (/(Enter| )/.test(e.key)) {
-      this.toggle();
       e.stopPropagation();
+      this.toggle();
     }
   }
 
   @bind
   onDocTouch(e) {
-    console.log('onDocTouch');
+    if (!this.store.open) return;
 
-    if (!this.store.open) {
-      return
-    }
+    const isTargetInside = hasParent(e.target, this.containerElem.current);
 
-    if (this.props.autoClose || !this.isTargetInside(e.target)) {
-      e.stopPropagation();
+    if (!isTargetInside || isTargetInside && this.props.autoClose) {
       this.close();
-      return
-    }
+      return;
+    };
+
+    e.stopPropagation();
+    this._clickInsideContent = true;
+    Time.nextTick(() => {
+      this._clickInsideContent = false;
+    });
   }
 
   @bind
-  onClick(e) {
+  onFocus() {
+    this._focused = true;
+    this.open();
+  }
+
+  @bind
+  onBlur() {
+    this._focused = false;
+
+    if (this._clickInsideContent) return;
+
+    this.close();
+  }
+
+  @bind
+  onTriggerClick(e) {
     e.preventDefault();
     e.stopPropagation();
     this.toggle();
@@ -153,9 +173,9 @@ class Popup extends Component {
     if (!disableTrigger) {
       Object.assign(triggerProps, {
         role: 'button',
-        onClick: this.onClick,
-        onFocusCapture: this.open,
-        onBlurCapture: this.close
+        onClick: this.onTriggerClick,
+        onFocusCapture: this.onFocus,
+        onBlurCapture: this.onBlur
       });
     }
 

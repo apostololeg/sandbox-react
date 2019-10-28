@@ -35,7 +35,6 @@ class ControlBase extends Component {
   onFocus(e) {
     const { onFocus } = this.props;
 
-    console.log('onFocus');
     this.store.focused = true;
     if (onFocus) onFocus(e);
   };
@@ -44,7 +43,6 @@ class ControlBase extends Component {
   onBlur(e) {
     const { onBlur } = this.props;
 
-    console.log('onBlur');
     this.store.focused = false;
     if (onBlur) onBlur(e);
   };

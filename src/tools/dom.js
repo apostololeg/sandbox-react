@@ -10,11 +10,7 @@ export function getCoords(elem) {
 export function hasParent(elem, parentElem) {
   const isEqual = elem === parentElem;
 
-  if (isEqual) {
-    return true
-  }
-
-  if (elem.nodeName === 'BODY') {
+  if (isEqual || elem.nodeName === 'BODY') {
     return isEqual
   }
 
