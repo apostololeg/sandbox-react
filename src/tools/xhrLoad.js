@@ -21,7 +21,7 @@ export default function(url, { method, headers, body }, onProgress) {
       const { readyState, status } = xhr;
 
       if (readyState === XMLHttpRequest.DONE) {
-        [200, 201].includes(status)
+        /200|201/.test(status)
           ? resolve(xhr)
           : reject(xhr);
       }

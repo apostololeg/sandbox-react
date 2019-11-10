@@ -31,7 +31,7 @@ checkmark(scale)
 
 .checkmark
   position absolute
-  left -1px
+  left 0px
   top 6px
 
   height 100%
@@ -39,7 +39,7 @@ checkmark(scale)
 
   checkmark(.6)
   opacity 0
-  transition .05s ease-in
+  transition .1s ease-in
   transition-property transform, opacity, top
   pointer-events none
 
@@ -52,15 +52,16 @@ checkmark(scale)
     border-radius 2px
 
   &::before
+    z-index 1
     left calc(50% - 2px)
     height 16px
-    z-index 1
+    transform rotateZ(9deg)
 
   &::after
     top 2px
-    left 24px
-    height 24px
-    transform rotateZ(-90deg)
+    left 22px
+    height 20px
+    transform rotateZ(-102deg)
 
   &.checked
     checkmark(.8)
