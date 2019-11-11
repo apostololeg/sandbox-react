@@ -103,6 +103,7 @@ class Router extends Component {
     };
 
     Object.assign(render.props, params, routePatch);
+    render.key = RouteStore.path;
 
     return render;
   }

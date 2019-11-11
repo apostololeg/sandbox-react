@@ -15,6 +15,7 @@ import Spinner from 'components/UI/Spinner'
 
 import s from './Post.styl';
 
+@view
 class Post extends Component {
   container = createRef();
 
@@ -25,6 +26,16 @@ class Post extends Component {
   });
 
   componentDidMount() {
+    this.init();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.slug !== this.props.slug) {
+      this.init();
+    }
+  }
+
+  init() {
     const { preview } = this.props;
 
     if (preview) {
@@ -123,4 +134,4 @@ class Post extends Component {
   }
 }
 
-export default view(Post);
+export default Post;

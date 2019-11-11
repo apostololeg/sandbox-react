@@ -63,7 +63,6 @@
     "path-parser": "^4.2.0",
     "preact": "^10.0.0-rc.3",
     "preact-easy-state": "^5.1.0",
-    "preact-loadable": "^1.0.0",
     "preact-svg-loader": "^0.2.1",
     "prisma-client-lib": "^1.34.0",
     "quill": "^1.3.7",
