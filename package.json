@@ -15,9 +15,9 @@
   "scripts": {
     "dev:client": "NODE_ENV=development webpack-dev-server --config ./config/webpack/dev.js --progress",
     "dev:server": "NODE_ENV=development nodemon --ignore ./config --ignore ./src --exec babel-node server --inspect",
-    "build": "NODE_ENV=production webpack --mode=production --config ./config/webpack/prod.js --progress",
-    "prod:server": "babel-node server",
-    "prod": "NODE_ENV=production yarn build && yarn prod:server",
+    "prod:build": "NODE_ENV=production webpack --mode=production --config ./config/webpack/prod.js --progress",
+    "prod:server": "NODE_ENV=production babel-node server",
+    "prod": "yarn prod:build && yarn prod:server",
     "release": "standard-version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
