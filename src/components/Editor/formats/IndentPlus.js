@@ -6,9 +6,11 @@ import SvgIcon from 'components/UI/SvgIcon'
 
 import increaseSvg from './icons/indent_increase.svg'
 
-const IndentPlus = ({ editor, state: { format, selection }, ...props }) => {
+const IndentPlus = ({ editor, state, ...props }) => {
   const onClick = () => {
-    editor.formatLine(selection.index, selection.length, 'indent', '+1');
+    console.log(state.selection);
+    const { index, length } = state.selection.default;
+    editor.formatLine(index, length, 'indent', '+1');
   };
 
   return (

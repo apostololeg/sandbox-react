@@ -7,18 +7,14 @@ import SvgIcon from 'components/UI/SvgIcon'
 import boldSvg from './icons/bold.svg'
 
 const Bold = ({ editor, state, ...props }) => {
-  const { format, hasUserSelection, selection, blotSelection } = state;
-  const currSelection = hasUserSelection ? selection : blotSelection;
+  const { format, selection } = state;
 
   const onClick = () => {
     const val = !format.bold;
 
-    editor.formatText(currSelection, 'bold', val);
+    editor.formatText(selection.default, 'bold', val);
     format.bold = val;
-
-    if (!val && !hasUserSelection) {
-      editor.setSelection(blotSelection);
-    }
+    selection.update();
   };
 
   return (

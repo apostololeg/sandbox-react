@@ -6,11 +6,14 @@ import SvgIcon from 'components/UI/SvgIcon'
 
 import numberedSvg from './icons/list_numbered.svg'
 
-const List = ({ editor, state: { format, selection }, ...props }) => {
+const List = ({ editor, state, ...props }) => {
+  const { format, selection } = state;
+
   const onClick = () => {
     const val = format.list === 'ordered' ? false : 'ordered';
+    const { index, length } = selection.default
 
-    editor.formatLine(selection.index, selection.length, 'list', val);
+    editor.formatLine(index, length, 'list', val);
     format.list = val;
   };
 

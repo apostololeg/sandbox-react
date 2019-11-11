@@ -47,15 +47,23 @@ class Toolbar extends Component {
   @bind
   updateState() {
     const { editor } = this.props;
-    const editorSelection = editor.getSelection();
-    const blotSelection = this.getBlotSelection(Object(editorSelection).index);
-    const selection = editorSelection || blotSelection;
+    const userSelection = editor.getSelection();
+    const hasUserSelection = userSelection && userSelection.length > 0;
+    const blotSelection = this.getBlotSelection(Object(userSelection).index);
+    const selection = hasUserSelection ? userSelection : blotSelection;
 
     Object.assign(this.store, {
-      selection,
-      blotSelection,
-      hasUserSelection: selection.length > 0,
-      format: editor.getFormat(selection)
+      format: editor.getFormat(selection),
+      selection: {
+        default: selection,
+        blot: blotSelection,
+        user: hasUserSelection && userSelection,
+        update: () => {
+          if (!hasUserSelection) {
+            editor.setSelection(blotSelection);
+          }
+        },
+      }
     });
   }
 
