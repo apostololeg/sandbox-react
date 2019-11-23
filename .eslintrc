@@ -52,8 +52,11 @@
     // JSX props must be in alphabetical order
     // Disabled as this is creating too much noise in logs and is not being actively addressed
     "react/jsx-sort-props": "off",
+    // Disallow JSX props spreading
+    "react/jsx-props-no-spreading": 0,
     // This was turned off for wc - but should be re-enabled eventually
     "react/no-unknown-property": ["off"],
+    "no-nested-ternary": 1,
     // Disallow more than 1 empty lines
     "no-multiple-empty-lines": [
       "error",
@@ -67,6 +70,10 @@
         "allowTernary": true
       }
     ],
+    "no-unused-vars": [1, {
+      "args": "none",
+      "varsIgnorePattern": "^h$"
+    }],
     // Enforce no padding within blocks
     "padded-blocks": ["error", "never"],
     // Adding 'skipShapeProps' as the rule has issues with correctly handling PropTypes.shape
@@ -101,7 +108,7 @@
     ],
     // All blocks must be wrapped in curly braces {}
     // Preventing if(condition) return;
-    "curly": ["error", "all"],
+    "curly": 0,
     // Allowing Math.pow rather than forcing `**`
     "no-restricted-properties": [
       "off",
@@ -117,15 +124,12 @@
     "object-curly-newline": "off",
     // Opting out of specific paren styles for now
     "function-paren-newline": "off",
-    "jsx-a11y/anchor-is-valid": {
-      "components": ["Link"],
-      "specialLink": ["to"]
-    }
+    "jsx-a11y/anchor-is-valid": 1
   },
   "settings": {
     "import/resolver": {
       "webpack": {
-        "config": "config/webpack.config.js"
+        "config": "config/webpack/dev.js"
       }
     }
   }

@@ -46,18 +46,6 @@ class Popup extends Component {
 
   _focused = false;
 
-  componentDidMount() {
-    document.body.addEventListener('mousedown', this.onDocTouch);
-    document.body.addEventListener('touchstart', this.onDocTouch);
-    document.addEventListener('keydown', this.onDocKeyDown);
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('mousedown', this.onDocTouch);
-    document.body.removeEventListener('touchstart', this.onDocTouch);
-    document.removeEventListener('keydown', this.onDocKeyDown);
-  }
-
   timeoutVisibility;
 
   static getDerivedStateFromProps({ disabled }) {
@@ -67,6 +55,24 @@ class Popup extends Component {
     }
 
     return null
+  }
+
+  componentDidMount() {
+    const { onApi } = this.props;
+
+    document.body.addEventListener('mousedown', this.onDocTouch);
+    document.body.addEventListener('touchstart', this.onDocTouch);
+    document.addEventListener('keydown', this.onDocKeyDown);
+
+    if (onApi) {
+      onApi({ setOpen: this.setOpen });
+    }
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('mousedown', this.onDocTouch);
+    document.body.removeEventListener('touchstart', this.onDocTouch);
+    document.removeEventListener('keydown', this.onDocKeyDown);
   }
 
   @bind
@@ -192,6 +198,7 @@ class Popup extends Component {
       disabled,
       vertical='bottom',
       horizontal='right',
+      isOpen,
     } = this.props;
     const { open, showContent } = this.store;
 

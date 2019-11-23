@@ -44,7 +44,7 @@ export const notify = data => {
 
   time.after(ANIMATION_DURATION, () => show(id));
 
-  if (!data.modal) {
+  if (data.autohide !== false) {
     Notifications.autohide.push(id);
   }
 };
@@ -53,6 +53,7 @@ export const pause = () => {
   Notifications.paused = true;
   Notifications.pausedAt = Date.now();
 };
+
 export const unpause = () => {
   const { data, pausedAt, autohide } = Notifications;
   const pauseTime = Date.now() - pausedAt;
@@ -71,15 +72,15 @@ function tick() {
     return;
   }
 
-  // TODO: move trough all autohide until some will !readyToHide
-  const id = autohide[0]
+  const id = autohide[0] // TODO: move trough all autohide until some will !readyToHide
   const item = data[id];
   const readyToHide = Date.now() - item.createdAt > SHOW_TIME;
 
   if (item.visible && readyToHide) {
     item.visible = false;
-    time.after(ANIMATION_DURATION, () => remove(id));
+    time.after(ANIMATION_DURATION, () => {
+      remove(id);
+      tick();
+    });
   }
 }
-
-time.tick(tick);

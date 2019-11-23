@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import Raven from 'raven-js';
+// import Raven from 'raven-js';
 
 // const KEY = '906c3e2f81a34fc38a5b2df8a56f6dbe';
 // const PROJECT = '1214627'
@@ -8,18 +8,18 @@ import Raven from 'raven-js';
 //     environment: 'development-test',
 // };
 
-Raven
-  // .config(`https://${KEY}@sentry.io/${PROJECT}`, config)
-  .install();
+// Raven
+//   // .config(`https://${KEY}@sentry.io/${PROJECT}`, config)
+//   .install();
 
 class ErrorBoundary extends Component {
   componentDidCatch(error, info) {
+    console.error(error, info);
     // Raven.captureException(error, { extra: info });
-    // console.warn('Error Happend', error);
   }
 
   render() {
-    return this.props.children
+    return this.props.children;
   }
 }
 

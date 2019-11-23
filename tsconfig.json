@@ -1,4 +1,14 @@
 {
-  "jsx": "react",
-  "jsxFactory": "h",
+  "compileOnSave": true,
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
+    "experimentalDecorators": true,
+  },
+  "include": [
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "node_modules",
+  ]
 }

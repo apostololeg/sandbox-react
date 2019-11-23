@@ -2,31 +2,39 @@ import { h, Component } from 'preact'
 import { store, view } from 'preact-easy-state'
 import { bind, debounce } from 'decko'
 
-import Headers from '../formats/Headers'
-import Bold from '../formats/Bold'
-import Italic from '../formats/Italic'
-import Link from '../formats/Link'
-import ListBulleted from '../formats/ListBulleted'
-import ListNumbered from '../formats/ListNumbered'
-import IndentPlus from '../formats/IndentPlus'
-import IndentMinus from '../formats/IndentMinus'
-import Image from '../embeds/Image'
+import { DEFAULT_SELECTION } from '../tools'
+
+import getModules from './modules'
 
 import s from './Toolbar.styl'
 
-@view
 class Toolbar extends Component {
+  hasUserSelection = false;
+
   constructor(props) {
     super(props);
+
+    const { editor, tools } = props;
+
     this.store = store({
-      selection: false,
       format: {},
+      selection: DEFAULT_SELECTION,
     });
+
+    const { modules, actions } = getModules({
+      tools,
+      editor,
+      state: this.store,
+    });
+
+    this.modules = modules;
+    this.actions = actions;
   }
 
   componentDidMount() {
     const { editor } = this.props;
 
+    document.addEventListener('keydown', this.onKeyDown, true);
     editor.on('selection-change', this.onSelectionChange);
     editor.on('editor-change', this.updateState);
   }
@@ -34,8 +42,30 @@ class Toolbar extends Component {
   componentWillUnmount() {
     const { editor } = this.props;
 
+    document.removeEventListener('keydown', this.onKeyDown, true);
     editor.off('selection-change', this.onSelectionChange);
     editor.off('editor-change', this.updateState);
+  }
+
+  @bind
+  onKeyDown(e) {
+    const isMeta = e.ctrlKey || e.metaKey;
+    const action = this.actions[e.key];
+
+    const { editor } = this.props;
+    const { selection } = this.store;
+    const { index, length } = selection;
+
+    if (!isMeta || !action) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!this.hasUserSelection && length > 0) {
+      editor.setSelection(index, length);
+    }
+
+    action();
   }
 
   @bind
@@ -46,60 +76,37 @@ class Toolbar extends Component {
 
   @bind
   updateState() {
-    const { editor } = this.props;
-    const userSelection = editor.getSelection();
-    const hasUserSelection = userSelection && userSelection.length > 0;
-    const blotSelection = this.getBlotSelection(Object(userSelection).index);
-    const selection = hasUserSelection ? userSelection : blotSelection;
-
-    Object.assign(this.store, {
-      format: editor.getFormat(selection),
-      selection: {
-        default: selection,
-        blot: blotSelection,
-        user: hasUserSelection && userSelection,
-        update: () => {
-          if (!hasUserSelection) {
-            editor.setSelection(blotSelection);
-          }
-        },
-      }
-    });
+    this.updateSelection();
+    this.updateFormat();
   }
 
-  getBlotSelection(index = 0) {
-    const { editor } = this.props;
-    const blot = editor.scroll.path(index).slice(-1)[0][0];
+  @bind
+  updateSelection() {
+    const { editor, tools } = this.props;
+    const userSelection = editor.getSelection();
 
-    return {
-      index: blot.offset(editor.scroll),
-      length: blot.length()
-    };
+    this.hasUserSelection = userSelection?.length > 0;
+    this.store.selection = this.hasUserSelection
+      ? userSelection
+      : tools.getWordSelection();
+  }
+
+  @bind
+  updateFormat() {
+    const { editor } = this.props;
+    const { index, length } = this.store.selection;
+    const newFormat = editor.getFormat(index, length);
+
+    this.store.format = newFormat;
   }
 
   render() {
-    const { editor, tools } = this.props;
-    const itemProps = {
-      className: s.item,
-      editor,
-      tools,
-      state: this.store,
-    };
-
     return (
       <div className={s.toolbar}>
-        <Headers key="headers" {...itemProps} />
-        <Bold key="bold" {...itemProps} />
-        <Italic key="italic" {...itemProps} />
-        <Link key="link" {...itemProps} />
-        <ListBulleted key="list-bulleted" {...itemProps} />
-        <ListNumbered key="list-numbered" {...itemProps} />
-        <IndentMinus key="intent-minus" {...itemProps} />
-        <IndentPlus key="intent-plus" {...itemProps} />
-        <Image key="image" {...itemProps} />
+        {this.modules.map(Module => <Module className={s.item} />)}
       </div>
     );
   }
 };
 
-export default Toolbar;
+export default view(Toolbar);

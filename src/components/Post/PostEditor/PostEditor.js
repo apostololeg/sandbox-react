@@ -68,19 +68,25 @@ class PostEditor extends Component {
     });
   }
 
+  validationSchema = {
+    slug: { type: 'string' },
+    content: { type: 'string' }
+  };
+
   componentDidMount() {
     const { slug } = this.props;
 
-    this.validationSchema = {
-      slug: { type: 'string' },
-      content: { type: 'string' }
-    };
+    document.addEventListener('keydown', this.onKeyDown);
 
     if (slug) {
       this.loadRemote(slug);
     } else {
       this.createNewPost();
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown);
   }
 
   getLocalNamespace() {
@@ -175,6 +181,15 @@ class PostEditor extends Component {
   onFormAPI = null;
 
   @bind
+  onKeyDown(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.onSave();
+    }
+  }
+
+  @bind
   @debounce(600)
   onChange(values) {
     this.updateLocalVersion(values);
@@ -183,7 +198,8 @@ class PostEditor extends Component {
 
   @bind
   onEditorChange(content) {
-    const title = Object(content.replace(/(<br>|&nbsp;)/g, '').match('<h1.*?>(.*?)</h1>'))[1];
+    const h1 = content.replace(/(<br>|&nbsp;)/g, '').match('<h1.*?>(.*?)</h1>');
+    const title = h1?.[1];
     const { values } = this.form;
 
     if (values.content === content) {
@@ -204,7 +220,7 @@ class PostEditor extends Component {
   }
 
   @bind
-  async onSave(values) {
+  async onSave(values = this.form.values) {
     const { route } = this.props;
     const { localVersion, post } = this.store;
 

@@ -1,6 +1,6 @@
-import BaseBlock from 'quill/blots/embed'
+import Embed from 'quill/blots/embed'
 
-class ComponentBlot extends BaseBlock {
+class ComponentBlot extends Embed {
   static create(props) {
     const node = super.create(props);
 

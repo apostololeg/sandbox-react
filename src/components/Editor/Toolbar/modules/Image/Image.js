@@ -9,10 +9,10 @@ import SvgIcon from 'components/UI/SvgIcon'
 
 import FileUploader from 'components/FileUploader'
 
-import imageSvg from '../icons/image.svg'
+import Icon from './Image.svg'
+import s from './Image.styl'
 
-import s from './Image.styl';
-
+@view
 class Image extends Component {
   fileInput = createRef();
 
@@ -31,7 +31,10 @@ class Image extends Component {
 
   @bind
   onUpload(url) {
-    Object.assign(this.store, { url, uploaded: true });
+    Object.assign(this.store, {
+      url,
+      uploaded: true
+    });
   }
 
   @bind
@@ -47,7 +50,11 @@ class Image extends Component {
     }
 
     // drop store
-    Object.assign(this.store, { url: '', alt: '', inserted: false });
+    Object.assign(this.store, {
+      url: '',
+      alt: '',
+      inserted: false
+    });
   }
 
   @bind
@@ -56,15 +63,22 @@ class Image extends Component {
     const { alt, url } = this.store;
 
     tools.insertEmbed('image', { alt, url });
+    this.popupApi.setOpen(false);
   }
 
   render() {
+    const { className, ...props } = this.props;
     const { uploaded } = this.store;
 
     return (
-      <Popup {...this.props} horizontal="left" onClose={this.onPopupClose}>
-        <Button {...this.props}>
-          <SvgIcon icon={imageSvg} size={20} />
+      <Popup
+        className={className}
+        horizontal="left"
+        onClose={this.onPopupClose}
+        onApi={api => this.popupApi = api}
+      >
+        <Button {...props}>
+          <SvgIcon icon={Icon} size={20} />
         </Button>
         <div className={s.popupContainer}>
           <FileUploader
@@ -92,4 +106,8 @@ class Image extends Component {
   }
 }
 
-export default view(Image);
+export default function(api) {
+  return {
+    Module: props => <Image {...props} {...api} />
+  }
+}

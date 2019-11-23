@@ -1,9 +1,28 @@
-import Quill from 'quill/core';
+// TODO: move to Toolbar/modules/
 
-import formats from './formats';
-import embeds from './embeds';
+import Quill from 'quill/core'
 
-Quill.register(formats);
-embeds.forEach(embed => Quill.register(embed));
+import Header from 'quill/formats/header'
+import Bold from 'quill/formats/bold'
+import Italic from 'quill/formats/italic'
+import { IndentClass } from 'quill/formats/indent'
+import { AlignClass } from 'quill/formats/align'
+import List, { ListItem } from 'quill/formats/list'
+
+import Component from './formats/component.quill'
+import Image from './embeds/Image/blot.quill'
+
+Quill.register({
+  'formats/bold': Bold,
+  'formats/italic': Italic,
+  'formats/header': Header,
+  'formats/list': List,
+  'formats/list-item': ListItem,
+  'formats/indent': IndentClass,
+  'formats/align': AlignClass,
+  'formats/component': Component
+});
+
+Quill.register(Image);
 
 export default Quill;

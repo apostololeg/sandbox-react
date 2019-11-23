@@ -9,6 +9,7 @@ const Select = ({
   options,
   value,
   onChange,
+  renderLabel,
   disabled,
   popupProps,
   menuProps = {},
@@ -21,12 +22,11 @@ const Select = ({
     ...props,
     disabled,
   };
+  const getText = () => options.find(({ val }) => val === value)?.text;
   const renderText = () => {
-    if (value === undefined) {
-      return placeholder;
-    }
-
-    return options.find(({ val }) => val === value).text;
+    if (renderLabel) return renderLabel(getText());
+    if (value === undefined) return placeholder;
+    return getText();
   }
 
   return (

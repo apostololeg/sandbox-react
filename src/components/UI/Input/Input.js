@@ -43,7 +43,7 @@ class Input extends ControlBase {
     const { isFileInput } = this.store;
 
     if (isFileInput) {
-      const { name = '' } = Object(e.target.files[0]);
+      const { name = '' } = e.target.files?.[0];
       this.store.fileName = name;
     }
 

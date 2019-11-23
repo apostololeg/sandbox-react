@@ -1,5 +1,4 @@
 import { h, render } from 'preact'
-import compare from 'compareq'
 
 import App from 'components/App'
 import ErrorBoundary from 'components/ErrorBoundary'

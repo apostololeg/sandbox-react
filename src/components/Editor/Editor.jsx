@@ -4,7 +4,7 @@ import { bind, debounce } from 'decko'
 import Flex from 'components/UI/Flex'
 import Quill from './Quill'
 import Toolbar from './Toolbar'
-import tools from './tools'
+import Tools from './tools'
 
 import s from './Editor.styl'
 import { hydrateComponents } from './Editor.helpers'
@@ -19,15 +19,20 @@ class Editor extends Component {
     const { onChangeDelay } = this.props;
 
     this.editor = new Quill('#editor');
-    this.tools = tools(this.editor, Quill);
+    this.tools = new Tools(this.editor, Quill);
     this.domParser = new DOMParser();
-
-    this.editor.on(
-      'editor-change',
-      debounce(this.onChange, onChangeDelay || ON_CHANGE_DELAY)
+    this.onEditorChange = debounce(
+      this.onChange,
+      onChangeDelay || ON_CHANGE_DELAY
     );
 
+    this.editor.on('editor-change', this.onEditorChange);
+
     this.setState({ showToolbar: true }); // eslint-disable-line
+  }
+
+  componentWillUnmount() {
+    this.editor.off('editor.change', this.onEditorChange);
   }
 
   shouldComponentUpdate({ value }, { showToolbar }) {
