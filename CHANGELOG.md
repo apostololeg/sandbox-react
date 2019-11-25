@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/apostololeg/sandboxt/compare/v0.0.6...v0.0.7) (2019-11-25)
+
+
+### Features
+
+* 📡 Connect stat services ([4a5a40d](https://github.com/apostololeg/sandboxt/commit/4a5a40d61b753b69d4ac95c0b6ccee709c651807))
+* add `<SvgIcon/>` ([3efc80d](https://github.com/apostololeg/sandboxt/commit/3efc80d911ab87b08b881f55e6f072641f261a95))
+* generate manifest.json by FaviconWebpackPlugin ([089b97a](https://github.com/apostololeg/sandboxt/commit/089b97a4ae8ad297179a721fce8f355094f4f2c1))
+* Improove editor toolbar (lists, indents, align) ([43c3a82](https://github.com/apostololeg/sandboxt/commit/43c3a82c10ba079dda85388313129d8a21b60593))
+* secret prisma in production ([ce565d2](https://github.com/apostololeg/sandboxt/commit/ce565d2b362413612a545b55b708750f95d2015c))
+* update editor selection handling and hotkeys ([4d103d1](https://github.com/apostololeg/sandboxt/commit/4d103d1fb2f024d466c74244e1084c392eae071f))
+* Use app components in editor ([d933da0](https://github.com/apostololeg/sandboxt/commit/d933da0b9e12f23053994b28f335973b908cf082))
+
+
+### Bug Fixes
+
+* checkbox styles ([caa5921](https://github.com/apostololeg/sandboxt/commit/caa592108383f8eed42abc735760d227fc2302f8))
+* Enable stats only in production ([339b6dd](https://github.com/apostololeg/sandboxt/commit/339b6ddede5de717a6fddd7e4cfb14acab0f0518))
+* loadable components ([164d719](https://github.com/apostololeg/sandboxt/commit/164d719878f17df9b1220544e0e7039785a4ea8b))
+* Popup closing ([2b2b8f5](https://github.com/apostololeg/sandboxt/commit/2b2b8f540d543a01360852b6373253f11d12d03d))
+* Post/Editor: cleanup and hydrate components ([5409e1e](https://github.com/apostololeg/sandboxt/commit/5409e1e62a438a141398c70bf8c4b74bd2f0e797))
+* Post/Editor: cleanup and hydrate components ([885278b](https://github.com/apostololeg/sandboxt/commit/885278bd8879fa11810e7f885abbc9d561b0cbc2))
+* Use secret for Prisma client ([45b64e2](https://github.com/apostololeg/sandboxt/commit/45b64e206d836bdf8d5a3ad665c38ee76489f350))
+
 ### [0.0.6](https://github.com/apostololeg/sandbox-react/compare/v0.0.5...v0.0.6) (2019-09-27)
 
 
