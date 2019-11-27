@@ -13,6 +13,7 @@
     "url": "git+https://github.com/apostololeg/sandboxt.git"
   },
   "scripts": {
+    "dev:build": "NODE_ENV=development webpack --mode=development --config ./config/webpack/dev.js --progress",
     "dev:client": "NODE_ENV=development webpack-dev-server --config ./config/webpack/dev.js --progress",
     "dev:server": "NODE_ENV=development nodemon --ignore ./config --ignore ./src --exec babel-node server --inspect",
     "prod:build": "NODE_ENV=production webpack --mode=production --config ./config/webpack/prod.js --progress",
