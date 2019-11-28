@@ -13,7 +13,6 @@ function init() {
   );
 }
 
-
 if (PRODUCTION) {
   require('./pwa');
 }

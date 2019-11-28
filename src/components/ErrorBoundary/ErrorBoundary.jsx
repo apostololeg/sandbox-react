@@ -14,7 +14,7 @@ import { h, Component } from 'preact';
 
 class ErrorBoundary extends Component {
   componentDidCatch(error, info) {
-    console.error(error, info);
+    console.log(error, info);
     // Raven.captureException(error, { extra: info });
   }
 

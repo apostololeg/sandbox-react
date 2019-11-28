@@ -1,29 +1,76 @@
 import { h, Component, Fragment } from 'preact'
-import { createPortal } from 'preact/compat';
+import { createPortal } from 'preact/compat'
+import { view } from 'preact-easy-state'
+import { bind } from 'decko'
 
+import Time from 'tools/time'
+import PageStore, { setTitle } from 'store/page'
 
-import { setTitle } from 'store/page';
 import s from './Title.styl'
 
 export function Gap() {
   return <div className={s.gap} />
 }
 
-export class Title extends Component {
-  componentDidMount() {
-    const { text } = this.props;
+function getNode() {
+  return document.getElementById('app-title');
+}
 
-    if (text) {
-      setTitle(text);
+function waitForNode() {
+  return new Promise(resolve => {
+    function checkNode() {
+      if (getNode()) {
+        resolve();
+      } else {
+        Time.after(10, checkNode);
+      }
+    }
+
+    checkNode();
+  });
+}
+
+@view
+class Title extends Component {
+  componentDidUpdate() {
+    if (PageStore.title !== this.getTitle()) {
+      this.init();
     }
   }
 
-  render({ text, children }) {
+  async init() {
+    if (getNode()) {
+      await waitForNode();
+      this.setTitle();
+      return;
+    }
+
+    this.setTitle();
+  }
+
+  getTitle() {
+    return this.props.text;
+  }
+
+  @bind
+  setTitle() {
+    setTitle(this.getTitle());
+  }
+
+  render() {
+    const { children } = this.props;
+    const { title } = PageStore;
+    const targetNode = getNode();
+
+    if (!targetNode) return null;
+
     return createPortal((
       <Fragment>
-        {text && <h1 className={s.title}>{text}</h1>}
+        {title && <h1 className={s.title}>{title}</h1>}
         {children}
       </Fragment>
-    ), document.getElementById('app-title'));
+    ), targetNode);
   }
 }
+
+export default Title

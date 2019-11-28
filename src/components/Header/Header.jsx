@@ -1,13 +1,9 @@
 import { h } from 'preact';
-import { view } from 'preact-easy-state';
 
 import Container from 'components/UI/Container';
 import User from 'components/User';
 import Logo from 'components/Logo';
 
-import PageStore from 'store/page';
-
-import Title, { Gap } from './Title';
 import s from './Header.styl';
 
 const Header = () => (
@@ -18,5 +14,5 @@ const Header = () => (
   </Container>
 );
 
-export default view(Header);
-export { Title, Gap } from './Title';
+export default Header;
+export { default as Title, Gap } from './Title';
