@@ -1,15 +1,20 @@
 const merge = require('webpack-merge');
-const common = require('./common.js');
-const paths = require('../paths');
-
 const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const zopfli = require('@gfx/zopfli');
 const OfflinePlugin = require('offline-plugin');
 const HtmlWebpackPartialsPlugin = require('html-webpack-partials-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 // const SentryPlugin = require('@sentry/webpack-plugin');
 
+const common = require('./common.js');
+const paths = require('../paths');
+
 module.exports = merge(common, {
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
   plugins: [
     new HtmlWebpackPartialsPlugin({
       path: `${paths.assets}/analytics.html`,
