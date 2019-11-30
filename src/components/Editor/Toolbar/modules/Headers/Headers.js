@@ -1,7 +1,8 @@
 import { h } from 'preact'
+import { view } from 'preact-easy-state'
 
-import Select from 'components/UI/Select';
-import SvgIcon from 'components/UI/SvgIcon';
+import Select from 'components/UI/Select'
+import SvgIcon from 'components/UI/SvgIcon'
 
 import icons from './icons'
 
@@ -19,7 +20,7 @@ export default function({ editor, state }) {
 
   return {
     action,
-    Module: props => {
+    Module: view(props => {
       const getValue = () => {
         if (!state.format.header) return null
         return OPTIONS[state.format.header - 1].val
@@ -46,6 +47,6 @@ export default function({ editor, state }) {
          {...props}
        />
       );
-    }
+    })
   }
 }
