@@ -36,6 +36,7 @@
     "apollo-server-express": "2.5.0",
     "autoprefixer": "9.6.0",
     "aws-sdk": "2.493.0",
+    "babel-plugin-object-to-json-parse": "0.0.8",
     "body-parser": "1.19.0",
     "classnames": "2.2.6",
     "compareq": "1.0.1",
