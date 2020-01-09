@@ -12,6 +12,7 @@
     "node": true
   },
   "globals": {
+    "PRODUCTION": true,
     "PEM_DIR": true,
     "PROTOCOL": true,
     "HOST": true,
@@ -56,6 +57,7 @@
     "react/jsx-props-no-spreading": 0,
     // This was turned off for wc - but should be re-enabled eventually
     "react/no-unknown-property": ["off"],
+    "react/state-in-constructor": ["off"],
     "no-nested-ternary": 1,
     // Disallow more than 1 empty lines
     "no-multiple-empty-lines": [
