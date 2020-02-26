@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
-    "@graphql-modules/core": "0.7.7",
+    "@graphql-modules/core": "0.7.8",
     "@reach/router": "1.2.1",
     "apollo-boost": "0.4.0",
     "apollo-cache-inmemory": "1.6.1",
@@ -43,7 +43,7 @@
     "compareq": "1.0.1",
     "connect-history-api-fallback": "1.6.0",
     "cookie-parser": "1.4.4",
-    "copy-webpack-plugin": "5.0.3",
+    "copy-webpack-plugin": "5.0.5",
     "cors": "2.8.5",
     "decko": "1.2.0",
     "dotenv": "8.1.0",
