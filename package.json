@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
-    "@graphql-modules/core": "0.7.7",
+    "@graphql-modules/core": "0.7.14",
     "@reach/router": "1.2.1",
     "apollo-boost": "0.4.0",
     "apollo-cache-inmemory": "1.6.1",
