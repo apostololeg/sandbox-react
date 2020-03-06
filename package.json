@@ -36,7 +36,7 @@
     "apollo-server": "2.5.0",
     "apollo-server-express": "2.5.0",
     "autoprefixer": "9.6.0",
-    "aws-sdk": "2.493.0",
+    "aws-sdk": "2.618.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.19.0",
     "classnames": "2.2.6",
