@@ -1,23 +1,40 @@
-import { h, Component, createRef } from 'preact'
-import { createPortal } from 'preact/compat'
-import { store, view } from 'preact-easy-state'
-import cn from 'classnames'
-import { bind, debounce } from 'decko'
+import { h, Component, createRef } from 'preact';
+import { createPortal } from 'preact/compat';
+import { store, view } from 'preact-easy-state';
+import cn from 'classnames';
+import { bind, debounce } from 'decko';
 
-import { getCoords, hasParent } from 'tools/dom'
-import Time from 'tools/time'
+import { getCoords, getScrollParent, hasParent } from 'tools/dom';
+import Time from 'tools/time';
 
-import s from './Popup.styl'
+import s from './Popup.styl';
+import * as H from './Popup.helpers';
 
 const ANIMATION_DURATION = 200;
+const DEFAULT_AXIS = 'vertical';
+const DEFAULT_FLOAT = 'bottom';
 
 /**
  * @param  {Array} children
  * @param  {any} children[0] - trigger
  * @param  {any} children[1] - content
  * @param  {Boolean} disabled
- * @param  {('top'|'bottom')} vertical
- * @param  {('left'|'right')} horizontal
+ * @param  {(
+      top-right
+     |top-left
+     |right-top
+     |right-bottom
+     |bottom-right
+     |bottom-left
+     |left-top
+     |left-bottom
+     |vertical-righ
+     |vertical-left
+     |horizontal-top
+     |horizontal-bottom
+     |vertical
+     |horizontal
+   )} direction
  * @param  {Boolean} autoClose – close popup when clicked
  *
  * @example
@@ -37,28 +54,31 @@ class Popup extends Component {
 
   containerElem = createRef();
 
+  _clickInsideContent = false;
+
+  _focused = false;
+
+  timeoutVisibility = null;
+
   store = store({
     open: false,
     showContent: false
   });
 
-  _clickInsideContent = false;
-
-  _focused = false;
-
-  timeoutVisibility;
-
   static getDerivedStateFromProps({ disabled }) {
     if (disabled) {
       // close when receive disabled=true
-      return { open: false }
+      return { open: false };
     }
 
-    return null
+    return null;
   }
 
   componentDidMount() {
     const { onApi } = this.props;
+
+    this.scrollParent = getScrollParent(this.triggerElem.current);
+    this.scrollParent.addEventListener('scroll', this.close);
 
     document.body.addEventListener('mousedown', this.onDocTouch);
     document.body.addEventListener('touchstart', this.onDocTouch);
@@ -70,6 +90,8 @@ class Popup extends Component {
   }
 
   componentWillUnmount() {
+    this.scrollParent.removeEventListener('scroll', this.close);
+
     document.body.removeEventListener('mousedown', this.onDocTouch);
     document.body.removeEventListener('touchstart', this.onDocTouch);
     document.removeEventListener('keydown', this.onDocKeyDown);
@@ -80,12 +102,12 @@ class Popup extends Component {
     if (this.store.open && e.key === 'Escape') {
       e.stopPropagation();
       this.close();
-      return
+      return;
     }
 
     if (!this._focused) return;
 
-    if (/(Enter| )/.test(e.key)) {
+    if (/Enter| /.test(e.key)) {
       e.stopPropagation();
       this.toggle();
     }
@@ -97,10 +119,10 @@ class Popup extends Component {
 
     const isTargetInside = hasParent(e.target, this.containerElem.current);
 
-    if (!isTargetInside || isTargetInside && this.props.autoClose) {
+    if (!isTargetInside || (isTargetInside && this.props.autoClose)) {
       this.close();
       return;
-    };
+    }
 
     e.stopPropagation();
     this._clickInsideContent = true;
@@ -131,15 +153,35 @@ class Popup extends Component {
     this.toggle();
   }
 
+  getMetrics() {
+    const trigger = this.triggerElem.current;
+
+    if (!trigger) {
+      return {
+        axis: DEFAULT_AXIS,
+        float: DEFAULT_FLOAT
+      };
+    }
+
+    const [parsedAxis, parsedFloat] = H.parseMetrics(this.props.direction);
+    const scrollParent = document.body;
+
+    const axis = H.getAxis(parsedAxis, trigger, scrollParent);
+    const float = parsedFloat || H.getFloat(axis, trigger, scrollParent);
+
+    return { axis, float };
+  }
+
   @bind
   @debounce(100)
   setOpen(val) {
     clearTimeout(this.timeoutVisibility);
+
     this.store.open = val;
 
     if (!val) {
       this.timeoutVisibility = setTimeout(
-        () => this.store.showContent = val,
+        () => (this.store.showContent = val),
         ANIMATION_DURATION
       );
     } else {
@@ -155,6 +197,9 @@ class Popup extends Component {
   @bind
   close() {
     const { onClose } = this.props;
+    const { open } = this.store;
+
+    if (!open) return;
 
     this.setOpen(false);
 
@@ -193,38 +238,36 @@ class Popup extends Component {
   }
 
   renderContent() {
-    const {
-      children,
-      disabled,
-      vertical='bottom',
-      horizontal='right',
-      isOpen,
-    } = this.props;
+    const { children, disabled, outlined } = this.props;
     const { open, showContent } = this.store;
 
-    const [trigger, content] = children;
-    const triggerElem = this.triggerElem.current;
+    const [, content] = children;
+    const trigger = this.triggerElem.current;
 
     const wrppperProps = {};
+    const wrapperClasses = cn(s.contentWrapper, open && s.open);
+
+    const { axis, float } = this.getMetrics();
     const classes = cn(
       s.content,
+      outlined && s.outlined,
       !disabled && open && s.open,
-      s[vertical],
-      s[horizontal]
+      s[`axis-${axis}`],
+      s[`float-${float}`]
     );
 
-    if (triggerElem) {
-      const { offsetHeight, offsetWidth } = triggerElem;
+    if (trigger) {
+      const { offsetHeight, offsetWidth } = trigger;
 
       wrppperProps.style = {
         height: offsetHeight,
         width: offsetWidth,
-        ...getCoords(triggerElem)
+        ...getCoords(trigger)
       };
     }
 
     return createPortal(
-      <div className={s.contentWrapper} {...wrppperProps}>
+      <div className={wrapperClasses} {...wrppperProps}>
         <div className={classes} ref={this.containerElem}>
           {showContent && content}
         </div>
@@ -245,5 +288,9 @@ class Popup extends Component {
     );
   }
 }
+
+Popup.defaultProps = {
+  direction: 'vertical'
+};
 
 export default view(Popup);

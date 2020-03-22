@@ -20,20 +20,18 @@ const Select = ({
     closeOnClick: true,
     ...popupProps,
     ...props,
-    disabled,
+    disabled
   };
   const getText = () => options.find(({ val }) => val === value)?.text;
   const renderText = () => {
     if (renderLabel) return renderLabel(getText());
     if (value === undefined) return placeholder;
     return getText();
-  }
+  };
 
   return (
-    <Popup horizontal="left" {...propsPopup}>
-      <Button disabled={disabled}>
-        {renderText()}
-      </Button>
+    <Popup {...propsPopup} outlined>
+      <Button disabled={disabled}>{renderText()}</Button>
       <Menu {...menuProps}>
         {options.map(item => (
           <MenuItem
@@ -48,6 +46,6 @@ const Select = ({
       </Menu>
     </Popup>
   );
-}
+};
 
 export default Select;
