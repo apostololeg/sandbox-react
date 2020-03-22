@@ -1,13 +1,14 @@
-import { h } from 'preact'
+import { h } from 'preact';
+import { hot } from 'react-hot-loader/root';
 
-import Flex from 'components/UI/Flex'
-import Container from 'components/UI/Container'
-import Notifications from 'components/UI/Notifications'
+import Flex from 'components/UI/Flex';
+import Container from 'components/UI/Container';
+import Notifications from 'components/UI/Notifications';
 
-import Routes from 'components/Routes'
-import Header from 'components/Header'
+import Routes from 'components/Routes';
+import Header from 'components/Header';
 
-import s from './App.styl'
+import s from './App.styl';
 
 const App = () => (
   <Flex className={s.root}>
@@ -19,4 +20,4 @@ const App = () => (
   </Flex>
 );
 
-export default App;
+export default (PRODUCTION ? App : hot(App));
