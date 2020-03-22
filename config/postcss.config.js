@@ -1,6 +1,7 @@
-const { PRODUCTION } = require('./const');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
+
+const { PRODUCTION } = require('./const');
 
 module.exports = {
   exec: true,

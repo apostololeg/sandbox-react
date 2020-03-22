@@ -6,6 +6,7 @@
   border: 0;
   font-family: Play;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {

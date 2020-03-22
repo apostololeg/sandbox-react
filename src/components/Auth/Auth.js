@@ -1,21 +1,21 @@
-import { h, Component, Fragment } from 'preact'
-import { bind } from 'decko'
+import { h, Component, Fragment } from 'preact';
+import { bind } from 'decko';
 
-import { capitalize } from 'tools/string'
+import { capitalize } from 'tools/string';
 
-import { notify } from 'store/notifications'
-import PageStore from 'store/page'
+import { notify } from 'store/notifications';
+import PageStore from 'store/page';
 
-import { Title } from 'components/Header'
-import { Link } from 'components/Router'
-import Flex from 'components/UI/Flex'
-import Form, { SubmitButtons } from 'components/UI/Form'
+import { Title } from 'components/Header';
+import { Link } from 'components/Router';
+import Flex from 'components/UI/Flex';
+import Form, { SubmitButtons } from 'components/UI/Form';
 
-import Login from './Login'
-import Logout from './Logout'
-import Register from './Register'
+import Login from './Login';
+import Logout from './Logout';
+import Register from './Register';
 
-import s from './Auth.styl'
+import s from './Auth.styl';
 
 const Forms = {
   Login,
@@ -39,7 +39,7 @@ class Auth extends Component {
     try {
       await onSubmit(payload);
       route.navigate('/');
-    } catch(err) {
+    } catch (err) {
       notify({
         type: 'error',
         title: 'Login',
@@ -77,7 +77,9 @@ class Auth extends Component {
         >
           {({ Field, isValid, isDirty }) => (
             <Fragment>
-              {fields.map(props => <Field {...props} key={props.name} />)}
+              {fields.map(props => (
+                <Field {...props} key={props.name} />
+              ))}
               <div className={s.footer}>
                 {footerContent}
                 <div className={s.gap} />
@@ -87,7 +89,7 @@ class Auth extends Component {
                       text: submitText,
                       type: 'submit',
                       disabled: !isDirty || !isValid
-                    },
+                    }
                   ]}
                 />
               </div>

@@ -19,29 +19,22 @@ const {
 } = require('../const');
 
 module.exports = {
-  entry: [
-    `${paths.client}/index.js`
-  ],
+  entry: [`${paths.client}/index.js`],
   output: {
     path: paths.build,
-    filename: 'js/[name].js?v=[hash:5]',
+    filename: 'js/[name].js?v=[hash:5]'
   },
   resolve: {
-    modules: [
-      'node_modules',
-      paths.client
-    ],
+    modules: ['node_modules', paths.client],
     alias: {
       config: paths.config,
       quill: `${paths.modules}/quill`,
       'quill-css': `${paths.modules}/quill/dist/quill.core.css`,
-      'react': 'preact/compat',
+      react: 'preact/compat',
       'react-dom': 'preact/compat',
       'react-dom/test-utils': 'preact/test-utils'
     },
-    plugins: [
-      new ComponentDirectoryPlugin()
-    ],
+    plugins: [new ComponentDirectoryPlugin()],
     extensions: ['.js', '.jsx', '.css']
   },
   module: {
@@ -51,12 +44,8 @@ module.exports = {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         exclude: {
-          exclude: [
-            paths.modules
-          ],
-          test: [
-            /\.quill\.js$/,
-          ]
+          exclude: [paths.modules],
+          test: [/\.quill\.js$/]
         }
       },
       {
@@ -67,7 +56,7 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
-                localIdentName: '[name]__[local]___[hash:base64:5]',
+                localIdentName: '[name]__[local]___[hash:base64:5]'
               }
             }
           },
@@ -93,7 +82,7 @@ module.exports = {
                 loader: 'babel-loader'
               },
               {
-                loader: 'preact-svg-loader',
+                loader: 'preact-svg-loader'
               }
             ]
           },
@@ -162,8 +151,8 @@ module.exports = {
     }),
     new FaviconWebpackPlugin({
       logo: `${paths.assets}/logo.svg`,
-      mode: 'webapp',     // optional can be 'webapp' or 'light' - 'webapp' by default
-      devMode: 'webapp',  // optional can be 'webapp' or 'light' - 'light' by default
+      mode: 'webapp', // optional can be 'webapp' or 'light' - 'webapp' by default
+      devMode: 'webapp', // optional can be 'webapp' or 'light' - 'light' by default
       favicons: {
         appName: 'sandbox',
         appDescription: 'sandbox',
@@ -179,8 +168,8 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: PRODUCTION ? '[name].[hash].css' : '[name].css',
-      chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css',
+      chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css'
     }),
-    new webpack.NamedModulesPlugin(),
+    new webpack.NamedModulesPlugin()
   ]
 };

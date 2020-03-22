@@ -1,20 +1,22 @@
-import { h, render } from 'preact'
+import { h, render } from 'preact';
 
-import App from 'components/App'
-import ErrorBoundary from 'components/ErrorBoundary'
+import App from 'components/App';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 let root;
 
 function init() {
   root = render(
-    <ErrorBoundary><App/></ErrorBoundary>,
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>,
     document.getElementById('app-root'),
     root
   );
 }
 
 if (PRODUCTION) {
-  require('./pwa');
+  require('./pwa'); // eslint-disable-line
 }
 
 if (module.hot) {
