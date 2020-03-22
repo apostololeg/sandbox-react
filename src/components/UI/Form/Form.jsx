@@ -1,60 +1,62 @@
-import { h, Component } from 'preact'
-import { store, view } from 'preact-easy-state'
-import cn from 'classnames'
-import { bind } from 'decko'
-import Validator from 'fastest-validator'
-import compare from 'compareq'
-import nanoid from 'nanoid'
+import { h, Component } from 'preact';
+import { store, view } from 'preact-easy-state';
+import cn from 'classnames';
+import { bind } from 'decko';
+import Validator from 'fastest-validator';
+import compare from 'compareq';
+import nanoid from 'nanoid';
 
-import Input from '../Input'
+import Input from '../Input';
 
-import s from './Form.styl'
+import s from './Form.styl';
 
 const FORM_STORES = {};
 
-const Field = (formId, handleChange) => view(props => {
-  const {
-    component: Control = Input,
-    className,
-    onChange,
-    clearMargins,
-    ...controlProps
-  } = props;
-  const { values, changed, errors } = FORM_STORES[formId];
-  const { name, hidden } = controlProps;
+const Field = (formId, handleChange) =>
+  view(props => {
+    const {
+      component: Control = Input,
+      className,
+      onChange,
+      clearMargins,
+      ...controlProps
+    } = props;
+    const { values, changed, errors } = FORM_STORES[formId];
+    const { name, type, hidden } = controlProps;
 
-  const valField = props.type === 'checkbox' ? 'checked' : 'value';
-  const classes = cn(
-    className,
-    s.field,
-    changed[name] && s.changed,
-    clearMargins && s.clearMargins,
-    hidden && s.hidden
-  );
+    const isCheckbox = type === 'checkbox';
+    const valField = isCheckbox ? 'checked' : 'value';
+    const classes = cn(
+      className,
+      s.field,
+      changed[name] && s.changed,
+      clearMargins && s.clearMargins,
+      hidden && s.hidden
+    );
 
-  Object.assign(controlProps, {
-    name,
-    [valField]: values[name],
-    onChange: e => {
-      if (onChange && onChange(e) === false) {
-        return;
+    Object.assign(controlProps, {
+      name,
+      [valField]: values[name],
+      onChange: e => {
+        const val = typeof e === 'string' ? e : e.target[valField];
+
+        if (onChange && onChange(e, val) === false) {
+          return;
+        }
+
+        handleChange(name, val);
       }
+    });
 
-      const val = typeof e === 'string' ? e : e.target[valField]
-
-      handleChange(name, val);
-    }
+    return (
+      <div className={classes}>
+        <Control {...controlProps} />
+        {changed[name] && errors[name] && (
+          <div className={s.error}>{errors[name].message}</div>
+        )}
+      </div>
+    );
   });
-
-  return (
-    <div className={classes}>
-      <Control {...controlProps} />
-      {changed[name] && errors[name] && (
-        <div className={s.error}>{errors[name].message}</div>
-      )}
-    </div>
-  );
-});
 
 /**
  * Form
@@ -80,8 +82,14 @@ class Form extends Component {
   }
 
   shouldComponentUpdate({ initialValues, validationSchema }) {
-    const validationChanged = !compare(validationSchema, this.props.validationSchema);
-    const initialValsChanged = !compare(initialValues, this.props.initialValues);
+    const validationChanged = !compare(
+      validationSchema,
+      this.props.validationSchema
+    );
+    const initialValsChanged = !compare(
+      initialValues,
+      this.props.initialValues
+    );
 
     if (initialValsChanged) {
       this.setInitialVals(initialValues);
@@ -99,7 +107,7 @@ class Form extends Component {
       this.validate();
     }
 
-    return true
+    return true;
   }
 
   setInitialVals(initialValues) {
@@ -142,7 +150,7 @@ class Form extends Component {
 
         if (val.type === 'custom') {
           fieldSchema.check = function checkWrap(...args) {
-            return check.call(this, ...args, values)
+            return check.call(this, ...args, values);
           };
 
           if (messages) {
@@ -185,9 +193,7 @@ class Form extends Component {
 
     const changed = Object.entries(values).reduce(
       (acc, [field, val]) =>
-        initialValues[field] !== val
-          ? { ...acc, [field]: true }
-          : acc,
+        initialValues[field] !== val ? { ...acc, [field]: true } : acc,
       {}
     );
 
@@ -201,10 +207,12 @@ class Form extends Component {
     const { values } = this.store;
     const checkRes = this.check ? this.check(values) : true;
     const isValid = checkRes === true;
-    const errors = isValid ? {} : checkRes.reduce(
-      (acc, { field, ...rest }) => ({ ...acc, [field]: rest }),
-      {}
-    );
+    const errors = isValid
+      ? {}
+      : checkRes.reduce(
+          (acc, { field, ...rest }) => ({ ...acc, [field]: rest }),
+          {}
+        );
 
     Object.assign(this.store, { isValid, errors });
   }
@@ -224,7 +232,7 @@ class Form extends Component {
     const { values } = this.store;
 
     if (values[field] === val) {
-      return
+      return;
     }
 
     values[field] = val;
