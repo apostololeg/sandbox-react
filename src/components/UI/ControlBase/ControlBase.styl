@@ -1,14 +1,17 @@
 @import '~theme/theme.styl'
 
+controlBorder(color)
+  box-shadow inset 0 0 0 2px color
+
 .control
   appearance none
   outline none
-  background-color transparent
+  background-color $decentColorLight
   box-sizing border-box
   borderRadius()
 
   &[disabled]
-    color #808080
+    color $accentColor
     cursor not-allowed
 
 .decor
@@ -25,19 +28,19 @@
     borderRadius()
     controlBorder($accentColor)
     pointer-events none
-    transition all .1s ease-out
+    transition .15s ease-out
+    transition-property opacity, box-shadow
 
   &:hover::before
-    controlBorder(mix($accentColor, $activeColor, 30%))
+    controlBorder(mix($accentColor, $activeColor, 50%))
 
   &.focused::before
-    controlBorder($activeColor)
+    controlBorder(mix($accentColor, $activeColor, 20%))
 
   &.disabled
     &
     &::before
       opacity .5
-      background-color $accentColorLight
 
     &::before
       controlBorder($accentColor)

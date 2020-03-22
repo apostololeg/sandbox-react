@@ -15,6 +15,14 @@
     &::selection
       background $activeColor !important
 
+.label
+  margin -2px 0 2px
+  font-size 80%
+  display block
+
+  &:after
+    content ' :'
+
 .loading .control
   opacity .5
   pointer-events none
@@ -31,7 +39,7 @@
       opacity 0
       pointer-events none
 
-.filePLaceholder
+.filePlaceholder
   position absolute
   top 0
   left 0
@@ -44,7 +52,7 @@
   opacity .5
   pointer-events none
 
-.filePLaceholderInner
+.filePlaceholderInner
   padding 0 $indent_s
   box-sizing border-box
 
@@ -53,7 +61,7 @@
   text-overflow ellipsis
   overflow hidden
 
-.filePLaceholderFilled
+.filePlaceholderFilled
   opacity 1
 
 @-webkit-keyframes clearBg {

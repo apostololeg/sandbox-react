@@ -1,12 +1,12 @@
-import { h } from 'preact'
-import cn from 'classnames'
-import nanoid from 'nanoid'
+import { h } from 'preact';
+import cn from 'classnames';
+import nanoid from 'nanoid';
 
-import ControlBase from 'components/UI/ControlBase'
+import ControlBase from 'components/UI/ControlBase';
 
-import s from './Checkbox.styl'
+import s from './Checkbox.styl';
 
-class CheckBox extends ControlBase {
+class Checkbox extends ControlBase {
   render() {
     const {
       id = nanoid(),
@@ -33,13 +33,28 @@ class CheckBox extends ControlBase {
     return (
       <div className={classes}>
         <div className={s.controlWrapper}>
-          <input className={classesControl} {...props} id={id} type="checkbox" tabIndex={0} />
+          <input
+            className={classesControl}
+            {...props}
+            id={id}
+            type="checkbox"
+            tabIndex={0}
+          />
           <div className={markClasses} />
         </div>
-        {label && <label className={s.label} htmlFor={id}>{label}</label>}
+        {label && (
+          <label className={s.label} htmlFor={id}>
+            {label}
+          </label>
+        )}
       </div>
     );
   }
 }
 
-export default CheckBox;
+Checkbox.defaultProps = {
+  label: '',
+  checked: false
+};
+
+export default Checkbox;

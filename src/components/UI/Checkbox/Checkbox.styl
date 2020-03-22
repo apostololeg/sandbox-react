@@ -1,14 +1,13 @@
 @import '~theme/theme.styl'
 
 checkmark(scale)
-  transform scale(scale) rotateZ(-45deg)
+  // transform scale(scale) rotateZ(-45deg)
   transform-origin center
 
 .root
   cursor pointer
   display inline-flex
   align-items center
-  justify-content center
   box-sizing border-box
   text-decoration none
   color inherit
@@ -20,14 +19,10 @@ checkmark(scale)
   height 30px
 
 .control
-  background-color $accentColor
   transition .1s ease-out
   transition-property background-color, color
   cursor pointer
-  borderRadius(1.2)
-
-  &.checked
-    background-color $accentColor
+  borderRadius(2)
 
 .checkmark
   position absolute
@@ -37,18 +32,19 @@ checkmark(scale)
   height 100%
   width 100%
 
-  checkmark(.6)
   opacity 0
+  transform scale(.8) rotateZ(-45deg)
+  transform-origin center
   transition .1s ease-in
-  transition-property transform, opacity, top
+  transition-property transform, opacity
   pointer-events none
 
   &::before
   &::after
     content ''
     position absolute
-    width 4px
-    background-color $decentColor
+    width 3px
+    background-color $accentColor
     border-radius 2px
 
   &::before
@@ -58,20 +54,13 @@ checkmark(scale)
     transform rotateZ(9deg)
 
   &::after
-    top 2px
-    left 22px
+    top 3px
+    left 21px
     height 20px
-    transform rotateZ(-102deg)
+    transform rotateZ(-103deg)
 
   &.checked
-    checkmark(.8)
     opacity 1
-
-  &.focused
-    checkmark(.65)
-
-.root:hover .checkmark
-  checkmark(.65)
 
 .label
   display flex

@@ -1,11 +1,11 @@
-import { h, Component, createRef } from 'preact'
-import { store, view } from 'preact-easy-state'
-import cn from 'classnames'
-import { bind } from 'decko'
+import { h, createRef } from 'preact';
+import { store, view } from 'preact-easy-state';
+import cn from 'classnames';
+import { bind } from 'decko';
 
-import ControlBase from 'components/UI/ControlBase'
+import ControlBase from 'components/UI/ControlBase';
 
-import s from './Input.styl'
+import s from './Input.styl';
 
 class Input extends ControlBase {
   controlEl = createRef();
@@ -55,6 +55,7 @@ class Input extends ControlBase {
       className,
       controlClassName,
       loading,
+      label,
       ...props
     } = this.renderProps;
     const { isFileInput, fileName } = this.store;
@@ -65,36 +66,40 @@ class Input extends ControlBase {
       loading && s.loading,
       controlClassName
     );
-    const classesWrap = cn(
-      this.styles.decor,
-      s[`type_${props.type}`],
-      className
-    );
+    const classesWrap = cn(s[`type_${props.type}`], className);
     const classesFilePLaceholder = cn(
-      s.filePLaceholder,
-      fileName && s.filePLaceholderFilled
+      s.filePlaceholder,
+      fileName && s.filePlaceholderFilled
     );
 
     return (
-      <div // eslint-disable-line
-        className={classesWrap}
-        data-placeholder={props.placeholder}
-        onClick={this.onClick}
-        alt={fileName}
-      >
-        <input
-          {...props}
-          className={classes}
-          ref={this.controlEl}
-          onChange={this.onChange}
-        />
-        {isFileInput && (
-          <div className={classesFilePLaceholder}>
-            <div className={s.filePLaceholderInner}>
-              {fileName || 'Choose file'}
-            </div>
-          </div>
+      <div className={classesWrap}>
+        {label && (
+          <label htmlFor={props.name} className={s.label}>
+            {label}
+          </label>
         )}
+        <div // eslint-disable-line
+          className={this.styles.decor}
+          data-placeholder={props.placeholder}
+          onClick={this.onClick}
+          alt={fileName}
+        >
+          <input
+            {...props}
+            id={props.name}
+            className={classes}
+            ref={this.controlEl}
+            onChange={this.onChange}
+          />
+          {isFileInput && (
+            <div className={classesFilePLaceholder}>
+              <div className={s.filePlaceholderInner}>
+                {fileName || 'Choose file'}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
