@@ -1,11 +1,24 @@
-import { h } from 'preact'
-import cn from 'classnames'
+import { h } from 'preact';
+import cn from 'classnames';
 
 import { navigate } from '../store';
-import ExternalIcon from './icons/external.svg'
-import s from './Link.styl'
+import ExternalIcon from './icons/external.svg';
+import s from './Link.styl';
 
-const Link = ({ className, children, isClear, isClearPadding, isDisabled, ...props }) => {
+export const defaultProps = {
+  isClear: false,
+  isClearPadding: false,
+  isDisabled: false
+};
+
+const Link = ({
+  className,
+  children,
+  isClear,
+  isClearPadding,
+  isDisabled,
+  ...props
+}) => {
   const { href } = props;
   const { pathname } = window.location;
 
@@ -36,20 +49,24 @@ const Link = ({ className, children, isClear, isClearPadding, isDisabled, ...pro
   }
 
   function handleClick(e) {
-    const { href } = props;
-
-    if (!isExternal && location.pathname !== href) {
+    if (!isExternal && window.location.pathname !== props.href) {
       e.preventDefault();
-      navigate(href);
+      navigate(props.href);
     }
   }
 
   return (
-    <a className={classes} {...props} onClick={handleClick}>
+    <a /* eslint-disable-line */
+      className={classes}
+      {...props}
+      onClick={handleClick}
+    >
       {children}
       {isExternal && <ExternalIcon class={s.externalIcon} />}
     </a>
   );
 };
 
-export default Link;
+Link.defaultProps = defaultProps;
+
+export { Link };

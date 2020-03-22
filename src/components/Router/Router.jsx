@@ -1,7 +1,6 @@
-import { h, Component, Fragment } from 'preact'
-import { view } from 'preact-easy-state'
-import PathParser from 'path-parser'
-import { bind } from 'decko'
+import { h, Component, Fragment } from 'preact';
+import { view } from 'preact-easy-state';
+import PathParser from 'path-parser';
 
 import RouteStore, { navigate, replaceState } from './store';
 
@@ -11,17 +10,17 @@ function parseRouteParams(routes) {
 
   function parse(route) {
     if (!route) {
-      return
+      return;
     }
 
     if (Array.isArray(route)) {
       route.forEach(parse);
-      return
+      return;
     }
 
     if (route.children) {
       route.children.forEach(parse);
-      return
+      return;
     }
 
     const { path, exact } = route.props;
@@ -29,7 +28,7 @@ function parseRouteParams(routes) {
 
     if (!path) {
       exactItems.unshift(defaultParams);
-      return
+      return;
     }
 
     (exact ? exactItems : items).push({
@@ -44,7 +43,7 @@ function parseRouteParams(routes) {
 }
 
 function updateRouteState() {
-  RouteStore.path = location.pathname;
+  RouteStore.path = window.location.pathname;
 }
 
 @view
@@ -59,14 +58,14 @@ class Router extends Component {
     window.addEventListener('pushstate', updateRouteState);
   }
 
+  shouldComponentUpdate(nextProps) {
+    this.rebuildRoutes(nextProps.children);
+    return true;
+  }
+
   componentWillUnmount() {
     window.removeEventListener('popstate', updateRouteState);
     window.removeEventListener('pushstate', updateRouteState);
-  }
-
-  shouldComponentUpdate(nextProps) {
-    this.rebuildRoutes(nextProps.children);
-    return true
   }
 
   rebuildRoutes(items = this.props.children) {
@@ -79,7 +78,7 @@ class Router extends Component {
 
     this.routes.some(({ path, exact, parsed }, i) => {
       if (!parsed) {
-        return false
+        return false;
       }
 
       if (exact && path === RouteStore.path) {
@@ -94,7 +93,7 @@ class Router extends Component {
         return true;
       }
 
-      return false
+      return false;
     });
 
     const { render } = this.routes[index];
@@ -111,13 +110,11 @@ class Router extends Component {
   render() {
     const Route = this.getRoute();
 
-    return <Fragment key={Route.props.path || 'default'}>
-      {Route}
-    </Fragment>
+    return <Fragment key={Route.props.path || 'default'}>{Route}</Fragment>;
   }
 }
 
 export default Router;
-export { default as Link } from './Link'
-export { default as Redirect } from './Redirect'
-export * as store from './store'
+export * from './Link';
+export { default as Redirect } from './Redirect';
+export * as store from './store';
