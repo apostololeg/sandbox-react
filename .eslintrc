@@ -2,23 +2,24 @@
   "extends": [
     "airbnb",
     "prettier",
-    "prettier/react"
+    "prettier/react",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "parser": "babel-eslint",
-  "plugins": ["react"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["react", "@typescript-eslint"],
   "env": {
     "es6": true,
     "browser": true,
     "node": true
   },
-  "globals": {
-    "PRODUCTION": true,
-    "PEM_DIR": true,
-    "PROTOCOL": true,
-    "HOST": true,
-    "PORT": true,
-    "DO_SPACE_NS": true,
-    "DO_SPACE_NAME": true,
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "config/webpack/dev.js"
+      }
+    }
   },
   "rules": {
     // When importing files you do not need to add file extensions for the following extensions
@@ -30,6 +31,8 @@
     "import/no-named-as-default-member": "off",
     // Allowing importing from dev deps (for stories and tests)
     "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+    "no-case-declarations": "off",
     "no-console": "off",
     // Allowing ++ on numbers
     "no-plusplus": "off",
@@ -40,12 +43,15 @@
         "props": false
       }
     ],
+    "no-shadow": 1,
+    // Enforce ES5 or ES6 class for React Components
+    "react/prefer-es6-class": [1],
     // Prevent missing props validation in a React component definition
     "react/prop-types": ["off"],
     // Prevent missing React when using JSX
     "react/react-in-jsx-scope": ["off"],
-    // Enforce ES5 or ES6 class for React Components
-    "react/prefer-es6-class": [1],
+    // Enforces where React component static properties should be positioned
+    "react/static-property-placement": ["off"],
     // Enforce consistent usage of destructuring assignment of props, state, and context
     "react/destructuring-assignment": ["off"],
     // Allowing jsx in files with any file extension (old components have jsx but not the extension)
@@ -55,9 +61,12 @@
     "react/jsx-sort-props": "off",
     // Disallow JSX props spreading
     "react/jsx-props-no-spreading": 0,
+    // Allow use setState in componentDidUpdate
+    "react/no-did-update-set-state": "off",
     // This was turned off for wc - but should be re-enabled eventually
     "react/no-unknown-property": ["off"],
     "react/state-in-constructor": ["off"],
+    "no-continue": "off",
     "no-nested-ternary": 1,
     // Disallow more than 1 empty lines
     "no-multiple-empty-lines": [
@@ -66,15 +75,9 @@
         "max": 1
       }
     ],
-    "no-unused-expressions": [
-      "error",
-      {
-        "allowTernary": true
-      }
-    ],
+    "no-unused-expressions": ["off"],
     "no-unused-vars": [1, {
-      "args": "none",
-      "varsIgnorePattern": "^h$"
+      "args": "none"
     }],
     // Enforce no padding within blocks
     "padded-blocks": ["error", "never"],
@@ -112,6 +115,7 @@
     // Preventing if(condition) return;
     "curly": 0,
     // Allowing Math.pow rather than forcing `**`
+    "no-restricted-globals": ["warn"],
     "no-restricted-properties": [
       "off",
       {
@@ -126,13 +130,13 @@
     "object-curly-newline": "off",
     // Opting out of specific paren styles for now
     "function-paren-newline": "off",
-    "jsx-a11y/anchor-is-valid": 1
-  },
-  "settings": {
-    "import/resolver": {
-      "webpack": {
-        "config": "config/webpack/dev.js"
-      }
-    }
+    "jsx-a11y/anchor-is-valid": [ "error", {
+      "components": [ "Link" ],
+      "specialLink": [ "to" ]
+    }],
+    "jsx-a11y/no-redundant-roles": ["off"],
+    "@typescript-eslint/explicit-function-return-type": ["off"],
+    "@typescript-eslint/ban-ts-ignore": ["off"],
+    "@typescript-eslint/no-use-before-define": ["off"]
   }
 }

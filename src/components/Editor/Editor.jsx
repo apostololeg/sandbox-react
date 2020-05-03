@@ -1,46 +1,39 @@
-import { h, Component } from 'preact'
-import { bind, debounce } from 'decko'
+import { Component } from 'preact';
+import { bind, debounce } from 'decko';
 
-import Flex from 'components/UI/Flex'
-import Quill from './Quill'
-import Toolbar from './Toolbar'
-import Tools from './tools'
+import Flex from 'components/UI/Flex';
+import Quill from './Quill';
+import Toolbar from './Toolbar';
+import Tools from './tools';
 
-import s from './Editor.styl'
-import { hydrateComponents } from './Editor.helpers'
-import PostRenderHelpers from './PostRenderHelpers'
-
-const ON_CHANGE_DELAY = 1000;
+import s from './Editor.styl';
+import { hydrateComponents } from './Editor.helpers';
+import PostRenderHelpers from './PostRenderHelpers';
 
 class Editor extends Component {
   state = { showToolbar: false };
 
   componentDidMount() {
-    const { onChangeDelay } = this.props;
+    const { value } = this.props;
 
     this.editor = new Quill('#editor');
     this.tools = new Tools(this.editor, Quill);
     this.domParser = new DOMParser();
-    this.onEditorChange = debounce(
-      this.onChange,
-      onChangeDelay || ON_CHANGE_DELAY
-    );
 
-    this.editor.on('editor-change', this.onEditorChange);
-
+    this.setValue(value);
     this.setState({ showToolbar: true }); // eslint-disable-line
+
+    this.editor.on('editor-change', this.onChange);
+  }
+
+  componentDidUpdate() {
+    const { value } = this.props;
+
+    if (value !== this.getValue()) this.setValue(value);
   }
 
   componentWillUnmount() {
     this.editor.off('editor.change', this.onEditorChange);
-  }
-
-  shouldComponentUpdate({ value }, { showToolbar }) {
-    if (this.getValue() !== value) {
-      this.setValue(value);
-    }
-
-    return this.state.showToolbar !== showToolbar;
   }
 
   @bind
@@ -62,22 +55,20 @@ class Editor extends Component {
     return tree.body.innerHTML;
   }
 
+  @debounce(500)
   hydrateComponents() {
     hydrateComponents(this.editor.root);
   }
 
-  @bind
-  onChange() {
+  onChange = () => {
     const { value, onChange } = this.props;
     const newVal = this.getValue();
 
-    if (value === newVal) {
-      return;
-    }
+    if (value === newVal) return;
 
     onChange(newVal);
     this.hydrateComponents();
-  }
+  };
 
   render() {
     const { showToolbar } = this.state;
@@ -92,8 +83,4 @@ class Editor extends Component {
   }
 }
 
-export {
-  Editor as default,
-  hydrateComponents,
-  PostRenderHelpers
-};
+export { Editor as default, hydrateComponents, PostRenderHelpers };

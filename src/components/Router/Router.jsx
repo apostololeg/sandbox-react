@@ -1,8 +1,9 @@
-import { h, Component, Fragment } from 'preact';
-import { view } from 'preact-easy-state';
+import { Component, cloneElement } from 'preact';
+import { withStore } from 'justorm/preact';
 import PathParser from 'path-parser';
+import omit from 'lodash.omit';
 
-import RouteStore, { navigate, replaceState } from './store';
+import './store';
 
 function parseRouteParams(routes) {
   const items = [];
@@ -18,13 +19,14 @@ function parseRouteParams(routes) {
       return;
     }
 
-    if (route.children) {
-      route.children.forEach(parse);
+    const { path, exact, children } = route.props;
+
+    if (children) {
+      children.forEach(parse);
       return;
     }
 
-    const { path, exact } = route.props;
-    const defaultParams = { path, exact, render: route };
+    const defaultParams = { path, exact, Elem: route };
 
     if (!path) {
       exactItems.unshift(defaultParams);
@@ -33,7 +35,7 @@ function parseRouteParams(routes) {
 
     (exact ? exactItems : items).push({
       ...defaultParams,
-      parsed: new PathParser(path)
+      parsed: new PathParser(path),
     });
   }
 
@@ -42,20 +44,16 @@ function parseRouteParams(routes) {
   return [...exactItems, ...items];
 }
 
-function updateRouteState() {
-  RouteStore.path = window.location.pathname;
-}
-
-@view
+@withStore({ router: ['path'] })
 class Router extends Component {
   constructor(props) {
     super(props);
-    this.rebuildRoutes();
+    this.rebuildRoutes(props.children);
   }
 
   componentDidMount() {
-    window.addEventListener('popstate', updateRouteState);
-    window.addEventListener('pushstate', updateRouteState);
+    window.addEventListener('popstate', this.updateRouteState);
+    window.addEventListener('pushstate', this.updateRouteState);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -64,57 +62,40 @@ class Router extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('popstate', updateRouteState);
-    window.removeEventListener('pushstate', updateRouteState);
+    window.removeEventListener('popstate', this.updateRouteState);
+    window.removeEventListener('pushstate', this.updateRouteState);
   }
 
-  rebuildRoutes(items = this.props.children) {
+  updateRouteState = () => {
+    const { router } = this.props.store;
+    router.path = window.location.pathname;
+  };
+
+  rebuildRoutes(items) {
     this.routes = parseRouteParams(items);
   }
 
   getRoute() {
-    let index = 0;
-    let params = {};
+    let params;
+    const { router } = this.props.store;
+    const route =
+      this.routes.find(({ path, exact, parsed }) => {
+        if (exact && path === router.path) return true;
+        if (parsed) params = parsed.test(router.path);
+        return Boolean(params);
+      }) || this.routes[0];
 
-    this.routes.some(({ path, exact, parsed }, i) => {
-      if (!parsed) {
-        return false;
-      }
-
-      if (exact && path === RouteStore.path) {
-        index = i;
-        return true;
-      }
-
-      params = parsed.test(RouteStore.path);
-
-      if (params) {
-        index = i;
-        return true;
-      }
-
-      return false;
-    });
-
-    const { render } = this.routes[index];
-    const routePatch = {
-      route: { ...RouteStore, navigate, replaceState }
-    };
-
-    Object.assign(render.props, params, routePatch);
-    render.key = RouteStore.path;
-
-    return render;
+    return [route, params];
   }
 
   render() {
-    const Route = this.getRoute();
+    const { router } = this.props.store;
+    const [route, params] = this.getRoute();
 
-    return <Fragment key={Route.props.path || 'default'}>{Route}</Fragment>;
+    return cloneElement(route.Elem, { ...params, router });
   }
 }
 
 export default Router;
 export * from './Link';
 export { default as Redirect } from './Redirect';
-export * as store from './store';

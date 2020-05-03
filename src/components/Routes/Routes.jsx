@@ -1,27 +1,27 @@
-import { h } from 'preact'
-import { view } from 'preact-easy-state'
+import { withStore } from 'justorm/preact';
 
-import userStore from 'store/user'
+import Router from 'components/Router';
+import LazyComponent from 'components/LazyComponent';
+import Home from 'components/Home';
+import Auth from 'components/Auth';
 
-import Router from 'components/Router'
-import LazyComponent from 'components/LazyComponent'
-import Home from 'components/Home'
-import Auth from 'components/Auth'
+import NoMatch from './NoMatch';
 
-import NoMatch from './NoMatch'
-
-function Routes() {
-  const { isLogged, isAdmin } = userStore;
+export default withStore({
+  user: ['isLogged', 'isAdmin'],
+})(function Routes() {
+  const { isLogged, isAdmin } = this.props.store.user;
 
   return (
     <Router>
-      <Home path="/"/>
-      <Auth path="/register" type="register"/>
-      <Auth path="/login" type="login"/>
+      <Home path="/" exact />
+      <Auth path="/register" type="register" />
+      <Auth path="/login" type="login" />
       <Auth path="/logout" type="logout" />
 
       <LazyComponent
         path="/posts"
+        exact
         loading={() => import('components/PostList')}
       />
       <LazyComponent
@@ -29,10 +29,12 @@ function Routes() {
         loading={() => import('components/Post')}
       />
 
-      {isLogged && <LazyComponent
-        path="/profile"
-        loading={() => import('components/Profile')}
-      />}
+      {isLogged && (
+        <LazyComponent
+          path="/profile"
+          loading={() => import('components/Profile')}
+        />
+      )}
 
       {isAdmin && [
         <LazyComponent
@@ -52,12 +54,10 @@ function Routes() {
           path="/posts/:slug/preview"
           loading={() => import('components/Post')}
           preview
-        />
+        />,
       ]}
 
       <NoMatch />
     </Router>
   );
-}
-
-export default view(Routes);
+});

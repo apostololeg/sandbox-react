@@ -1,14 +1,13 @@
-import { h } from 'preact';
 import cn from 'classnames';
 
-import { navigate } from '../store';
+import store from '../store';
 import ExternalIcon from './icons/external.svg';
 import s from './Link.styl';
 
 export const defaultProps = {
   isClear: false,
   isClearPadding: false,
-  isDisabled: false
+  isDisabled: false,
 };
 
 const Link = ({
@@ -51,7 +50,7 @@ const Link = ({
   function handleClick(e) {
     if (!isExternal && window.location.pathname !== props.href) {
       e.preventDefault();
-      navigate(props.href);
+      store.navigate(props.href);
     }
   }
 

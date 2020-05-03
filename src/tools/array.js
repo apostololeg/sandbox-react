@@ -10,7 +10,7 @@ export function indexWhere(arr, val, fieldName) {
       index = i;
       return true;
     }
-    return false
+    return false;
   });
 
   return index;
@@ -19,10 +19,25 @@ export function indexWhere(arr, val, fieldName) {
 export function sliceWhere(arr, val, fieldName) {
   const index = indexWhere(arr, val, fieldName);
 
-  return [
-    ...arr.slice(0, index),
-    ...arr.slice(index + 1)
-  ];
+  return [...arr.slice(0, index), ...arr.slice(index + 1)];
 }
 
-export default {};
+export function setListMap(arr, obj, data, fieldName) {
+  const fieldVal = data[fieldName];
+  const i = indexWhere(arr, fieldVal, fieldName);
+
+  obj[fieldVal] = data;
+
+  if (i > -1) {
+    arr.splice(i, 1, data);
+  } else {
+    arr.push(data);
+  }
+}
+
+export function delListMap(arr, obj, fieldName, fieldVal) {
+  const index = indexWhere(arr, fieldVal, fieldName);
+
+  delete obj[fieldVal];
+  arr.splice(index, 1);
+}

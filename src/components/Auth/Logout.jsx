@@ -1,51 +1,59 @@
-import { h, Component } from 'preact'
-import { bind } from 'decko'
+import { Component } from 'preact';
+import { bind } from 'decko';
+import { withStore } from 'justorm/preact';
+import Time from 'timen';
 
-import UserStore, { logout } from 'store/user'
+import Spinner from 'components/UI/Spinner';
 
-import { store as RouterStore } from 'components/Router'
-import Spinner from 'components/UI/Spinner'
-
-import s from './Auth.styl'
+import s from './Auth.styl';
 
 const REDIRECT_TIMEOUT = 500;
 
+@withStore({ user: ['isLogged'] })
 class Logout extends Component {
+  clearTimer;
+
   componentDidMount() {
-    if (!UserStore.isLogged) {
+    const { isLogged } = this.props.store.user;
+
+    if (!isLogged) {
       this.redirect();
-      return
+      return;
     }
 
     this.logout();
   }
 
+  componentWillUnmount() {
+    this.clearTimer?.();
+  }
+
   async logout() {
+    const { logout } = this.props.store.user;
     const startTime = Date.now();
     await logout();
     const delay = REDIRECT_TIMEOUT - (Date.now() - startTime);
 
     if (delay <= 0) {
       this.redirect();
-      return
+      return;
     }
 
-    this._timeout = setTimeout(this.redirect, delay);
+    this.clearTimer = Time.after(delay, this.redirect);
   }
 
   @bind
   redirect() {
-    RouterStore.navigate('/', { replace: true });
-  }
+    const { navigate } = this.props.router;
 
-  componentWillUnmount() {
-    clearTimeout(this._timeout);
+    navigate('/', { replace: true });
   }
 
   render() {
     return (
       <div className={s.wrap}>
-        logging out<Spinner paddedX />
+        logging out
+        <Spinner paddedX />
       </div>
     );
   }

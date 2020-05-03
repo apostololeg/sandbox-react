@@ -9,9 +9,7 @@ class LocalStorage {
   get(key) {
     let result = this._ls.getItem(key);
 
-    /**
-     * Hack for undefined
-     */
+    // Hack for undefined
     try {
       result = JSON.parse(result);
     } catch (err) {
@@ -23,7 +21,6 @@ class LocalStorage {
 
   set(key, obj) {
     const item = JSON.stringify(obj);
-
     this._ls.setItem(key, item);
   }
 

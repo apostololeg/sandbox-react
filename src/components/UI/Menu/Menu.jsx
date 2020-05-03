@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import cn from 'classnames';
 
 import s from './Menu.styl';
@@ -9,7 +8,7 @@ export default function Menu({
   highlighted,
   className,
   children,
-  align="left"
+  align = 'left',
 }) {
   const classes = cn(
     s.root,
@@ -20,19 +19,10 @@ export default function Menu({
     className
   );
 
-  return (
-    <ul className={classes}>
-      {children}
-    </ul>
-  );
+  return <ul className={classes}>{children}</ul>;
 }
 
-export function MenuItem({
-  children,
-  selected,
-  As="li",
-  ...props
-}) {
+export function MenuItem({ children, selected, As = 'li', ...props }) {
   const classes = cn(
     s.item,
     selected && s.selected,

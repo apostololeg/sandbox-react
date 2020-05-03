@@ -1,11 +1,15 @@
-import { h } from 'preact'
+export const MAX_INDENT = 8
 
 export default function PostRenderHelpers() {
+  let indents = '';
+
+  for (let i = 1; i <= MAX_INDENT; i++) {
+    indents += ` .ql-indent-${i} { margin-left: ${i * 30}px; }`;
+  }
+
   return (
     <style>
-      {[1,2,3,4,5,6,7,8,9,10].map(
-        i => `.ql-indent-${i} { margin-left: ${i * 30}px; }`
-      )}
+      {indents}
       {`
         .ql-align-center {
           text-align: center;

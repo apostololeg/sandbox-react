@@ -1,105 +1,94 @@
-import { h, Component, Fragment, createRef } from 'preact'
-import { store, view } from 'preact-easy-state'
+import { Component, Fragment, createRef } from 'preact';
+import { withStore } from 'justorm/preact';
 
-import LS from 'tools/localStorage'
-import Time from 'tools/time'
+import Time from 'timen';
 
-import UserStore from 'store/user'
-import { getPosts } from 'store/post'
-
-import { Title } from 'components/Header'
-import { hydrateComponents, PostRenderHelpers } from 'components/Editor'
-import { Link } from 'components/Router'
-import Flex, { mix as flex } from 'components/UI/Flex'
-import Spinner from 'components/UI/Spinner'
+import { Title } from 'components/Header';
+import { hydrateComponents, PostRenderHelpers } from 'components/Editor';
+import { Link } from 'components/Router';
+import Flex, { mix as flex } from 'components/UI/Flex';
+import Spinner from 'components/UI/Spinner';
 
 import s from './Post.styl';
 
-@view
+@withStore({
+  user: ['isAdmin'],
+  posts: ['list', 'localEdits', 'loading'],
+})
 class Post extends Component {
   container = createRef();
 
-  store = store({
-    data: {},
-    loading: false,
-    hasPreview: false
-  });
+  isHydrated = false;
+
+  clearHydrateTimer;
 
   componentDidMount() {
     this.init();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.slug !== this.props.slug) {
+    const { slug, preview } = this.props;
+    const isSlugChanged = prevProps.slug !== slug;
+    const isPreviewChanged = prevProps.preview !== preview;
+
+    if (isSlugChanged || isPreviewChanged) {
       this.init();
+    } else if (!this.isHydrated && this.getData()) {
+      this.hydrate();
     }
   }
 
-  init() {
-    const { preview } = this.props;
+  componentWillUnmount() {
+    this.clearHydrateTimer?.();
+  }
+
+  isLoading() {
+    const { slug, store } = this.props;
+    return store.posts.loading[slug];
+  }
+
+  async init() {
+    const { preview, slug, store } = this.props;
+    const { getPostBySlug, getLocalVersion, loadPost } = store.posts;
 
     if (preview) {
-      this.loadLocal();
-      return
+      getLocalVersion(slug);
+      this.hydrate();
+      return;
     }
 
-    this.loadRemote();
+    if (getPostBySlug(slug)) {
+      this.hydrate();
+    } else {
+      this.isHydrated = false;
+      loadPost(slug);
+    }
   }
 
-  loadLocal() {
-    const { slug } = this.props;
+  getData() {
+    const { slug, preview, store } = this.props;
+    const { localEdits, getPostBySlug } = store.posts;
 
-    this.store.data = LS.get(`editor-post-${slug}`);
-    this.store.hasPreview = true;
-
-    this.hydrate();
-  }
-
-  async loadRemote() {
-    const { slug } = this.props;
-
-    this.store.loading = true;
-    const posts = await getPosts({ slug });
-    this.store.data = posts.pop();
-    this.store.loading = false;
-
-    this.hydrate();
+    return preview ? localEdits[slug] : getPostBySlug(slug);
   }
 
   hydrate() {
-    Time.after(100, () => {
-      if (this.store.data) {
-        hydrateComponents(this.container.current);
-      }
-    });
-  }
+    if (this.isHydrated) return;
 
-  renderTitle() {
-    const { data, hasPreview } = this.store;
-    const { slug } = data;
-
-    return (
-      <Fragment>
-        <Link href={`/posts/${slug}/edit`}>Edit</Link>
-        {hasPreview && <Link href={`/posts/${slug}`}>Original</Link>}
-      </Fragment>
-    )
+    this.isHydrated = true;
+    this.clearHydrateTimer = Time.after(100, () =>
+      hydrateComponents(this.container.current)
+    );
   }
 
   renderContent() {
-    const { data, loading } = this.store;
-
-    if (loading) {
-      return <Flex><Spinner /></Flex>;
-    }
-
-    const { author, createdAt, content } = data;
+    const { author, createdAt, content } = this.getData();
 
     return (
       <Fragment>
         <div
           ref={this.container}
-          dangerouslySetInnerHTML={{ __html: content }}
+          dangerouslySetInnerHTML={{ __html: content }} // eslint-disable-line
         />
         <div className={s.footer}>
           {author && (author.name || author.email)}
@@ -110,24 +99,34 @@ class Post extends Component {
   }
 
   render() {
-    const { isAdmin } = UserStore;
-    const { className, data } = this.store;
+    const data = this.getData();
 
-    if (!data) {
-      return 'Failed to fetch post data.';
+    if (!data) return null;
+    if (this.isLoading()) {
+      return (
+        <Flex>
+          <Spinner />
+        </Flex>
+      );
     }
+
+    const { className, slug, preview, store } = this.props;
+    const { user } = store;
 
     return (
       <Fragment>
         <PostRenderHelpers />
         <Title text={data.title}>
-          {isAdmin && this.renderTitle()}
+          {user.isAdmin && [
+            <Link href={`/posts/${slug}/edit`}>Edit</Link>,
+            preview && <Link href={`/posts/${slug}`}>Original</Link>,
+          ]}
         </Title>
         <div
           className={flex('scrolled', className, s.root)}
           onScroll={this.onScroll}
         >
-          {this.renderContent()}
+          {this.renderContent(data)}
         </div>
       </Fragment>
     );

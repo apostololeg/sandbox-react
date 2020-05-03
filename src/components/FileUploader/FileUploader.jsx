@@ -1,23 +1,26 @@
-import { h, Component } from 'preact'
-import { store, view } from 'preact-easy-state'
-import cn from 'classnames'
-import { bind } from 'decko'
-import nanoid from 'nanoid'
+import { Component } from 'preact';
+import { createStore } from 'justorm/preact';
+import cn from 'classnames';
+import { bind } from 'decko';
+import nanoid from 'nanoid';
 
-import upload from 'tools/xhrLoad'
+import upload from 'tools/xhrLoad';
 
-import Input from 'components/UI/Input'
+import Input from 'components/UI/Input';
 
-import s from './FileUploader.styl'
+import s from './FileUploader.styl';
 
 class FileUploader extends Component {
-  store = store({
-    total: 0,
-    loaded: 0,
-    progress: false,
-    complete: false,
-    error: false
-  });
+  constructor(props) {
+    super(props);
+    this.store = createStore(this, {
+      total: 0,
+      loaded: 0,
+      progress: false,
+      complete: false,
+      error: false,
+    });
+  }
 
   @bind
   async onChange(e) {
@@ -26,7 +29,7 @@ class FileUploader extends Component {
       loaded: 0,
       complete: false,
       progress: true,
-      error: false
+      error: false,
     });
 
     const { files } = e.target;
@@ -37,13 +40,13 @@ class FileUploader extends Component {
 
     try {
       await this.upload(files[0]);
-    } catch(err) {
+    } catch (err) {
       Object.assign(this.store, {
         progress: false,
-        error: true
+        error: true,
       });
     }
-  };
+  }
 
   @bind
   onProgress({ loaded, total }) {
@@ -70,13 +73,13 @@ class FileUploader extends Component {
       body: formData,
       headers: {
         'x-filename': fileName,
-      }
+      },
     };
 
     await upload('/upload', params, this.onProgress);
     Object.assign(this.store, {
       progress: false,
-      complete: true
+      complete: true,
     });
 
     onUpload(`https://${DO_SPACE_NAME}.${DO_SPACE_NS}/${fileName}`);
@@ -102,11 +105,11 @@ class FileUploader extends Component {
         />
         <div
           className={indicatorClasses}
-          style={{ left: `${loaded / total * 100 -100}%` }}
+          style={{ left: `${(loaded / total) * 100 - 100}%` }}
         />
       </div>
     );
   }
 }
 
-export default view(FileUploader);
+export default FileUploader;

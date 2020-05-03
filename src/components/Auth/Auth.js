@@ -1,10 +1,6 @@
-import { h, Component, Fragment } from 'preact';
+import { Component, Fragment } from 'preact';
 import { bind } from 'decko';
-
-import { capitalize } from 'tools/string';
-
-import { notify } from 'store/notifications';
-import PageStore from 'store/page';
+import { withStore } from 'justorm/preact';
 
 import { Title } from 'components/Header';
 import { Link } from 'components/Router';
@@ -18,32 +14,29 @@ import Register from './Register';
 import s from './Auth.styl';
 
 const Forms = {
-  Login,
-  Logout,
-  Register
+  '/login': Login,
+  '/logout': Logout,
+  '/register': Register,
 };
 
+@withStore({
+  page: [],
+  notifications: [],
+})
 class Auth extends Component {
-  componentDidMount() {
-    PageStore.isAuth = true;
-  }
-
-  componentWillUnmount() {
-    PageStore.isAuth = false;
-  }
-
   @bind
   async onSubmit(onSubmit, payload) {
-    const { route } = this.props;
+    const { router, store } = this.props;
+    const { notifications } = store;
 
     try {
       await onSubmit(payload);
-      route.navigate('/');
+      router.navigate('/');
     } catch (err) {
-      notify({
+      notifications.show({
         type: 'error',
         title: 'Login',
-        content: err.message
+        content: err.message,
       });
     }
   }
@@ -75,7 +68,7 @@ class Auth extends Component {
           onSubmit={payload => this.onSubmit(onSubmit, payload)}
           {...formProps}
         >
-          {({ Field, isValid, isDirty }) => (
+          {({ Field, isValid, isDirty, isLoading }) => (
             <Fragment>
               {fields.map(props => (
                 <Field {...props} key={props.name} />
@@ -86,10 +79,11 @@ class Auth extends Component {
                 <SubmitButtons
                   buttons={[
                     {
-                      text: submitText,
+                      children: submitText,
                       type: 'submit',
-                      disabled: !isDirty || !isValid
-                    }
+                      loading: isLoading,
+                      disabled: !isDirty || !isValid,
+                    },
                   ]}
                 />
               </div>
@@ -101,13 +95,13 @@ class Auth extends Component {
   }
 
   render() {
-    const { type } = this.props;
-    const AuthForm = Forms[capitalize(type)];
+    const { router } = this.props;
+    const AuthForm = Forms[router.path];
 
     return (
       <Flex centered scrolled>
         <Title text="Auth" />
-        <AuthForm>{this.renderAuthForm}</AuthForm>
+        <AuthForm router={router}>{this.renderAuthForm}</AuthForm>
       </Flex>
     );
   }

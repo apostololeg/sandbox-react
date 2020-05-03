@@ -1,23 +1,20 @@
-import { h } from 'preact'
-import { view } from 'preact-easy-state'
+import Button from 'components/UI/Button';
+import SvgIcon from 'components/UI/SvgIcon';
 
-import Button from 'components/UI/Button'
-import SvgIcon from 'components/UI/SvgIcon'
+import Icon from './IndentDecrease.svg';
 
-import Icon from './IndentDecrease.svg'
-
-export default function({ editor, state }) {
-  function action() {
+export default {
+  action({ editor, state }) {
     const { index, length } = state.selection;
     editor.formatLine(index, length, 'indent', '-1');
-  }
+  },
+  Module({ action, state }) {
+    const { indent } = state.format;
 
-  return {
-    action,
-    Module: view(props => (
-      <Button onClick={action} {...props}>
+    return (
+      <Button onClick={action} disabled={!indent}>
         <SvgIcon icon={Icon} size={20} />
       </Button>
-    ))
-  }
-}
+    );
+  },
+};

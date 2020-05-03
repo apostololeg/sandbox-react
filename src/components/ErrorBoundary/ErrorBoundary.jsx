@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { Component } from 'preact';
 // import Raven from 'raven-js';
 
 // const KEY = '906c3e2f81a34fc38a5b2df8a56f6dbe';

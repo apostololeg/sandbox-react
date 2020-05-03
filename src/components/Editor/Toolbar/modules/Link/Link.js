@@ -1,13 +1,11 @@
-import { h } from 'preact'
-import { view } from 'preact-easy-state'
+import Button from 'components/UI/Button';
+import SvgIcon from 'components/UI/SvgIcon';
 
-import Button from 'components/UI/Button'
-import SvgIcon from 'components/UI/SvgIcon'
+import Icon from './Link.svg';
 
-import Icon from './Link.svg'
-
-export default function({ editor, state }) {
-  function action() {
+export default {
+  hotkey: 'k',
+  action({ editor, state }) {
     const { index, length } = state.selection;
     const children = editor.getText(index, length);
 
@@ -23,21 +21,16 @@ export default function({ editor, state }) {
       component: 'Link',
       isClearPadding: true,
       children,
-      href
+      href,
     });
-  }
+  },
+  Module({ state, action }) {
+    const isDisabled = state.selection.length === 0;
 
-  return {
-    action,
-    hotkey: 'k',
-    Module: view(props => (
-      <Button
-        onClick={action}
-        {...props}
-        disabled={state.selection.length === 0}
-      >
+    return (
+      <Button onClick={action} disabled={isDisabled}>
         <SvgIcon icon={Icon} size={20} />
       </Button>
-    ))
-  }
-}
+    );
+  },
+};

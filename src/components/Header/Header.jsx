@@ -1,5 +1,3 @@
-import { h } from 'preact';
-
 import Container from 'components/UI/Container';
 import User from 'components/User';
 import Logo from 'components/Logo';

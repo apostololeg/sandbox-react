@@ -1,184 +1,120 @@
-import { h, Fragment, Component } from 'preact'
-import { memo } from 'preact/compat'
-import { store, view } from 'preact-easy-state'
-import { bind, debounce } from 'decko'
-import pick from 'lodash/pick'
-import nanoid from 'nanoid'
+import { Component } from 'preact';
+import { memo } from 'preact/compat';
+import { createStore, withStore } from 'justorm/preact';
+import { bind, debounce } from 'decko';
+import nanoid from 'nanoid';
+import compare from 'compareq';
 
-import LS from 'tools/localStorage'
-import time from 'tools/time'
+import Form from 'components/UI/Form';
+import Flex, { mix as flex } from 'components/UI/Flex';
+import Spinner from 'components/UI/Spinner';
+import Checkbox from 'components/UI/Checkbox';
+import Button from 'components/UI/Button';
 
-import UserStore from 'store/user'
-import { notify } from 'store/notifications'
-import { getPosts, createPost, updatePost } from 'store/post'
-
-import Form from 'components/UI/Form'
-import { mix as flex } from 'components/UI/Flex'
-import Checkbox from 'components/UI/Checkbox'
-import Button from 'components/UI/Button'
-
-import { Title, Gap } from 'components/Header'
-import { Link } from 'components/Router'
-import Editor from 'components/Editor'
+import { Title } from 'components/Header';
+import { Link } from 'components/Router';
+import Editor from 'components/Editor';
 
 import s from './PostEditor.styl';
+import * as H from './PostEditor.helpers';
 
-function connectAuthor(email) {
-  return { connect: { email } };
-}
-
-function titleToSlug(str) {
-  const explicitSymbols = ['&nbsp;'];
-
-  if (!str) {
-    return '';
-  }
-
-  return str
-    .replace(new RegExp(`(${explicitSymbols.join('|')})`), '')
-    .match(/[\w\d_.-]+/g).join('_')
-    .toLowerCase();
-}
-
-function pickFormVals(vals) {
-  return pick(vals, ['slug', 'slugLock', 'content', 'published'])
-}
-
+@withStore({
+  posts: ['list', 'loading', 'updating'],
+  user: [],
+  notifications: [],
+})
 class PostEditor extends Component {
+  validationSchema = {
+    slug: { type: 'string' },
+    content: { type: 'string' },
+  };
+
   constructor(props) {
     super(props);
 
-    const localVersion = this.loadLocal();
-
-    this.store = store({
-      localVersion,
-      showLocalVersion: false,
-      post: {
-        author: null,
-        slug: '',
-        slugLock: false,
-        title: '',
-        content: '',
-        tags: [],
-        published: false,
-        updatedAt: ''
-      },
-      loading: false,
-      saving: false,
+    this.store = createStore(this, {
+      showLocalVersion: Boolean(this.localVersion),
+      initialValues: H.pickFormData(this.localVersion || this.remoteVersion),
+      isSaved: true,
     });
   }
 
-  validationSchema = {
-    slug: { type: 'string' },
-    content: { type: 'string' }
-  };
-
   componentDidMount() {
-    const { slug } = this.props;
-
-    document.addEventListener('keydown', this.onKeyDown);
-
-    if (slug) {
-      this.loadRemote(slug);
+    if (this.props.slug) {
+      this.loadPostData();
     } else {
       this.createNewPost();
     }
+
+    document.addEventListener('keydown', this.onKeyDown);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown);
   }
 
-  getLocalNamespace() {
-    const { slug } = this.props;
-
-    return `editor-post-${slug}`;
+  isLoading() {
+    const { slug, store } = this.props;
+    return Boolean(store.posts.loading[slug]);
   }
 
-  async loadRemote(slug) {
-    const { localVersion } = this.store;
+  async loadPostData() {
+    const { slug, store } = this.props;
 
-    this.store.loading = true;
-    const post = (await getPosts({ slug }))[0];
-    this.store.loading = false;
-    this.setPostData(post);
+    await store.posts.loadPost(slug);
+    const formData = H.pickFormData(this.remoteVersion);
+    this.store.initialValues = formData;
 
-    const isLocalNewer = localVersion &&
-      new Date(localVersion.updatedAt) > new Date(post.updatedAt);
-
-    if (isLocalNewer) {
-      this.onFormAPI = () => {
-        this.onFormAPI = null;
-        this.toggleLocalVersion(true);
-      };
+    if (!compare(this.localVersion, this.remoteVersion)) {
+      this.store.isSaved = false;
     }
 
-  }
-
-  loadLocal() {
-    return LS.get(this.getLocalNamespace());
-  }
-
-  saveLocal(postData) {
-    if (postData !== undefined) {
-      this.store.localVersion = postData;
+    if (!this.store.showLocalVersion) {
+      this.form.setValues(formData);
     }
-
-    LS.set(this.getLocalNamespace(), this.store.localVersion);
   }
 
-  setPostData(data) {
-    this.store.post = data;
+  get localVersion() {
+    const { slug, store } = this.props;
+    return store.posts.getLocalVersion(slug);
   }
 
-  getCurrentViewData() {
-    const { post, localVersion, showLocalVersion } = this.store;
+  get remoteVersion() {
+    const { slug, store } = this.props;
+    return store.posts.getPostBySlug(slug);
+  }
 
-    return showLocalVersion ? localVersion : post;
+  getViewData() {
+    if (this.store.showLocalVersion) return this.localVersion;
+    return this.remoteVersion;
   }
 
   @bind
   async createNewPost() {
-    const { route } = this.props;
-    const { post } = this.store;
-
-    if (!post.author) {
-      post.author = connectAuthor(UserStore.email);
-    }
-
-    if (!post.slug) {
-      post.slug = nanoid();
-    }
-
-    this.store.inProgress = true;
+    const { router, store } = this.props;
+    const { user, notifications, posts } = store;
 
     try {
-      const data = await createPost(post);
-      this.setPostData(data)
-      this.store.inProgress = false;
-      route.navigate(`/posts/${data.slug}/edit`, { replace: true });
-    } catch(e) {
-      this.store.inProgress = false;
-      notify({
+      const data = await posts.createPost({
+        slug: nanoid(),
+        author: H.connectAuthor(user.email),
+        content: 'start writing here...',
+      });
+      router.navigate(`/posts/${data.slug}/edit`, { replace: true });
+    } catch (e) {
+      notifications.show({
         type: 'error',
         title: 'Create post failed',
-        content: e.message
+        content: e.message,
       });
     }
   }
 
   updateLocalVersion(patch) {
-    const { post, localVersion } = this.store;
+    const { setLocalVersion } = this.props.store.posts;
 
-    if (!localVersion) {
-      this.saveLocal({ ...post, ...patch });
-    } else {
-      Object.assign(localVersion, patch);
-      this.saveLocal();
-    }
+    setLocalVersion({ ...this.getViewData(), ...patch });
   }
-
-  onFormAPI = null;
 
   @bind
   onKeyDown(e) {
@@ -194,173 +130,164 @@ class PostEditor extends Component {
   onChange(values) {
     this.updateLocalVersion(values);
     this.store.showLocalVersion = true;
+    this.store.isSaved = false;
   }
 
   @bind
   onEditorChange(content) {
-    const h1 = content.replace(/(<br>|&nbsp;)/g, '').match('<h1.*?>(.*?)</h1>');
-    const title = h1?.[1];
+    const title = H.parseTitleFromContent(content);
     const { values } = this.form;
 
     if (values.content === content) {
-      return
+      return;
     }
 
-    if (!values.slugLock) {
-      this.form.setValue('slug', titleToSlug(title));
+    if (this.localVersion.title && !values.slugLock) {
+      this.form.setValue('slug', H.titleToSlug(title));
     }
 
     this.updateLocalVersion({
       title,
       content,
-      updatedAt: Date.now()
     });
-    this.form.setValue('title', title);
-    this.onChange(values);
   }
 
   @bind
   async onSave(values = this.form.values) {
-    const { route } = this.props;
-    const { localVersion, post } = this.store;
+    const { router, store } = this.props;
+    const { user, notifications, posts } = store;
+    const { slug } = values;
+    const { id, title } = this.localVersion;
+    const data = {
+      ...values,
+      title,
+      author: H.connectAuthor(user.email),
+    };
 
-    const { id } = post;
-    const { author, createdAt, ...rest } = localVersion;
-    const data = { ...rest, ...values };
+    await posts.updatePost({ id, data });
 
-    if (author) {
-      data.author = connectAuthor(author);
-    }
-
-    this.store.saving = true;
-    const postData = await updatePost({ id, data });
-    this.store.saving = false;
-    this.setPostData(postData);
-
-    if (post.slug !== postData.slug) {
-      route.replaceState(`/posts/${postData.slug}/edit`);
-    }
-
-    this.store.showLocalVersion = false;
-    this.saveLocal(null);
-
-    notify({
+    notifications.show({
       type: 'success',
       title: 'Post updated',
     });
+
+    Object.assign(this.store, {
+      initialValues: H.pickFormData(this.remoteVersion),
+      showLocalVersion: false,
+      isSaved: true,
+    });
+
+    if (slug !== this.props.slug) {
+      router.replaceState(`/posts/${slug}/edit`, { quiet: true });
+    }
   }
 
-  @bind
-  toggleLocalVersion(show) {
-    const { post, localVersion, showLocalVersion } = this.store;
-    const showLocal = show || !showLocalVersion;
-    const postData = showLocal ? localVersion : post;
-
-    this.store.showLocalVersion = showLocal;
-    this.form.setValues(pickFormVals(postData));
-  }
+  toggleLocalVersion = () => {
+    this.store.showLocalVersion = !this.store.showLocalVersion;
+    this.form.setValues(H.pickFormData(this.getViewData()));
+  };
 
   renderTitle(showOriginal) {
-    const { loading, post } = this.store;
+    const postData = this.getViewData();
 
-    if (loading) {
-      return null
-    }
-
-    const { title, slug } = this.getCurrentViewData();
-
-    function TitleContent() {
-      if (!showOriginal)
-        return null;
-
-      if (post.slug !== slug)
-        return '[Save new slug before preview]'
-
-      return (
-        <Fragment>
-          <Link href={`/posts/${slug}/preview`}>Preview</Link>
-          <Link href={`/posts/${slug}`}>Original</Link>
-        </Fragment>
-      );
+    if (this.isLoading() || !postData) {
+      return null;
     }
 
     return (
-      <Title text={title || 'New post'}>
-        <TitleContent />
+      <Title text={postData.title || 'New post'}>
+        {this.renderTitleLinks(showOriginal, postData)}
       </Title>
     );
   }
 
+  renderTitleLinks(showOriginal, postData) {
+    const { slug } = this.props;
+
+    if (!showOriginal) return null;
+    if (slug !== postData.slug) return '[Save new slug before preview]';
+    return [
+      <Link href={`/posts/${slug}/preview`}>Preview</Link>,
+      <Link href={`/posts/${slug}`}>Original</Link>,
+    ];
+  }
+
   @bind
-  renderForm({ isDirty, isValid, Field, form }) {
-    const {
-      saving,
-      post,
-      localVersion,
-      showLocalVersion
-    } = this.store;
+  renderForm(form) {
+    const { isDirty, isValid, Field } = form;
+    const { updating } = this.props.store.posts;
+    const { showLocalVersion, isSaved } = this.store;
 
     this.form = form;
 
-    if (this.onFormAPI) {
-      this.onFormAPI();
-    }
-
-    return (
-      <Fragment key="post-editor-form">
-        {this.renderTitle(isDirty)}
-        <div className={s.slugWrap}>
-          <Field name="slug" className={s.slug} />
-          <Field
-            name="slugLock"
-            component={Checkbox}
-            type="checkbox"
-            label="lock"
-            clearMargins
-          />
-        </div>
+    return [
+      this.renderTitle(isDirty),
+      <div className={s.slugWrap}>
+        <Field name="slug" className={s.slug} key="slug" />
         <Field
-          className={flex('scrolled')}
-          name="content"
-          component={Editor}
-          onChange={this.onEditorChange}
+          name="slugLock"
+          component={Checkbox}
+          type="checkbox"
+          label="lock"
+          clearMargins
         />
-        <div className={s.footer}>
-          <Field name="published" component={Checkbox} type="checkbox" label="Published" />
+      </div>,
 
-          <div className={s.gap} />
+      <Field
+        className={flex('scrolled')}
+        name="content"
+        component={Editor}
+        onChange={this.onEditorChange}
+        key="content"
+      />,
 
+      <div className={s.footer}>
+        <Field
+          name="published"
+          component={Checkbox}
+          type="checkbox"
+          label="Published"
+        />
+        <div className={s.gap} />
+        {!isSaved && (
           <Button
-            className={s.localVersion}
+            className={s.versionButton}
             checked={showLocalVersion}
-            disabled={!localVersion}
-            onClick={() => this.toggleLocalVersion()}
+            disabled={!this.localVersion || !this.remoteVersion}
+            onClick={this.toggleLocalVersion}
           >
             Local version
           </Button>
-          <Button
-            type="submit"
-            loading={saving}
-            disabled={!isDirty || !isValid}
-          >
-            Save
-          </Button>
-        </div>
-      </Fragment>
-    );
+        )}
+        <Button
+          type="submit"
+          loading={updating[(this.localVersion?.id)]}
+          disabled={!isDirty || !isValid}
+        >
+          Save
+        </Button>
+      </div>,
+    ];
   }
 
   render() {
-    const { loading, post } = this.store;
-    const initialValues = pickFormVals(post);
+    const { initialValues } = this.store;
+
+    if (this.isLoading())
+      return (
+        <Flex centered>
+          <Spinner size="l" />
+        </Flex>
+      );
+
+    if (!initialValues) return <Flex centered>No post data.</Flex>;
 
     return (
       <Form
         className={flex()}
-        loading={loading}
         initialValues={initialValues}
         validationSchema={this.validationSchema}
-        onChange={this.onChange}
+        onFormChange={this.onChange}
         onSubmit={this.onSave}
       >
         {this.renderForm}
@@ -369,4 +296,4 @@ class PostEditor extends Component {
   }
 }
 
-export default memo(view(PostEditor));
+export default memo(PostEditor);

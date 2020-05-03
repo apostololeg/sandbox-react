@@ -1,5 +1,3 @@
-import { h } from 'preact';
-
 import Popup from 'components/UI/Popup';
 import Button from 'components/UI/Button';
 import Menu, { MenuItem } from 'components/UI/Menu';
@@ -20,7 +18,7 @@ const Select = ({
     closeOnClick: true,
     ...popupProps,
     ...props,
-    disabled
+    disabled,
   };
   const getText = () => options.find(({ val }) => val === value)?.text;
   const renderText = () => {

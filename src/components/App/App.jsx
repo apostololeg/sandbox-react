@@ -1,5 +1,6 @@
-import { h } from 'preact';
 import { hot } from 'react-hot-loader/root';
+
+import 'store';
 
 import Flex from 'components/UI/Flex';
 import Container from 'components/UI/Container';

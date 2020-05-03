@@ -1,24 +1,19 @@
-import { h } from 'preact'
-import { view } from 'preact-easy-state'
+import Button from 'components/UI/Button';
+import SvgIcon from 'components/UI/SvgIcon';
 
-import Button from 'components/UI/Button'
-import SvgIcon from 'components/UI/SvgIcon'
+import Icon from './Italic.svg';
 
-import Icon from './Italic.svg'
-
-export default function({ editor, state }) {
-  function action() {
+export default {
+  hotkey: 'i',
+  action({ editor, state }) {
     const { index, length } = state.selection;
     editor.formatText(index, length, 'italic', !state.format.italic);
-  }
-
-  return {
-    action,
-    hotkey: 'i',
-    Module: view(props => (
-      <Button onClick={action} checked={state.format.italic} {...props}>
+  },
+  Module({ state, action }) {
+    return (
+      <Button onClick={action} checked={state.format.italic}>
         <SvgIcon icon={Icon} size={20} />
       </Button>
-    ))
-  }
-}
+    );
+  },
+};

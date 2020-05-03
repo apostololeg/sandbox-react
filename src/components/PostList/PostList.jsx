@@ -1,103 +1,63 @@
-import { h, Fragment, Component } from 'preact'
-import { bind } from 'decko'
-import { store, view } from 'preact-easy-state'
+import { Fragment, Component } from 'preact';
+import { withStore } from 'justorm/preact';
 
-import { sliceWhere } from 'tools/array'
+import { Link } from 'components/Router';
+import { Title } from 'components/Header';
+import Flex from 'components/UI/Flex';
+import Menu, { MenuItem } from 'components/UI/Menu';
+import Spinner from 'components/UI/Spinner';
+import Button from 'components/UI/Button';
 
-import { notify } from 'store/notifications'
-import { getPosts, deletePost } from 'store/post'
-import userStore from 'store/user'
+// import S from './PostList.styl';
 
-import { Link } from 'components/Router'
-import { Title } from 'components/Header'
-import Flex from 'components/UI/Flex'
-import Menu, { MenuItem } from 'components/UI/Menu'
-import Spinner from 'components/UI/Spinner'
-import Button from 'components/UI/Button'
-
-import s from './PostList.styl'
-
-@view
+@withStore({
+  user: ['isAdmin'],
+  posts: ['list', 'loadingList', 'deleting'],
+  notifications: [],
+})
 class PostList extends Component {
-  store = store({
-    items: [],
-    loading: false,
-    deleting: {},
-  });
-
   componentDidMount() {
-    this.loadPosts();
+    const { posts } = this.props.store;
+
+    posts.loadPosts();
   }
 
-  @bind
-  async loadPosts() {
-    this.store.loading = true;
-
-    try {
-      const items = await getPosts();
-      Object.assign(this.store, { items, loading: false });
-    } catch(e) {
-      this.store.loading = false;
-      notify({
-        type: 'error',
-        title: 'loading post failed',
-        content: e.message
-      });
-    }
-  }
-
-  async deletePost(id) {
-    const { items, deleting } = this.store;
-
-    deleting[id] = true;
-    await deletePost(id);
-    deleting[id] = false;
-    this.store.items = sliceWhere(items, id, 'id');
-  }
-
-  @bind
-  renderItem({ id, slug, title }) {
-    const { isAdmin } = userStore;
+  renderItem = ({ slug, title }) => {
+    const { user, posts } = this.props.store;
 
     return (
-      <MenuItem key={id}>
+      <MenuItem key={slug}>
         <Link href={slug} isClear>
           <h2>{title || `[${slug}]`}</h2>
         </Link>
-        {isAdmin && [
+        {user.isAdmin && [
           <Link href={`${slug}/edit`}>Edit</Link>,
           <Button
-            onClick={() => this.deletePost(id)}
-            loading={this.store.deleting[id]}
+            onClick={() => posts.deletePost(slug)}
+            loading={posts.deleting[slug]}
           >
             Remove
-          </Button>
+          </Button>,
         ]}
       </MenuItem>
     );
-  }
-
-  renderList() {
-    const { items } = this.store;
-
-    return (
-      <Menu>
-        {items.map(this.renderItem)}
-      </Menu>
-    )
-  }
+  };
 
   render() {
-    const { isAdmin } = userStore;
-    const { loading } = this.store;
+    const { user, posts } = this.props.store;
+    const { loadingList, list } = posts;
 
     return (
       <Fragment>
         <Title text="Posts">
-          {isAdmin && <Link href="new">Create New</Link>}
+          {user.isAdmin && <Link href="new">Create New</Link>}
         </Title>
-        <Flex scrolled centered={loading}>
-          {loading ? <Spinner size="l"/> : this.renderList()}
+        <Flex scrolled centered={loadingList}>
+          {loadingList ? (
+            <Spinner size="l" />
+          ) : (
+            <Menu>{list.map(this.renderItem)}</Menu>
+          )}
         </Flex>
       </Fragment>
     );
