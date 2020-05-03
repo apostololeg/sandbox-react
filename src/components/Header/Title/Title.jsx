@@ -1,15 +1,14 @@
-import { h, Component, Fragment } from 'preact'
-import { createPortal } from 'preact/compat'
-import { view } from 'preact-easy-state'
-import { bind } from 'decko'
+import { Component, Fragment } from 'preact';
+import { createPortal } from 'preact/compat';
+import { withStore } from 'justorm/preact';
+import { bind } from 'decko';
 
-import Time from 'tools/time'
-import PageStore, { setTitle } from 'store/page'
+import Time from 'timen';
 
-import s from './Title.styl'
+import s from './Title.styl';
 
 export function Gap() {
-  return <div className={s.gap} />
+  return <div className={s.gap} />;
 }
 
 function getNode() {
@@ -22,7 +21,7 @@ function waitForNode() {
       if (getNode()) {
         resolve();
       } else {
-        Time.after(10, checkNode);
+        Time.after(100, checkNode);
       }
     }
 
@@ -30,10 +29,16 @@ function waitForNode() {
   });
 }
 
-@view
+@withStore({ page: ['title'] })
 class Title extends Component {
+  componentDidMount() {
+    this.init();
+  }
+
   componentDidUpdate() {
-    if (PageStore.title !== this.getTitle()) {
+    const { title } = this.props.store.page;
+
+    if (title !== this.getTitle()) {
       this.init();
     }
   }
@@ -54,23 +59,26 @@ class Title extends Component {
 
   @bind
   setTitle() {
+    const { setTitle } = this.props.store.page;
+
     setTitle(this.getTitle());
   }
 
   render() {
-    const { children } = this.props;
-    const { title } = PageStore;
+    const { children, store } = this.props;
+    const { title } = store.page;
     const targetNode = getNode();
 
     if (!targetNode) return null;
 
-    return createPortal((
+    return createPortal(
       <Fragment>
         {title && <h1 className={s.title}>{title}</h1>}
         {children}
-      </Fragment>
-    ), targetNode);
+      </Fragment>,
+      targetNode
+    );
   }
 }
 
-export default Title
+export default Title;

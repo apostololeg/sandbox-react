@@ -1,10 +1,9 @@
-import { h } from 'preact'
-import cn from 'classnames'
+import cn from 'classnames';
 
-import ControlBase from 'components/UI/ControlBase'
-import Spinner from 'components/UI/Spinner'
+import ControlBase from 'components/UI/ControlBase';
+import Spinner from 'components/UI/Spinner';
 
-import s from './Button.styl'
+import s from './Button.styl';
 
 class Button extends ControlBase {
   render() {
@@ -24,13 +23,13 @@ class Button extends ControlBase {
       s.root,
       loading && s.loading,
       checked && s.checked,
-      className,
+      className
     );
 
     return (
       <As className={classes} {...props} type={type}>
         {children}
-        {loading && <Spinner className={s.spinner} size='s' />}
+        {loading && <Spinner className={s.spinner} size="s" />}
       </As>
     );
   }

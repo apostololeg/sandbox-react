@@ -1,6 +1,6 @@
-import { register } from 'store/user'
+import { withStore } from 'justorm/preact';
 
-function Register({ children }) {
+export default withStore({ user: [] })(function Register({ children, store }) {
   return children({
     title: 'Registration',
     titleLink: {
@@ -18,14 +18,14 @@ function Register({ children }) {
       confirmPassword: {
         type: 'custom',
         messages: {
-          mustMatch: 'Passwords must match'
+          mustMatch: 'Passwords must match',
         },
         check(value, schema, { password }) {
           return value !== password
             ? this.makeError('mustMatch', password, value)
             : true;
-        }
-      }
+        },
+      },
     },
     fields: [
       {
@@ -44,8 +44,6 @@ function Register({ children }) {
       },
     ],
     submitText: 'Register',
-    onSubmit: ({ email, password }) => register({ email, password }),
+    onSubmit: ({ email, password }) => store.user.register({ email, password }),
   });
-}
-
-export default Register;
+});

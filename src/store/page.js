@@ -1,17 +1,16 @@
-import { store } from 'preact-easy-state';
+import { createStore } from 'justorm/preact';
 
-const Page = store({
+const Page = createStore('page', {
   title: 'Home',
   isAuth: false,
+  setTitle(title) {
+    const prevTitle = this.title;
+
+    this.title = title;
+    document.title = title;
+
+    return prevTitle;
+  },
 });
 
 export default Page;
-
-export const setTitle = title => {
-  const prevTitle = Page.title;
-
-  Page.title = title;
-  document.title = title;
-
-  return prevTitle;
-};

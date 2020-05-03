@@ -14,12 +14,6 @@ const Post = `
   author { ${Author} }
 `;
 
-export const GET_POST = gql`
-  query($where: PostWhereUniqueInput!) {
-    getPost(where: $where) { ${Post} }
-  }
-`;
-
 export const GET_POSTS = gql`
   query($where: PostWhereInput!) {
     getPosts(where: $where) { ${Post} }

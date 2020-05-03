@@ -1,18 +1,17 @@
-import { h } from 'preact';
 import cn from 'classnames';
 
-import s from './Flex.styl';
+import S from './Flex.styl';
 
 export function mix(...args) {
   return cn(
-    s.root,
-    args.includes('centered') && s.centered,
-    args.includes('scrolled') && s.scrolled,
+    S.root,
+    args.includes('centered') && S.centered,
+    args.includes('scrolled') && S.scrolled,
     args.join(' ').replace(/(centered|scrolled)/g, '')
   );
 }
 
-function Flex({ children, As = 'div', ...props }) {
+function Flex({ children, Elem = 'div', ...props }) {
   const { className, centered, scrolled, ...other } = props;
   const classes = mix(
     className,
@@ -21,9 +20,9 @@ function Flex({ children, As = 'div', ...props }) {
   );
 
   return (
-    <As className={classes} {...other}>
+    <Elem className={classes} {...other}>
       {children}
-    </As>
+    </Elem>
   );
 }
 

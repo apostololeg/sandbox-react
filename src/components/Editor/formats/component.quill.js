@@ -1,4 +1,4 @@
-import Embed from 'quill/blots/embed'
+import Embed from 'quill/blots/embed';
 
 class ComponentBlot extends Embed {
   static create(props) {

@@ -1,14 +1,14 @@
-import { store } from 'preact-easy-state'
+import { createStore } from 'justorm/preact';
 
-const RouteStore = store({ path: location.pathname });
-
-export default RouteStore;
-
-export function navigate(href, { replace } = {}) {
-  history[replace ? 'replaceState' : 'pushState']({}, '', href);
-  RouteStore.path = href;
-}
-
-export function replaceState(href) {
-  history.replaceState({}, '', href);
-}
+export default createStore('router', {
+  path: location.pathname,
+  params: {},
+  navigate(href, { replace } = {}) {
+    history[replace ? 'replaceState' : 'pushState']({}, '', href);
+    this.path = href;
+  },
+  replaceState(href, { quiet } = {}) {
+    history.replaceState({}, '', href);
+    if (!quiet) this.path = href;
+  },
+});

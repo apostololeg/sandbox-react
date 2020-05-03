@@ -1,10 +1,11 @@
-import { Component } from 'preact'
+import { Component } from 'preact';
 
-import { navigate } from '../store';
+import STORE from '../store';
 
 export default class Redirect extends Component {
-  componentWillMount() {
-    navigate(this.props.to, { replace: true });
+  constructor(props) {
+    super(props);
+    STORE.navigate(this.props.to, { replace: true });
   }
 
   render() {

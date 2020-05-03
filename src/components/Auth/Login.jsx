@@ -1,10 +1,8 @@
-import { h } from 'preact';
-
-import { login } from 'store/user';
+import { withStore } from 'justorm/preact';
 
 import { Link } from 'components/Router';
 
-function Login({ children }) {
+export default withStore({ user: [] })(function Login({ children, store }) {
   return children({
     title: 'Sign in',
     titleLink: {
@@ -30,12 +28,8 @@ function Login({ children }) {
         type: 'password',
       },
     ],
-    footerContent: (
-      <Link href="/reset-password">Forgot password?</Link>
-    ),
+    footerContent: <Link href="/reset-password">Forgot password?</Link>,
     submitText: 'Sign in',
-    onSubmit: login,
+    onSubmit: store.user.login,
   });
-}
-
-export default Login;
+});

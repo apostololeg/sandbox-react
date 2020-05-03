@@ -6,6 +6,9 @@
   width 100%
   filter none // A
 
+  &.isFile
+    opacity 0
+
   // A
   &:-internal-autofill-selected
   &:-webkit-autofill
@@ -26,43 +29,6 @@
 .loading .control
   opacity .5
   pointer-events none
-
-.type
-
-  &_file
-    position relative
-    cursor pointer
-    overflow hidden
-
-    & .control
-      transform translateX(-100%)
-      opacity 0
-      pointer-events none
-
-.filePlaceholder
-  position absolute
-  top 0
-  left 0
-
-  display flex
-  align-items center
-  height 100%
-  width 100%
-
-  opacity .5
-  pointer-events none
-
-.filePlaceholderInner
-  padding 0 $indent_s
-  box-sizing border-box
-
-  font-size 80%
-  white-space nowrap
-  text-overflow ellipsis
-  overflow hidden
-
-.filePlaceholderFilled
-  opacity 1
 
 @-webkit-keyframes clearBg {
   to {

@@ -1,14 +1,12 @@
-import { h, render } from 'preact'
-import { Link } from 'components/Router'
+import { render } from 'preact';
+import { Link } from 'components/Router';
 
 const COMPONENTS_TO_HYDRATE = {
-  Link
+  Link,
 };
 
 export function hydrateComponents(rootNode) {
-  const nodes = rootNode.querySelectorAll(
-    '[data-props]:not([data-inited])'
-  );
+  const nodes = rootNode.querySelectorAll('[data-props]:not([data-inited])');
 
   nodes.forEach(node => {
     const { component, ...props } = JSON.parse(node.dataset.props);

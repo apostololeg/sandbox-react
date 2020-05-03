@@ -1,35 +1,23 @@
-import { h, Component } from 'preact'
-import { store, view } from 'preact-easy-state'
-import { bind, debounce } from 'decko'
+import { Component } from 'preact';
+import { bind, debounce } from 'decko';
 
-import { DEFAULT_SELECTION } from '../tools'
+import { DEFAULT_SELECTION } from '../tools';
+import MODULES from './modules';
 
-import getModules from './modules'
+import s from './Toolbar.styl';
 
-import s from './Toolbar.styl'
+const actionByHotkey = MODULES.reduce(
+  (acc, { hotkey, action }) => (hotkey ? { ...acc, [hotkey]: action } : acc),
+  {}
+);
 
 class Toolbar extends Component {
   hasUserSelection = false;
 
-  constructor(props) {
-    super(props);
-
-    const { editor, tools } = props;
-
-    this.store = store({
-      format: {},
-      selection: DEFAULT_SELECTION,
-    });
-
-    const { modules, actions } = getModules({
-      tools,
-      editor,
-      state: this.store,
-    });
-
-    this.modules = modules;
-    this.actions = actions;
-  }
+  state = {
+    format: {},
+    selection: DEFAULT_SELECTION,
+  };
 
   componentDidMount() {
     const { editor } = this.props;
@@ -50,10 +38,10 @@ class Toolbar extends Component {
   @bind
   onKeyDown(e) {
     const isMeta = e.ctrlKey || e.metaKey;
-    const action = this.actions[e.key];
+    const action = actionByHotkey[e.key];
 
     const { editor } = this.props;
-    const { selection } = this.store;
+    const { format, selection } = this.state;
     const { index, length } = selection;
 
     if (!isMeta || !action) return;
@@ -65,7 +53,7 @@ class Toolbar extends Component {
       editor.setSelection(index, length);
     }
 
-    action();
+    action({ editor, format, selection });
   }
 
   @bind
@@ -84,29 +72,50 @@ class Toolbar extends Component {
   updateSelection() {
     const { editor, tools } = this.props;
     const userSelection = editor.getSelection();
-
-    this.hasUserSelection = userSelection?.length > 0;
-    this.store.selection = this.hasUserSelection
+    const selection = this.hasUserSelection
       ? userSelection
       : tools.getWordSelection();
+
+    this.hasUserSelection = userSelection?.length > 0;
+    this.setState({ selection });
   }
 
   @bind
   updateFormat() {
     const { editor } = this.props;
-    const { index, length } = this.store.selection;
-    const newFormat = editor.getFormat(index, length);
+    const { index, length } = this.state.selection;
+    const format = editor.getFormat(index, length);
 
-    this.store.format = newFormat;
+    this.setState({ format });
   }
 
   render() {
+    const { state } = this;
+    const { editor, tools } = this.props;
+    const moduleProps = {
+      className: s.item,
+      editor,
+      state,
+      tools,
+    };
+    const actionProps = {
+      editor,
+      state,
+    };
+
     return (
       <div className={s.toolbar}>
-        {this.modules.map(Module => <Module className={s.item} />)}
+        {MODULES.map(({ name, action, Module }) => (
+          <Module
+            {...moduleProps}
+            key={name}
+            state={this.state}
+            action={() => action(actionProps)}
+          />
+        ))}
       </div>
     );
   }
-};
+}
 
-export default view(Toolbar);
+export default Toolbar;

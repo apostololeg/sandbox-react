@@ -1,11 +1,10 @@
-import { h, Component, createRef } from 'preact';
+import { Component, createRef } from 'preact';
 import { createPortal } from 'preact/compat';
-import { store, view } from 'preact-easy-state';
 import cn from 'classnames';
 import { bind, debounce } from 'decko';
 
 import { getCoords, getScrollParent, hasParent } from 'tools/dom';
-import Time from 'tools/time';
+import Time from 'timen';
 
 import s from './Popup.styl';
 import * as H from './Popup.helpers';
@@ -60,10 +59,10 @@ class Popup extends Component {
 
   timeoutVisibility = null;
 
-  store = store({
+  state = {
     open: false,
-    showContent: false
-  });
+    showContent: false,
+  };
 
   static getDerivedStateFromProps({ disabled }) {
     if (disabled) {
@@ -99,7 +98,7 @@ class Popup extends Component {
 
   @bind
   onDocKeyDown(e) {
-    if (this.store.open && e.key === 'Escape') {
+    if (this.state.open && e.key === 'Escape') {
       e.stopPropagation();
       this.close();
       return;
@@ -115,7 +114,7 @@ class Popup extends Component {
 
   @bind
   onDocTouch(e) {
-    if (!this.store.open) return;
+    if (!this.state.open) return;
 
     const isTargetInside = hasParent(e.target, this.containerElem.current);
 
@@ -159,7 +158,7 @@ class Popup extends Component {
     if (!trigger) {
       return {
         axis: DEFAULT_AXIS,
-        float: DEFAULT_FLOAT
+        float: DEFAULT_FLOAT,
       };
     }
 
@@ -177,16 +176,17 @@ class Popup extends Component {
   setOpen(val) {
     clearTimeout(this.timeoutVisibility);
 
-    this.store.open = val;
+    this.setState({ open: val });
 
-    if (!val) {
-      this.timeoutVisibility = setTimeout(
-        () => (this.store.showContent = val),
-        ANIMATION_DURATION
-      );
-    } else {
-      this.store.showContent = val;
+    if (val) {
+      this.setState({ showContent: val });
+      return;
     }
+
+    this.timeoutVisibility = setTimeout(
+      () => this.setState({ showContent: val }),
+      ANIMATION_DURATION
+    );
   }
 
   @bind
@@ -197,7 +197,7 @@ class Popup extends Component {
   @bind
   close() {
     const { onClose } = this.props;
-    const { open } = this.store;
+    const { open } = this.state;
 
     if (!open) return;
 
@@ -210,7 +210,7 @@ class Popup extends Component {
 
   @bind
   toggle() {
-    this.setOpen(!this.store.open);
+    this.setOpen(!this.state.open);
   }
 
   renderTrigger() {
@@ -226,7 +226,7 @@ class Popup extends Component {
         role: 'button',
         onClick: this.onTriggerClick,
         onFocusCapture: this.onFocus,
-        onBlurCapture: this.onBlur
+        onBlurCapture: this.onBlur,
       });
     }
 
@@ -239,7 +239,7 @@ class Popup extends Component {
 
   renderContent() {
     const { children, disabled, outlined } = this.props;
-    const { open, showContent } = this.store;
+    const { open, showContent } = this.state;
 
     const [, content] = children;
     const trigger = this.triggerElem.current;
@@ -262,7 +262,7 @@ class Popup extends Component {
       wrppperProps.style = {
         height: offsetHeight,
         width: offsetWidth,
-        ...getCoords(trigger)
+        ...getCoords(trigger),
       };
     }
 
@@ -290,7 +290,7 @@ class Popup extends Component {
 }
 
 Popup.defaultProps = {
-  direction: 'vertical'
+  direction: 'vertical',
 };
 
-export default view(Popup);
+export default Popup;

@@ -1,18 +1,21 @@
-import { h } from 'preact';
-import { view } from 'preact-easy-state';
 import cn from 'classnames';
+import { withStore } from 'justorm/preact';
 
-import NStore, { pause, unpause, close } from 'store/notifications';
-
-import icons from './icons/';
+import icons from './icons';
 import s from './Notifications.styl';
 
-const Item = ({ id, type = 'info', title, content, visible }) => {
-  const classes = cn(
-    s.item,
-    s[`item_type_${type}`],
-    visible && s.item_visible
-  );
+function Item(props) {
+  const {
+    id,
+    type = 'info',
+    title,
+    content,
+    visible,
+    pause,
+    unpause,
+    close,
+  } = props;
+  const classes = cn(s.item, s[`item_type_${type}`], visible && s.item_visible);
 
   const Icon = icons[type];
   const Close = icons.close;
@@ -31,32 +34,33 @@ const Item = ({ id, type = 'info', title, content, visible }) => {
         <Icon className={s.icon} />
         {(title || content) && (
           <div className={s.text}>
-            {title && (
-              <div className={s.title}>
-                {title}
-              </div>
-            )}
-            {content && (
-              <div className={s.content}>
-                {content}
-              </div>
-            )}
+            {title && <div className={s.title}>{title}</div>}
+            {content && <div className={s.content}>{content}</div>}
           </div>
         )}
         <Close className={s.close} onClick={() => close(id)} />
       </div>
     </div>
   );
-};
-
-const Notifications = () => {
-  const { items, data } = NStore;
-
-  return (
-    <div className={s.root}>
-      {items.map(id => <Item {...data[id]} id={id} key={id} />)}
-    </div>
-  );
 }
 
-export default view(Notifications);
+export default withStore({ notifications: ['items', 'data'] })(
+  function Notifications() {
+    const {
+      items,
+      data,
+      pause,
+      unpause,
+      close,
+    } = this.props.store.notifications;
+    const api = { pause, unpause, close };
+
+    return (
+      <div className={s.root}>
+        {items.map(id => (
+          <Item {...data[id]} {...api} id={id} key={id} />
+        ))}
+      </div>
+    );
+  }
+);

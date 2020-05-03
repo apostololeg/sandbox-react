@@ -1,14 +1,14 @@
-import Headers from './Headers'
-import Italic from './Italic'
-import Bold from './Bold'
-import Align from './Align'
-import List from './List'
-import IndentIncrease from './IndentIncrease'
-import IndentDecrease from './IndentDecrease'
-import Image from './Image'
-import Link from './Link'
+import Headers from './Headers';
+import Italic from './Italic';
+import Bold from './Bold';
+import Align from './Align';
+import List from './List';
+import IndentIncrease from './IndentIncrease';
+import IndentDecrease from './IndentDecrease';
+import Image from './Image';
+import Link from './Link';
 
-const MODULES = [
+export default [
   Headers,
   Italic,
   Bold,
@@ -17,28 +17,5 @@ const MODULES = [
   IndentDecrease,
   IndentIncrease,
   Link,
-  Image
+  Image,
 ];
-
-/**
- * @param {Object} props – { editor, format, selection }
- */
-export default function getModules(props) {
-  return MODULES.reduce(
-    (acc, m) => {
-      const { Module, action, hotkey } = m(props);
-
-      acc.modules.push(Module);
-
-      if (hotkey) {
-        acc.actions[hotkey] = action;
-      }
-
-      return acc;
-    },
-    {
-      actions: {},
-      modules: []
-    }
-  );
-}

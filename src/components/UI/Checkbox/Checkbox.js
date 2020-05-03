@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import cn from 'classnames';
 import nanoid from 'nanoid';
 
@@ -8,14 +7,8 @@ import s from './Checkbox.styl';
 
 class Checkbox extends ControlBase {
   render() {
-    const {
-      id = nanoid(),
-      className,
-      label,
-      children,
-      ...props
-    } = this.renderProps;
-    const { focused } = this.store;
+    const { id = nanoid(), className, label, ...props } = this.renderProps;
+    const { focused } = this.state;
 
     const classes = cn(s.root, className);
     const classesControl = cn(
@@ -54,7 +47,7 @@ class Checkbox extends ControlBase {
 
 Checkbox.defaultProps = {
   label: '',
-  checked: false
+  checked: false,
 };
 
 export default Checkbox;

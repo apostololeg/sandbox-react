@@ -1,26 +1,42 @@
-import { h, Component } from 'preact'
+import { Component } from 'preact';
+import omit from 'lodash.omit';
 
-import Flex from 'components/UI/Flex'
-import Spinner from 'components/UI/Spinner'
+import Flex from 'components/UI/Flex';
+import Spinner from 'components/UI/Spinner';
 
 export default class LazyComponent extends Component {
-  state = { loaded: false };
+  state = { loading: false };
 
   componentDidMount() {
-    this.props.loading().then(m => {
-      this.Comp = m.default;
-      this.setState({ loaded: true });
+    this.update();
+  }
+
+  componentDidUpdate({ loading }) {
+    if (this.props.loading !== loading) this.update();
+  }
+
+  update() {
+    const { loading } = this.props;
+
+    this.setState({ loading: true });
+    loading().then(m => {
+      if (loading !== this.props.loading) return;
+      this.C = m.default;
+      this.setState({ loading: false });
     });
   }
 
   render() {
-    if (!this.state.loaded) {
-      return <Flex centered><Spinner size="l" /></Flex>;
+    if (this.state.loading) {
+      return (
+        <Flex centered>
+          <Spinner size="l" />
+        </Flex>
+      );
     }
 
-    const { Comp, props } = this;
-    const { loading, ...rest } = props;
+    const { C, props } = this;
 
-    return <Comp {...rest} />
+    return <C {...omit(props, ['loading'])} />;
   }
 }

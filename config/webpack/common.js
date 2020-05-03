@@ -35,14 +35,15 @@ module.exports = {
       'react-dom/test-utils': 'preact/test-utils'
     },
     plugins: [new ComponentDirectoryPlugin()],
-    extensions: ['.js', '.jsx', '.css']
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css']
   },
   module: {
     noParse: /node_modules\/quill\/dist/,
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(j|t)sx?$/,
         loader: 'babel-loader',
+        include: paths.src,
         exclude: {
           exclude: [paths.modules],
           test: [/\.quill\.js$/]
@@ -108,6 +109,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       PRODUCTION: JSON.stringify(PRODUCTION),
       PROTOCOL: JSON.stringify(PROTOCOL),
@@ -116,7 +118,9 @@ module.exports = {
       DO_SPACE_NS: JSON.stringify(DO_SPACE_NS),
       DO_SPACE_NAME: JSON.stringify(DO_SPACE_NAME)
     }),
-    new CleanWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      h: ['preact', 'h'],
+    }),
     new CopyPlugin([
       {
         from: `${paths.assets}/*.css`,

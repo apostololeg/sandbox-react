@@ -1,4 +1,9 @@
-@import '~theme/theme.styl';
+@import '~theme/theme.styl'
+
+.root
+  width 100%
+  max-width 100%
+  margin 0 auto
 
 .loading
   opacity .8
@@ -6,23 +11,28 @@
   transition opacity .2s ease-out
 
 .field
+  position relative
   display flex
   flex-direction column
 
   & + &
-    margin-top $indent_s
+    margin-top 10px
 
     &.clearMargins
       margin-top 0
 
   &.changed::after
-    contnet ''
+    content ''
     position absolute
-    height 5px
-    width 5px
+    right -2px
+    top -2px
+    height 6px
+    width 6px
     border-radius 50%
-    background-color $activeColor
-    box-shadow 0 1px 1px $decentColor
+    background-color $primaryColor
+    box-shadow 0 0 0 1px rgba(255,255,255,.8)
+    z-index 1
+    pointer-events none
 
 .hidden
   display none

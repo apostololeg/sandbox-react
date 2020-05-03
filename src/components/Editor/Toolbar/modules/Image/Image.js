@@ -1,46 +1,41 @@
-import { h, Component, createRef } from 'preact'
-import { store, view } from 'preact-easy-state'
-import { bind, debounce } from 'decko'
+import { Component } from 'preact';
+import { createStore } from 'justorm/preact';
+import { bind, debounce } from 'decko';
 
-import Input from 'components/UI/Input'
-import Button from 'components/UI/Button'
-import Popup from 'components/UI/Popup'
-import SvgIcon from 'components/UI/SvgIcon'
+import Input from 'components/UI/Input';
+import Button from 'components/UI/Button';
+import Popup from 'components/UI/Popup';
+import SvgIcon from 'components/UI/SvgIcon';
 
-import FileUploader from 'components/FileUploader'
+import FileUploader from 'components/FileUploader';
 
-import Icon from './Image.svg'
-import s from './Image.styl'
+import Icon from './Image.svg';
+import s from './Image.styl';
 
-@view
 class Image extends Component {
-  fileInput = createRef();
-
-  store = store({
-    alt: '',
-    url: '',
-    inserted: false,
-    uploaded: false,
-  });
-
-  @bind
-  onFileChoose(url) {
-    this.store.url = url;
-    this.store.uploaded = false;
-  }
-
-  @bind
-  onUpload(url) {
-    Object.assign(this.store, {
-      url,
-      uploaded: true
+  constructor(props) {
+    super(props);
+    this.store = createStore(this, {
+      alt: '',
+      url: '',
+      inserted: false,
+      uploaded: false,
     });
   }
 
   @bind
+  onFileChoose(url) {
+    Object.assign(this.store, { url, uploaded: false });
+  }
+
+  @bind
+  onUpload(url) {
+    Object.assign(this.store, { url, uploaded: true });
+  }
+
   @debounce(500)
-  onAltChange(val) {
-    this.store.alt = val;
+  onAltChange(alt) {
+    this.store.alt = alt;
   }
 
   @bind
@@ -49,11 +44,10 @@ class Image extends Component {
       // TODO: remove file from DO Space
     }
 
-    // drop store
     Object.assign(this.store, {
       url: '',
       alt: '',
-      inserted: false
+      inserted: false,
     });
   }
 
@@ -67,7 +61,7 @@ class Image extends Component {
   }
 
   render() {
-    const { className, ...props } = this.props;
+    const { className } = this.props;
     const { uploaded } = this.store;
 
     return (
@@ -75,9 +69,9 @@ class Image extends Component {
         className={className}
         horizontal="left"
         onClose={this.onPopupClose}
-        onApi={api => this.popupApi = api}
+        onApi={api => (this.popupApi = api)}
       >
-        <Button {...props}>
+        <Button>
           <SvgIcon icon={Icon} size={20} />
         </Button>
         <div className={s.popupContainer}>
@@ -106,8 +100,6 @@ class Image extends Component {
   }
 }
 
-export default function(api) {
-  return {
-    Module: props => <Image {...props} {...api} />
-  }
-}
+export default {
+  Module: Image,
+};
