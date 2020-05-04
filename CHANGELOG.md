@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file. See [standa
   - typescript
   - prettier
   - tools/Time => timen
-  - preact-easy-state => justor
+  - preact-easy-state => justorm
   - UI: Form, Input, Editor and PostEditor, Router
 - optimization (terser) ([cd41810](https://github.com/apostololeg/sandboxt/commit/cd41810430f60e229ba75de977499f95b5e232ab))
 
