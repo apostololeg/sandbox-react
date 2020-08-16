@@ -34,7 +34,7 @@
     "@babel/cli": "^7.8.4",
     "@babel/plugin-transform-modules-commonjs": "^7.9.0",
     "@babel/runtime-corejs3": "^7.9.2",
-    "@graphql-modules/core": "0.7.7",
+    "@graphql-modules/core": "0.7.14",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "apollo-boost": "0.4.0",
