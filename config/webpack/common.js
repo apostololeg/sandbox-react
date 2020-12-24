@@ -15,14 +15,14 @@ const {
   HOST,
   PORT,
   DO_SPACE_NS,
-  DO_SPACE_NAME
+  DO_SPACE_NAME,
 } = require('../const');
 
 module.exports = {
   entry: [`${paths.client}/index.js`],
   output: {
     path: paths.build,
-    filename: 'js/[name].js?v=[hash:5]'
+    filename: 'js/[name].js?v=[hash:5]',
   },
   resolve: {
     modules: ['node_modules', paths.client],
@@ -32,10 +32,14 @@ module.exports = {
       'quill-css': `${paths.modules}/quill/dist/quill.core.css`,
       react: 'preact/compat',
       'react-dom': 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils'
+      'react-dom/test-utils': 'preact/test-utils',
     },
     plugins: [new ComponentDirectoryPlugin()],
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css']
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css'],
+  },
+  optimization: {
+    sideEffects: true,
+    usedExports: true,
   },
   module: {
     noParse: /node_modules\/quill\/dist/,
@@ -46,8 +50,8 @@ module.exports = {
         include: paths.src,
         exclude: {
           exclude: [paths.modules],
-          test: [/\.quill\.js$/]
-        }
+          test: [/\.quill\.js$/],
+        },
       },
       {
         test: /\.styl$/,
@@ -57,20 +61,20 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
-                localIdentName: '[name]__[local]___[hash:base64:5]'
-              }
-            }
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              },
+            },
           },
           {
             loader: 'postcss-loader',
             options: {
               config: {
-                path: './config/postcss.config.js'
-              }
-            }
+                path: './config/postcss.config.js',
+              },
+            },
           },
-          'stylus-loader'
-        ]
+          'stylus-loader',
+        ],
       },
       {
         test: /\.svg$/,
@@ -80,21 +84,21 @@ module.exports = {
             issuer: /\.jsx?$/,
             use: [
               {
-                loader: 'babel-loader'
+                loader: 'babel-loader',
               },
               {
-                loader: 'preact-svg-loader'
-              }
-            ]
+                loader: 'preact-svg-loader',
+              },
+            ],
           },
           {
             loader: 'file-loader',
             options: {
               name: 'static/[name].[ext]',
-              outputPath: 'images/'
-            }
-          }
-        ]
+              outputPath: 'images/',
+            },
+          },
+        ],
       },
       {
         test: /\.(woff|woff2|eot|ttf)$/,
@@ -102,11 +106,11 @@ module.exports = {
           loader: 'file-loader',
           options: {
             name: 'static/[name].[ext]',
-            outputPath: 'images/'
-          }
-        }
-      }
-    ]
+            outputPath: 'images/',
+          },
+        },
+      },
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -116,7 +120,7 @@ module.exports = {
       HOST: JSON.stringify(HOST),
       PORT: JSON.stringify(PORT),
       DO_SPACE_NS: JSON.stringify(DO_SPACE_NS),
-      DO_SPACE_NAME: JSON.stringify(DO_SPACE_NAME)
+      DO_SPACE_NAME: JSON.stringify(DO_SPACE_NAME),
     }),
     new webpack.ProvidePlugin({
       h: ['preact', 'h'],
@@ -124,16 +128,16 @@ module.exports = {
     new CopyPlugin([
       {
         from: `${paths.assets}/*.css`,
-        to: paths.build
+        to: paths.build,
       },
       {
         from: `${paths.assets}/fonts`,
-        to: `${paths.build}/fonts`
+        to: `${paths.build}/fonts`,
       },
       {
         from: `${paths.assets}/logo.svg`,
-        to: paths.build
-      }
+        to: paths.build,
+      },
     ]),
     new HtmlWebpackPlugin({
       lang: PAGE_LANG,
@@ -150,8 +154,8 @@ module.exports = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
+        minifyURLs: true,
+      },
     }),
     new FaviconWebpackPlugin({
       logo: `${paths.assets}/logo.svg`,
@@ -166,14 +170,14 @@ module.exports = {
         theme_color: '#111',
         icons: {
           coast: false,
-          yandex: false
-        }
-      }
+          yandex: false,
+        },
+      },
     }),
     new MiniCssExtractPlugin({
       filename: PRODUCTION ? '[name].[hash].css' : '[name].css',
-      chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css'
+      chunkFilename: PRODUCTION ? '[id].[hash].css' : '[id].css',
     }),
-    new webpack.NamedModulesPlugin()
-  ]
+    new webpack.NamedModulesPlugin(),
+  ],
 };

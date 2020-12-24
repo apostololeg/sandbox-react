@@ -1,15 +1,17 @@
 import { createStore } from 'justorm/preact';
 import nanoid from 'nanoid';
+import Time from 'timen';
 
-import time from 'timen';
 import { sliceWhere } from 'tools/array';
 
 const SHOW_TIME = 5000;
 const ANIMATION_DURATION = 200;
 
+type ID = string;
+
 const STORE = createStore('notifications', {
-  items: [],
-  autohide: [],
+  items: [] as ID[],
+  autohide: [] as ID[],
   data: {},
   paused: false,
   show(data) {
@@ -21,11 +23,13 @@ const STORE = createStore('notifications', {
       createdAt: Date.now(),
     };
 
-    time.after(ANIMATION_DURATION, () => (this.data[id].visible = true));
+    Time.after(ANIMATION_DURATION, () => (this.data[id].visible = true));
 
     if (data.autohide !== false) {
       this.autohide.push(id);
     }
+
+    return id;
   },
   pause() {
     this.paused = true;
@@ -42,17 +46,17 @@ const STORE = createStore('notifications', {
   },
   close(id) {
     this.data[id].visible = false;
-    time.after(ANIMATION_DURATION, () => this.remove(id));
+    Time.after(ANIMATION_DURATION, () => this.remove(id));
   },
   remove(id) {
-    sliceWhere(this.items, id);
     sliceWhere(this.autohide, id);
-    this.data[id] = null;
+    sliceWhere(this.items, id);
+    delete this.data[id];
   },
 });
 
 // worker
-time.tick(function tick() {
+Time.tick(function tick() {
   const { paused, autohide, data } = STORE;
 
   if (paused || autohide.length === 0) {
@@ -65,6 +69,6 @@ time.tick(function tick() {
 
   if (item.visible && readyToHide) {
     item.visible = false;
-    time.after(ANIMATION_DURATION, () => STORE.remove(id));
+    Time.after(ANIMATION_DURATION, () => STORE.remove(id));
   }
 });

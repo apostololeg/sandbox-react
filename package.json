@@ -7,6 +7,7 @@
   "homepage": "https://github.com/apostololeg/sandboxt#readme",
   "license": "ISC",
   "main": "src/index.js",
+  "sideEffects": false,
   "name": "sandbox",
   "repository": {
     "type": "git",
@@ -82,7 +83,8 @@
     "react-hot-loader": "^4.12.18",
     "terser-webpack-plugin": "2.2.1",
     "timen": "^0.0.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "ui-components": "file:.yalc/ui-components"
   },
   "description": "",
   "devDependencies": {
@@ -140,5 +142,12 @@
     "webpack-cli": "3.3.2",
     "webpack-dev-server": "3.4.1",
     "webpack-merge": "4.2.1"
+  },
+  "bit": {
+    "env": {
+      "compiler": "bit.envs/compilers/preact@8.4.6"
+    },
+    "componentsDefaultDirectory": "components/{name}",
+    "packageManager": "npm"
   }
 }
