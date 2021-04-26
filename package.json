@@ -42,7 +42,7 @@
     "apollo-link-http": "1.5.15",
     "apollo-server": "2.5.0",
     "apollo-server-express": "2.5.0",
-    "autoprefixer": "9.6.0",
+    "autoprefixer": "10.0.0",
     "aws-sdk": "2.493.0",
     "babel-node": "^0.0.1-security",
     "babel-plugin-object-to-json-parse": "0.0.8",
